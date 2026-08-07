@@ -26,7 +26,7 @@ def get_hourly_forecast(zone_name: str = "Financial District", horizon_hours: in
         
         # Add realistic variation
         predicted = round(weight * 1.15 + random.uniform(-3, 3), 1)
-        actual = round(weight + random.uniform(-2, 2), 1) if i < 12 else None
+        actual = round(weight + random.uniform(-2, 2), 1)
         
         forecast_points.append({
             "hour": target_hour.strftime("%H:00"),

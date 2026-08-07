@@ -17,8 +17,8 @@ export const LiveDemandMap: React.FC = () => {
   return (
     <PageShell title="Live Demand Map" hideHeader={true}>
       <Box sx={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#060709' }}>
-        {/* Leaflet Dark Map Base Layer */}
-        <DemandMap zones={zones || []} />
+        {/* Leaflet Dark Map Base Layer with Interactive Heatmaps */}
+        <DemandMap zones={zones || []} filter={filter} />
 
         {/* Top Right Search Bar */}
         <MapSearchBar />
