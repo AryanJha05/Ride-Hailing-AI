@@ -146,6 +146,41 @@ Once running, navigate through the platform using the left sidebar:
 
 ---
 
-## 📄 License
+## 🚧 Current Development Status
 
-This project is open-source under the MIT License.
+The application architecture and frontend/backend implementation are under active development.
+
+Current status:
+- ✅ React frontend
+- ✅ FastAPI backend
+- ✅ Database
+- ✅ API contracts
+- ✅ LLM integration structure
+- 🚧 Student A ML Model (Pending Integration)
+- 🚧 Student B ML Model (Pending Integration)
+- 🚧 Student C ML Model (Pending Integration)
+- 🚧 Ollama production prompts (Pending)
+
+## 📂 Project Structure
+
+Ride-AI/
+
+├── frontend/
+
+├── backend/
+
+├── docs/
+
+├── README.md
+
+└── .gitignore
+
+
+## 👥 Team
+
+| Member | Responsibility |
+|---------|----------------|
+| Student A | Trip Duration Prediction |
+| Student B | Demand Zone Detection |
+| Student C | Demand Forecasting |
+| Student D | AI Driver Assistant, Ollama Integration, Full Stack Integration |
