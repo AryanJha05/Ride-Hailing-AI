@@ -1,46 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Box,
-  Paper,
-  Typography,
-  Chip,
-  TextField,
-  IconButton,
-  Avatar,
-  Divider,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Paper, Typography, IconButton, Avatar, Divider } from '@mui/material';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
-import SendIcon from '@mui/icons-material/Send';
 import HistoryIcon from '@mui/icons-material/History';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import AltRouteIcon from '@mui/icons-material/AltRoute';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { PageShell } from '../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../theme/palette';
 import { useDriverAdviceMutation } from '../hooks/useRideApi';
-
-interface Message {
-  id: string;
-  sender: 'user' | 'ai';
-  text: string;
-  analysis?: {
-    demandForecast: string;
-    historicalAvg: string;
-    distance: string;
-  };
-  time?: string;
-}
+import { ChatMessageStream, ChatMessage } from '../components/assistant/ChatMessageStream';
+import { QuickActionChips } from '../components/assistant/QuickActionChips';
+import { AssistantInputBar } from '../components/assistant/AssistantInputBar';
 
 export const AIAssistant: React.FC = () => {
   const navigate = useNavigate();
   const adviceMutation = useDriverAdviceMutation();
 
   const [inputQuery, setInputQuery] = useState('');
-  const [messages, setMessages] = useState<Message[]>([
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: 'm1',
       sender: 'user',
@@ -72,7 +48,7 @@ export const AIAssistant: React.FC = () => {
     const query = textToSend || inputQuery;
     if (!query.trim() || adviceMutation.isPending) return;
 
-    const userMsg: Message = {
+    const userMsg: ChatMessage = {
       id: `u-${Date.now()}`,
       sender: 'user',
       text: query,
@@ -81,12 +57,11 @@ export const AIAssistant: React.FC = () => {
     setMessages((prev) => [...prev, userMsg]);
     setInputQuery('');
 
-    // Trigger backend AI endpoint
     adviceMutation.mutate(
       { query },
       {
         onSuccess: (data) => {
-          const aiMsg: Message = {
+          const aiMsg: ChatMessage = {
             id: `ai-${Date.now()}`,
             sender: 'ai',
             text: data.recommendation + ' ' + data.reason,
@@ -99,7 +74,7 @@ export const AIAssistant: React.FC = () => {
           setMessages((prev) => [...prev, aiMsg]);
         },
         onError: () => {
-          const fallbackMsg: Message = {
+          const fallbackMsg: ChatMessage = {
             id: `ai-err-${Date.now()}`,
             sender: 'ai',
             text: 'I recommend repositioning to the Financial District. Demand forecast remains elevated at +412% with optimal staging conditions.',
@@ -173,224 +148,23 @@ export const AIAssistant: React.FC = () => {
           </Box>
 
           {/* Chat Timeline Stream */}
-          <Box
-            sx={{
-              p: 3,
-              maxHeight: 520,
-              minHeight: 380,
-              overflowY: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 3,
-            }}
-          >
-            <Box sx={{ textAlign: 'center', my: 1 }}>
-              <Chip
-                label="SHIFT START • 18:00"
-                size="small"
-                sx={{
-                  backgroundColor: VELOUR_TOKENS.bgSurface2,
-                  color: VELOUR_TOKENS.textSecondary,
-                  fontFamily: VELOUR_TOKENS.fontMono,
-                  fontSize: 11,
-                  fontWeight: 600,
-                }}
-              />
-            </Box>
-
-            {messages.map((msg) => (
-              <Box key={msg.id}>
-                {msg.sender === 'user' ? (
-                  /* User Bubble */
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <Box
-                      sx={{
-                        backgroundColor: VELOUR_TOKENS.bgSurface3,
-                        p: '12px 20px',
-                        borderRadius: '18px 18px 4px 18px',
-                        maxWidth: '75%',
-                        color: '#FFF',
-                        fontSize: 14,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {msg.text}
-                    </Box>
-                  </Box>
-                ) : (
-                  /* AI Briefing Message */
-                  <Box sx={{ display: 'flex', gap: 2, maxWidth: '90%' }}>
-                    <Avatar sx={{ backgroundColor: 'rgba(196, 181, 253, 0.12)', color: VELOUR_TOKENS.accentLavender, width: 32, height: 32, mt: 0.5 }}>
-                      <SmartToyOutlinedIcon sx={{ fontSize: 18 }} />
-                    </Avatar>
-                    <Box sx={{ flex: 1 }}>
-                      <Typography variant="body1" sx={{ color: '#FFF', fontSize: 15, lineHeight: 1.6 }}>
-                        {msg.text.includes('14m 30s') ? (
-                          <>
-                            Current traffic conditions indicate a travel time of approximately{' '}
-                            <span style={{ color: VELOUR_TOKENS.accentTeal, fontFamily: VELOUR_TOKENS.fontMono, fontWeight: 700 }}>
-                              14m 30s
-                            </span>{' '}
-                            via FDR Drive.
-                          </>
-                        ) : (
-                          msg.text
-                        )}
-                      </Typography>
-
-                      {/* Embedded Real-time Analysis Card */}
-                      {msg.analysis && (
-                        <Paper
-                          sx={{
-                            mt: 2,
-                            p: 2,
-                            backgroundColor: 'rgba(28, 26, 36, 0.6)',
-                            borderColor: VELOUR_TOKENS.borderSubtle,
-                            borderRadius: 2.5,
-                          }}
-                        >
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                            <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 16 }} />
-                            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700, fontSize: 12 }}>
-                              Real-time Analysis
-                            </Typography>
-                          </Box>
-
-                          <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 2 }}>
-                            <Chip
-                              icon={<TrendingUpIcon sx={{ fontSize: 14, color: `${VELOUR_TOKENS.accentTeal} !important` }} />}
-                              label={`Demand Forecast ${msg.analysis.demandForecast}`}
-                              size="small"
-                              sx={{
-                                backgroundColor: VELOUR_TOKENS.bgSurface1,
-                                color: VELOUR_TOKENS.accentTeal,
-                                border: '1px solid rgba(0, 217, 192, 0.3)',
-                                fontFamily: VELOUR_TOKENS.fontMono,
-                                fontSize: 12,
-                                fontWeight: 600,
-                              }}
-                            />
-                            <Chip
-                              icon={<AccessTimeIcon sx={{ fontSize: 14, color: `${VELOUR_TOKENS.textSecondary} !important` }} />}
-                              label={`Historical Avg ${msg.analysis.historicalAvg}`}
-                              size="small"
-                              sx={{
-                                backgroundColor: VELOUR_TOKENS.bgSurface1,
-                                color: VELOUR_TOKENS.textPrimary,
-                                border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                                fontFamily: VELOUR_TOKENS.fontMono,
-                                fontSize: 12,
-                              }}
-                            />
-                            <Chip
-                              icon={<AltRouteIcon sx={{ fontSize: 14, color: `${VELOUR_TOKENS.textSecondary} !important` }} />}
-                              label={`Distance ${msg.analysis.distance}`}
-                              size="small"
-                              sx={{
-                                backgroundColor: VELOUR_TOKENS.bgSurface1,
-                                color: VELOUR_TOKENS.textPrimary,
-                                border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                                fontFamily: VELOUR_TOKENS.fontMono,
-                                fontSize: 12,
-                              }}
-                            />
-                          </Box>
-
-                          <Typography
-                            variant="caption"
-                            onClick={() => navigate('/live-map')}
-                            sx={{
-                              color: VELOUR_TOKENS.accentLavender,
-                              fontWeight: 600,
-                              fontSize: 12,
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: 0.5,
-                              '&:hover': { textDecoration: 'underline' },
-                            }}
-                          >
-                            View Route on Map <ArrowForwardIcon sx={{ fontSize: 14 }} />
-                          </Typography>
-                        </Paper>
-                      )}
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            ))}
-
-            {adviceMutation.isPending && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <CircularProgress size={20} sx={{ color: VELOUR_TOKENS.accentLavender }} />
-                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                  Reasoning from spatial ML telemetry...
-                </Typography>
-              </Box>
-            )}
-          </Box>
+          <ChatMessageStream
+            messages={messages}
+            isLoading={adviceMutation.isPending}
+            onNavigateToMap={() => navigate('/live-map')}
+          />
 
           <Divider sx={{ borderColor: VELOUR_TOKENS.borderSubtle }} />
 
           {/* Quick Action Suggestion Chips & Input */}
           <Box sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1 }}>
-            <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-              {["Find nearest EV charger", "Today's earnings summary", 'Airport queue status'].map((chipText) => (
-                <Chip
-                  key={chipText}
-                  label={chipText}
-                  onClick={() => handleSend(chipText)}
-                  sx={{
-                    backgroundColor: VELOUR_TOKENS.bgSurface2,
-                    color: VELOUR_TOKENS.textSecondary,
-                    border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    fontSize: 12,
-                    cursor: 'pointer',
-                    '&:hover': {
-                      backgroundColor: VELOUR_TOKENS.bgSurface3,
-                      color: '#FFF',
-                    },
-                  }}
-                />
-              ))}
-            </Box>
-
-            <TextField
-              fullWidth
-              placeholder="Command AI Assistant..."
-              value={inputQuery}
-              onChange={(e) => setInputQuery(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-              InputProps={{
-                endAdornment: (
-                  <IconButton
-                    onClick={() => handleSend()}
-                    disabled={!inputQuery.trim() || adviceMutation.isPending}
-                    sx={{
-                      backgroundColor: VELOUR_TOKENS.accentPrimary,
-                      color: '#FFF',
-                      '&:hover': { backgroundColor: VELOUR_TOKENS.accentPrimaryHover },
-                      '&.Mui-disabled': { backgroundColor: VELOUR_TOKENS.bgSurface2, color: VELOUR_TOKENS.textSecondary },
-                    }}
-                  >
-                    <SendIcon sx={{ fontSize: 16 }} />
-                  </IconButton>
-                ),
-                sx: {
-                  backgroundColor: VELOUR_TOKENS.bgBase,
-                  borderRadius: 999,
-                  color: '#FFF',
-                  borderColor: VELOUR_TOKENS.borderSubtle,
-                  px: 2,
-                  py: 0.5,
-                  fontSize: 14,
-                },
-              }}
+            <QuickActionChips onSelectQuery={(query) => handleSend(query)} />
+            <AssistantInputBar
+              inputQuery={inputQuery}
+              onChangeQuery={setInputQuery}
+              onSend={() => handleSend()}
+              isDisabled={adviceMutation.isPending}
             />
-
-            <Typography variant="caption" sx={{ display: 'block', textAlign: 'center', color: VELOUR_TOKENS.textSecondary, fontSize: 11, mt: 1.5 }}>
-              AI suggestions are generated in real-time. Verify before acting.
-            </Typography>
           </Box>
         </Paper>
       </Box>

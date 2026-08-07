@@ -8,18 +8,27 @@ from app.api import health, driver_advice, forecast, demand_zones, driver_perfor
 # Create database tables if they do not exist
 Base.metadata.create_all(bind=engine)
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    from app.core.logger import logger
+    logger.info("Ride AI Backend API Server Started Successfully.")
+    yield
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
     description="Ride AI Monorepo Backend — Production API Layer with ML & LLM Integration Services",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Enable CORS for React Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

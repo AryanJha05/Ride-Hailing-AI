@@ -74,6 +74,7 @@ export interface RecentTrip {
 export interface DriverPerformanceResponse {
   driver_id: string;
   name: string;
+  email?: string;
   rating: number;
   total_trips: number;
   total_earnings: number;

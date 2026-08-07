@@ -9,8 +9,7 @@ import httpx
 from app.core.config import settings
 from app.services.demand_prediction_service import detect_demand_zones
 from app.services.trip_duration_service import predict_trip_duration
-
-logger = logging.getLogger(__name__)
+from app.core.logger import logger
 
 class PromptBuilder:
     @staticmethod

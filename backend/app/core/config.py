@@ -14,6 +14,14 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma2")
     LLM_TIMEOUT_SECONDS: float = 8.0
 
+    # Security & CORS
+    CORS_ORIGINS: list[str] = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000"
+    ]
+
     class Config:
         case_sensitive = True
 

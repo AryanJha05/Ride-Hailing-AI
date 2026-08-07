@@ -1,6 +1,7 @@
 import uuid
 from datetime import datetime
 from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text, JSON
+from sqlalchemy.orm import relationship
 from app.models.database import Base
 
 def generate_uuid():
@@ -19,6 +20,10 @@ class Driver(Base):
     cancellation_rate = Column(Float, default=1.2)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+    # Relationships
+    trips = relationship("Trip", back_populates="driver")
+    ai_recommendations = relationship("AIRecommendation", back_populates="driver")
+
 class Trip(Base):
     __tablename__ = "trips"
 
@@ -36,6 +41,9 @@ class Trip(Base):
     started_at = Column(DateTime, default=datetime.utcnow)
     completed_at = Column(DateTime, default=datetime.utcnow)
 
+    # Relationships
+    driver = relationship("Driver", back_populates="trips")
+
 class DemandZone(Base):
     __tablename__ = "demand_zones"
 
@@ -48,6 +56,9 @@ class DemandZone(Base):
     surge_multiplier = Column(Float, default=1.0)
     updated_at = Column(DateTime, default=datetime.utcnow)
 
+    # Relationships
+    forecast_logs = relationship("ForecastLog", back_populates="zone")
+
 class ForecastLog(Base):
     __tablename__ = "forecast_logs"
 
@@ -57,6 +68,9 @@ class ForecastLog(Base):
     predicted_demand = Column(Float)
     model_version = Column(String(40), default="v2.1-prod")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    zone = relationship("DemandZone", back_populates="forecast_logs")
 
 class AIRecommendation(Base):
     __tablename__ = "ai_recommendations"
@@ -69,3 +83,6 @@ class AIRecommendation(Base):
     confidence = Column(Float, default=0.95)
     model_used = Column(String(60), default="gemma2-local")
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    driver = relationship("Driver", back_populates="ai_recommendations")

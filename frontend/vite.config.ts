@@ -19,4 +19,16 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor_react: ['react', 'react-dom', 'react-router-dom'],
+          vendor_mui: ['@mui/material', '@mui/icons-material', '@emotion/react', '@emotion/styled'],
+          vendor_charts: ['recharts'],
+          vendor_leaflet: ['leaflet', 'react-leaflet'],
+        },
+      },
+    },
+  },
 });
