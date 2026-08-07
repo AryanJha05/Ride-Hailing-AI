@@ -9,6 +9,9 @@ import { LiveDemandMap } from './pages/LiveDemandMap';
 import { AIAssistant } from './pages/AIAssistant';
 import { ForecastAnalytics } from './pages/ForecastAnalytics';
 import { DriverProfile } from './pages/DriverProfile';
+import { Trips } from './pages/Trips';
+import { Settings } from './pages/Settings';
+import { Support } from './pages/Support';
 import { AdminDashboard } from './pages/AdminDashboard';
 
 const queryClient = new QueryClient({
@@ -32,7 +35,10 @@ export const App: React.FC = () => {
             <Route path="/live-map" element={<LiveDemandMap />} />
             <Route path="/ai-assistant" element={<AIAssistant />} />
             <Route path="/analytics" element={<ForecastAnalytics />} />
+            <Route path="/trips" element={<Trips />} />
             <Route path="/profile" element={<DriverProfile />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/support" element={<Support />} />
             <Route path="/admin" element={<AdminDashboard />} />
           </Routes>
         </BrowserRouter>
