@@ -35,8 +35,8 @@ Ensure you have the following installed on your machine:
 ### Step 1: Clone the Repository & Navigate
 
 ```bash
-git clone <repository-url>
-cd Ride-Hailing-AI-Copy
+git clone https://github.com/AryanJha05/Ride-Hailing-AI.git
+cd Ride-Hailing-AI
 ```
 
 ---
