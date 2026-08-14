@@ -136,8 +136,7 @@ Once running, navigate through the platform using the left sidebar:
 
 | Page | URL | Description |
 | :--- | :--- | :--- |
-| **Login Page (Default Entry)** | `http://localhost:3000/` or `/login` | Enterprise split-screen authentication entry point with NYC live telemetry visual |
-| **Register Page** | `http://localhost:3000/register` | Account creation with role selection (Driver vs Fleet Operator) |
+| **Login Page (Default Entry)** | `http://localhost:3000/` or `/login` | Enterprise split-screen managed authentication entry point (Demo Driver & Demo Admin options) |
 | **Operations View** | `http://localhost:3000/dashboard` | Main driver dashboard with bento grid metrics & AI recommendations |
 | **Live Demand Map** | `http://localhost:3000/live-map` | Spatial Leaflet map with active zone filters & surge multipliers |
 | **AI Assistant** | `http://localhost:3000/ai-assistant` | Interactive AI command chat with real-time ML analysis chips |
