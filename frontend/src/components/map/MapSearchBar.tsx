@@ -8,7 +8,7 @@ export const MapSearchBar: React.FC = () => {
     <Box sx={{ position: 'absolute', top: 24, right: 24, zIndex: 1000, width: 320 }}>
       <TextField
         fullWidth
-        placeholder="Search locations, zones..."
+        placeholder="Search Midtown, JFK Airport, Williamsburg..."
         size="small"
         InputProps={{
           startAdornment: (

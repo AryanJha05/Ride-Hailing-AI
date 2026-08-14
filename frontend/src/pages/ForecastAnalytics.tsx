@@ -6,7 +6,7 @@ import { useForecast } from '../hooks/useRideApi';
 import { ForecastChart } from '../components/analytics/ForecastChart';
 
 export const ForecastAnalytics: React.FC = () => {
-  const [selectedZone, setSelectedZone] = useState('Financial District');
+  const [selectedZone, setSelectedZone] = useState('Midtown Manhattan');
   const { data: forecastRes } = useForecast(selectedZone);
 
   return (
@@ -19,7 +19,7 @@ export const ForecastAnalytics: React.FC = () => {
               Spatial-Temporal Demand Forecasting
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-              Time-series model predictions vs baseline demand.
+              Time-series model predictions vs baseline demand across NYC network.
             </Typography>
           </Box>
 
@@ -31,13 +31,14 @@ export const ForecastAnalytics: React.FC = () => {
               backgroundColor: VELOUR_TOKENS.bgSurface1,
               color: '#FFF',
               borderColor: VELOUR_TOKENS.borderSubtle,
-              minWidth: 200,
+              minWidth: 220,
             }}
           >
+            <MenuItem value="Midtown Manhattan">Midtown Manhattan</MenuItem>
+            <MenuItem value="JFK Airport (JFK)">JFK Airport (JFK)</MenuItem>
             <MenuItem value="Financial District">Financial District</MenuItem>
-            <MenuItem value="Airports (JFK / LGA)">Airports (JFK / LGA)</MenuItem>
-            <MenuItem value="Midtown Core">Midtown Core</MenuItem>
             <MenuItem value="Williamsburg">Williamsburg</MenuItem>
+            <MenuItem value="Lower Manhattan">Lower Manhattan</MenuItem>
           </Select>
         </Box>
 
@@ -57,7 +58,7 @@ export const ForecastAnalytics: React.FC = () => {
                       Peak Demand Hour
                     </Typography>
                     <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
-                      18:00 - 19:00
+                      18:00 - 19:00 EST
                     </Typography>
                   </Box>
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
@@ -73,7 +74,7 @@ export const ForecastAnalytics: React.FC = () => {
                       Recommended Shift Action
                     </Typography>
                     <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.accentLavender, mt: 0.5 }}>
-                      Stage units in Financial District prior to 17:30 peak onset.
+                      Stage units in Midtown Manhattan prior to 17:30 peak onset.
                     </Typography>
                   </Box>
                 </Box>

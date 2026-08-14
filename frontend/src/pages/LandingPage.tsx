@@ -56,7 +56,7 @@ export const LandingPage: React.FC = () => {
             </Typography>
             <Button
               variant="contained"
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/login')}
               sx={{
                 backgroundColor: VELOUR_TOKENS.accentPrimary,
                 padding: '6px 18px',
@@ -117,7 +117,7 @@ export const LandingPage: React.FC = () => {
               <Button
                 variant="outlined"
                 size="large"
-                onClick={() => navigate('/dashboard')}
+                onClick={() => navigate('/login')}
                 sx={{
                   borderColor: VELOUR_TOKENS.accentPrimary,
                   color: '#FFF',
@@ -285,7 +285,7 @@ export const LandingPage: React.FC = () => {
           <Button
             variant="contained"
             size="large"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/login')}
             sx={{
               backgroundColor: VELOUR_TOKENS.accentPrimary,
               px: 4,

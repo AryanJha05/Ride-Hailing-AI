@@ -72,7 +72,7 @@ export const Support: React.FC = () => {
 
             {[
               { q: 'How does the AI Surge Forecasting work?', a: 'Ride AI combines spatial ML telemetry, historical driver density curves, and real-time event signals to predict surge hotspots 30–60 minutes in advance.' },
-              { q: 'When are weekly earnings paid out?', a: 'Earnings are deposited directly to your fleet account every Monday at 06:00 EST. Instant payouts can be triggered via Profile > Earnings.' },
+              { q: 'When are weekly earnings paid out?', a: 'Earnings are deposited directly to your linked bank account via ACH direct deposit every Monday at 06:00 EST. Instant payouts can be triggered via Profile > Earnings.' },
               { q: 'What happens if I lose internet connection during a surge trip?', a: 'The Ride AI driver portal automatically caches trip telemetry offline and synchronizes your fare data once connection is restored.' },
             ].map((item, idx) => (
               <Accordion

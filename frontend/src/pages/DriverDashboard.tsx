@@ -52,10 +52,10 @@ export const DriverDashboard: React.FC = () => {
         >
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 20, md: 22 }, mb: 0.5 }}>
-              Good evening, E. Operations 👋
+              Good evening, Alex Morgan 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-              High demand in <strong style={{ color: VELOUR_TOKENS.accentTeal }}>Financial District (+42%)</strong>. Optimal positioning active.
+              High demand near <strong style={{ color: VELOUR_TOKENS.accentTeal }}>Midtown Manhattan (+42%)</strong>. Optimal positioning active.
             </Typography>
           </Box>
 
@@ -86,7 +86,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TODAY'S EARNINGS"
-              value="$142.50"
+              value="$285.00"
               change="+18.4% vs yesterday"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentPrimary}
@@ -97,7 +97,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="ACCEPTANCE RATE"
-              value="98%"
+              value="97%"
               change="Top 2% of drivers"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentTeal}
@@ -108,7 +108,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="DRIVER RATING"
-              value="4.96"
+              value="4.92"
               subtext="Excellent rating"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentGold}
@@ -119,8 +119,8 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TOTAL TRIPS"
-              value="24"
-              change="+4 vs yesterday"
+              value="1,284"
+              change="+14 today"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentLavender}
               icon={<DirectionsCarOutlinedIcon fontSize="small" />}
@@ -192,7 +192,7 @@ export const DriverDashboard: React.FC = () => {
 
                   <LinearProgress
                     variant="determinate"
-                    value={66}
+                    value={75}
                     sx={{
                       height: 5,
                       borderRadius: 3,
@@ -273,7 +273,7 @@ export const DriverDashboard: React.FC = () => {
                 backgroundColor: VELOUR_TOKENS.accentPrimaryDim,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justify: 'center',
                 color: VELOUR_TOKENS.accentPrimary,
               }}
             >
@@ -298,7 +298,7 @@ export const DriverDashboard: React.FC = () => {
                 />
               </Box>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-                Peak demand in <strong style={{ color: '#FFF' }}>Financial District</strong> in 30 min. Positioning there could increase your earnings by 42%.
+                High demand expected near <strong style={{ color: '#FFF' }}>Midtown Manhattan</strong> between 6 PM and 8 PM. Positioning near JFK Airport could increase your earnings by 42%.
               </Typography>
             </Box>
           </Box>

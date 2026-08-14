@@ -1,0 +1,22 @@
+# Global Docker Ignore List
+.git
+.gitignore
+.dockerignore
+node_modules
+npm-debug.log
+yarn-error.log
+venv
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+.env
+.env.local
+.vscode
+.idea
+dist
+build
+coverage

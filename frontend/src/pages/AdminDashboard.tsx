@@ -159,7 +159,7 @@ export const AdminDashboard: React.FC = () => {
 
             <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               {[
-                { title: 'Surge Anomaly Detected', desc: 'Financial District demand spiked by +350% above baseline.', border: VELOUR_TOKENS.warning },
+                { title: 'Surge Anomaly Detected', desc: 'Midtown Manhattan demand spiked by +350% above baseline.', border: VELOUR_TOKENS.warning },
                 { title: 'API Rate Threshold Normal', desc: 'Gateway processing 1,420 req/sec within nominal bounds.', border: VELOUR_TOKENS.accentTeal },
               ].map((alert, idx) => (
                 <Box

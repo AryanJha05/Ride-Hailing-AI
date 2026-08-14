@@ -18,7 +18,7 @@ export const useDemandZones = () => {
   });
 };
 
-export const useForecast = (zone = 'Financial District', hours = 24) => {
+export const useForecast = (zone = 'Midtown Manhattan', hours = 24) => {
   return useQuery({
     queryKey: ['forecast', zone, hours],
     queryFn: () => rideApi.getForecast(zone, hours),

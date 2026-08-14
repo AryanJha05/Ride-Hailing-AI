@@ -15,16 +15,16 @@ class PromptBuilder:
     @staticmethod
     def build_driver_advice_prompt(context: dict, user_query: str = None) -> str:
         rec_zone = context.get("recommended_zone", {})
-        zone_name = rec_zone.get("zone_name", "Financial District")
+        zone_name = rec_zone.get("zone_name", "Midtown Manhattan")
         demand_pct = rec_zone.get("demand_percentage", "+42%")
-        surge = rec_zone.get("surge_multiplier", 1.4)
+        surge = rec_zone.get("surge_multiplier", 1.65)
         trip_summary = context.get("trip_summary", {})
-        duration = trip_summary.get("formatted_duration", "14m 30s")
+        duration = trip_summary.get("formatted_duration", "12m 30s")
         route = trip_summary.get("route_summary", "via FDR Drive")
         
         query_text = user_query if user_query else "Where should I stage for the highest surge in the next 30 minutes?"
 
-        prompt = f"""You are Velour Ride AI, an elite operations driver assistant.
+        prompt = f"""You are Velour Ride AI, an elite operations driver assistant in New York City.
 Convert the following ML prediction telemetry into a concise, professional recommendation for the driver.
 
 ML DATA CONTEXT (STRICT TRUTH):
@@ -41,7 +41,7 @@ INSTRUCTIONS:
 3. Provide a short 1 sentence travel time/route explanation.
 4. Output valid JSON strictly in the following format:
 {{
-  "recommendation": "I recommend repositioning to the {zone_name}. We are detecting a significant anomaly in demand clustering near Wall St & Broadway.",
+  "recommendation": "I recommend repositioning to {zone_name}. We are detecting high passenger request density near Grand Central Terminal & Commercial Hub.",
   "reason": "Current traffic conditions indicate a travel time of approximately {duration} {route}.",
   "suggested_area": "{zone_name}",
   "confidence": 0.942
@@ -57,14 +57,14 @@ class LLMService:
         self.model = settings.OLLAMA_MODEL
         self.timeout = settings.LLM_TIMEOUT_SECONDS
 
-    def generate_driver_advice(self, driver_lat: float = 40.7128, driver_lng: float = -74.0060, user_query: str = None) -> dict:
-        # Step 1: Gather structured context from ML services (Students A & B)
+    def generate_driver_advice(self, driver_lat: float = 40.7549, driver_lng: float = -73.9840, user_query: str = None) -> dict:
+        # Step 1: Gather structured context from ML services
         demand_data = detect_demand_zones(driver_lat, driver_lng)
         rec_zone = demand_data.get("recommended_zone", {})
         
         trip_data = predict_trip_duration(
             driver_lat, driver_lng,
-            rec_zone.get("lat", 40.7075), rec_zone.get("lng", -74.0089)
+            rec_zone.get("lat", 40.7549), rec_zone.get("lng", -73.9840)
         )
 
         context = {
@@ -93,8 +93,8 @@ class LLMService:
                     parsed = self._parse_json_response(raw_text)
                     if parsed:
                         parsed["reasoning_chips"] = self._build_chips(rec_zone, trip_data)
-                        parsed["estimated_travel_time"] = trip_data.get("formatted_duration", "14m 30s")
-                        parsed["surge_multiplier"] = rec_zone.get("surge_multiplier", 1.4)
+                        parsed["estimated_travel_time"] = trip_data.get("formatted_duration", "12m 30s")
+                        parsed["surge_multiplier"] = rec_zone.get("surge_multiplier", 1.65)
                         return parsed
         except Exception as e:
             logger.warning(f"Ollama execution unavailable or timed out ({e}). Utilizing ML rule engine fallback.")
@@ -102,19 +102,22 @@ class LLMService:
         return fallback_response
 
     def _build_fallback_recommendation(self, rec_zone: dict, trip_data: dict, user_query: str = None) -> dict:
-        zone_name = rec_zone.get("zone_name", "Financial District")
+        zone_name = rec_zone.get("zone_name", "Midtown Manhattan")
         demand_pct = rec_zone.get("demand_forecast_delta", "+412%")
         hist_avg = rec_zone.get("historical_avg", "2.4x")
-        dist = rec_zone.get("distance_miles", "3.2mi")
-        travel_time = trip_data.get("formatted_duration", "14m 30s")
+        dist = rec_zone.get("distance_miles", "1.2 mi")
+        travel_time = trip_data.get("formatted_duration", "12m 30s")
         route = trip_data.get("route_summary", "via FDR Drive")
-        surge = rec_zone.get("surge_multiplier", 1.4)
+        surge = rec_zone.get("surge_multiplier", 1.65)
 
-        if user_query and "time" in user_query.lower():
+        if user_query and "rain" in user_query.lower():
+            recommendation = f"Rain detected near {zone_name}. Surge pricing active ({surge}x). High demand expected."
+            reason = f"Current traffic conditions indicate a travel time of approximately {travel_time} {route}."
+        elif user_query and "time" in user_query.lower():
             recommendation = f"Current traffic conditions indicate a travel time of approximately {travel_time} {route}."
             reason = f"Destination is {dist} away in the {zone_name} high-demand cluster."
         else:
-            recommendation = f"I recommend repositioning to the {zone_name}. We are detecting a significant anomaly in demand clustering near Wall St & Broadway."
+            recommendation = f"I recommend repositioning to {zone_name}. We are detecting high passenger request density near Grand Central Terminal & Commercial Hub."
             reason = f"Current traffic conditions indicate a travel time of approximately {travel_time} {route}."
 
         return {
@@ -135,12 +138,11 @@ class LLMService:
         return [
             {"label": "Demand Forecast", "value": rec_zone.get("demand_forecast_delta", "+412%")},
             {"label": "Historical Avg", "value": rec_zone.get("historical_avg", "2.4x")},
-            {"label": "Distance", "value": rec_zone.get("distance_miles", "3.2mi")}
+            {"label": "Distance", "value": rec_zone.get("distance_miles", "1.2 km")}
         ]
 
     def _parse_json_response(self, text: str) -> dict:
         try:
-            # Strip potential markdown fences if present
             cleaned = text.strip()
             if cleaned.startswith("```"):
                 cleaned = cleaned.split("\n", 1)[1]

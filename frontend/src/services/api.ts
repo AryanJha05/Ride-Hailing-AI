@@ -29,7 +29,7 @@ export const rideApi = {
     return res.data;
   },
 
-  getForecast: async (zone = 'Financial District', hours = 24): Promise<ForecastResponse> => {
+  getForecast: async (zone = 'Midtown Manhattan', hours = 24): Promise<ForecastResponse> => {
     const res = await apiClient.get('/forecast', {
       params: { zone, horizon_hours: hours },
     });

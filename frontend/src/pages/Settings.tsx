@@ -77,9 +77,9 @@ export const Settings: React.FC = () => {
                     defaultValue="google"
                     sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, color: '#FFF' }}
                   >
-                    <MenuItem value="google">Google Maps Navigation API</MenuItem>
+                    <MenuItem value="google">Google Maps Navigation API (US East)</MenuItem>
+                    <MenuItem value="nycdot">NYC DOT Real-Time Traffic Feed</MenuItem>
                     <MenuItem value="waze">Waze Live Traffic</MenuItem>
-                    <MenuItem value="apple">Apple Maps Fleet Navigation</MenuItem>
                   </TextField>
                 </Box>
               </Box>
@@ -134,7 +134,7 @@ export const Settings: React.FC = () => {
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>License Plate</Typography>
-                  <Typography className="mono-num" variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>NYC-EV-9421</Typography>
+                  <Typography className="mono-num" variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>NYC-TLC-9421</Typography>
                 </Box>
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>

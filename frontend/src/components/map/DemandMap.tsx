@@ -73,26 +73,26 @@ const recommendedIcon = L.divIcon({
   iconAnchor: [75, 32],
 });
 
-// Default Mock NYC Demand Zones if API data is loading or empty
+// Default NYC Demand Zones if API data is loading
 const DEFAULT_ZONES: DemandZone[] = [
-  { id: '1', zone_name: 'Financial District', lat: 40.7075, lng: -74.0090, surge_multiplier: 1.65, demand_percentage: '+42%', demand_score: 94, trend: 'up' },
-  { id: '2', zone_name: 'Midtown Core', lat: 40.7549, lng: -73.9840, surge_multiplier: 1.4, demand_percentage: '+28%', demand_score: 82, trend: 'up' },
-  { id: '3', zone_name: 'JFK Airport Terminal 4', lat: 40.6413, lng: -73.7781, surge_multiplier: 1.8, demand_percentage: '+65%', demand_score: 98, trend: 'up' },
-  { id: '4', zone_name: 'Williamsburg Waterfront', lat: 40.7182, lng: -73.9614, surge_multiplier: 1.25, demand_percentage: '+18%', demand_score: 71, trend: 'flat' },
-  { id: '5', zone_name: 'DUMBO Tech Hub', lat: 40.7033, lng: -73.9881, surge_multiplier: 1.35, demand_percentage: '+22%', demand_score: 76, trend: 'up' },
+  { id: '1', zone_name: 'Midtown Manhattan', lat: 40.7549, lng: -73.9840, surge_multiplier: 1.65, demand_percentage: '+42%', demand_score: 94, trend: 'up' },
+  { id: '2', zone_name: 'JFK Airport (JFK)', lat: 40.6413, lng: -73.7781, surge_multiplier: 1.8, demand_percentage: '+65%', demand_score: 98, trend: 'up' },
+  { id: '3', zone_name: 'Financial District', lat: 40.7075, lng: -74.0113, surge_multiplier: 1.4, demand_percentage: '+28%', demand_score: 82, trend: 'up' },
+  { id: '4', zone_name: 'Williamsburg', lat: 40.7081, lng: -73.9571, surge_multiplier: 1.5, demand_percentage: '+35%', demand_score: 85, trend: 'up' },
+  { id: '5', zone_name: 'Lower Manhattan', lat: 40.7128, lng: -74.0060, surge_multiplier: 1.2, demand_percentage: '+18%', demand_score: 72, trend: 'flat' },
 ];
 
 const MOCK_FLEET_DRIVERS = [
-  { id: 'd1', lat: 40.7100, lng: -74.0050 },
-  { id: 'd2', lat: 40.7150, lng: -74.0120 },
-  { id: 'd3', lat: 40.7050, lng: -73.9990 },
-  { id: 'd4', lat: 40.7500, lng: -73.9810 },
-  { id: 'd5', lat: 40.7580, lng: -73.9890 },
+  { id: 'd1', lat: 40.7560, lng: -73.9850 },
+  { id: 'd2', lat: 40.7520, lng: -73.9810 },
+  { id: 'd3', lat: 40.7500, lng: -73.9880 },
+  { id: 'd4', lat: 40.6430, lng: -73.7750 },
+  { id: 'd5', lat: 40.7090, lng: -73.9580 },
 ];
 
 const MOCK_EVENTS = [
-  { id: 'e1', name: 'Barclays Concert', lat: 40.6826, lng: -73.9754 },
-  { id: 'e2', name: 'Madison Square Garden', lat: 40.7505, lng: -73.9934 },
+  { id: 'e1', name: 'Madison Square Garden Concert', lat: 40.7505, lng: -73.9934 },
+  { id: 'e2', name: 'Barclays Center Event', lat: 40.6826, lng: -73.9754 },
 ];
 
 interface DemandMapProps {
@@ -104,7 +104,7 @@ interface DemandMapProps {
 export const DemandMap: React.FC<DemandMapProps> = ({
   zones,
   filter = 'Demand',
-  driverLocation = { lat: 40.7128, lng: -74.0060 },
+  driverLocation = { lat: 40.7549, lng: -73.9840 },
 }) => {
   const activeZones = zones && zones.length > 0 ? zones : DEFAULT_ZONES;
   const center: [number, number] = [driverLocation.lat, driverLocation.lng];

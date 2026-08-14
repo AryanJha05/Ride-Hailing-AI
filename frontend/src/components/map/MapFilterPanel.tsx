@@ -96,9 +96,9 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
 
       <List disablePadding sx={{ mb: 3, maxHeight: 220, overflowY: 'auto' }}>
         {(zones.length > 0 ? zones : [
-          { id: '1', zone_name: 'Financial District', demand_percentage: '+42%', surge_multiplier: 1.4, demand_score: 94, trend: 'up' },
-          { id: '2', zone_name: 'Midtown Core', demand_percentage: '+18%', surge_multiplier: 1.2, demand_score: 72, trend: 'flat' },
-          { id: '3', zone_name: 'Airports (JFK)', demand_percentage: '+65%', surge_multiplier: 1.65, demand_score: 88, trend: 'up' },
+          { id: '1', zone_name: 'Midtown Manhattan', demand_percentage: '+42%', surge_multiplier: 1.65, demand_score: 94, trend: 'up' },
+          { id: '2', zone_name: 'JFK Airport (JFK)', demand_percentage: '+65%', surge_multiplier: 1.8, demand_score: 98, trend: 'up' },
+          { id: '3', zone_name: 'Financial District', demand_percentage: '+28%', surge_multiplier: 1.4, demand_score: 82, trend: 'up' },
         ]).map((z) => (
           <ListItem
             key={z.id}

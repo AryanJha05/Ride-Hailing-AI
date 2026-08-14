@@ -11,28 +11,39 @@ def seed_database():
     
     try:
         # Check if driver already exists
-        existing_driver = db.query(Driver).filter(Driver.email == "e.operations@rideai.internal").first()
+        existing_driver = db.query(Driver).filter(Driver.id == "driver-001").first()
         if not existing_driver:
             driver = Driver(
                 id="driver-001",
-                name="E. Operations",
-                email="e.operations@rideai.internal",
-                rating=4.96,
+                name="Alex Morgan",
+                email="alex.morgan@rideai.nyc",
+                rating=4.92,
                 total_trips=1284,
-                total_earnings=14250.00,
-                acceptance_rate=98.0,
-                cancellation_rate=1.2
+                total_earnings=7480.00,
+                acceptance_rate=97.0,
+                cancellation_rate=2.0
             )
             db.add(driver)
-            print("Seeded driver: E. Operations")
+            print("Seeded driver: Alex Morgan")
+        else:
+            existing_driver.name = "Alex Morgan"
+            existing_driver.email = "alex.morgan@rideai.nyc"
+            existing_driver.rating = 4.92
+            existing_driver.total_trips = 1284
+            existing_driver.total_earnings = 7480.00
+            existing_driver.acceptance_rate = 97.0
+            existing_driver.cancellation_rate = 2.0
 
-        # Seed Demand Zones
+        # Seed NYC Demand Zones
         zones_data = [
-            ("Financial District", 40.7075, -74.0089, 94.5, "up", 1.4),
-            ("Airports (JFK / LGA)", 40.6413, -73.7781, 88.0, "up", 1.65),
-            ("Midtown Core", 40.7549, -73.9840, 72.0, "flat", 1.2),
-            ("Williamsburg", 40.7081, -73.9571, 64.0, "up", 1.1),
-            ("SoHo / Tribeca", 40.7233, -74.0030, 58.0, "down", 1.0)
+            ("Midtown Manhattan", 40.7549, -73.9840, 94.5, "up", 1.65),
+            ("JFK Airport (JFK)", 40.6413, -73.7781, 88.0, "up", 1.8),
+            ("Financial District", 40.7075, -74.0089, 82.0, "up", 1.4),
+            ("Grand Central Terminal", 40.7527, -73.9772, 85.0, "up", 1.5),
+            ("Williamsburg", 40.7081, -73.9571, 72.0, "flat", 1.2),
+            ("Lower Manhattan", 40.7128, -74.0060, 68.0, "up", 1.1),
+            ("Upper East Side", 40.7736, -73.9566, 64.0, "flat", 1.1),
+            ("LaGuardia Airport (LGA)", 40.7769, -73.8740, 58.0, "down", 1.0)
         ]
         
         for name, lat, lng, score, trend, surge in zones_data:

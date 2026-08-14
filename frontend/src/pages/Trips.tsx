@@ -20,11 +20,10 @@ import { PageShell } from '../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../theme/palette';
 
 const MOCK_TRIPS = [
-  { id: 'TRIP-8921', time: '10:14 AM', pickup: 'Financial District', dropoff: 'Midtown Core', fare: '$34.50', surge: '1.4x', rating: 5, status: 'Completed' },
-  { id: 'TRIP-8920', time: '09:30 AM', pickup: 'Brooklyn Heights', dropoff: 'JFK Airport T4', fare: '$62.00', surge: '1.65x', rating: 5, status: 'Completed' },
-  { id: 'TRIP-8919', time: '08:45 AM', pickup: 'Williamsburg', dropoff: 'Wall St', fare: '$28.10', surge: '1.2x', rating: 5, status: 'Completed' },
-  { id: 'TRIP-8918', time: '08:10 AM', pickup: 'SoHo', dropoff: 'Penn Station', fare: '$19.50', surge: '1.0x', rating: 4, status: 'Completed' },
-  { id: 'TRIP-8917', time: '07:25 AM', pickup: 'DUMBO', dropoff: 'Grand Central', fare: '$31.20', surge: '1.3x', rating: 5, status: 'Completed' },
+  { id: 'TRIP-8841', time: '14:20', pickup: 'Midtown Manhattan', dropoff: 'JFK Airport (JFK)', fare: '$48.50', surge: '1.8x', rating: 5, status: 'Completed' },
+  { id: 'TRIP-8840', time: '12:45', pickup: 'Financial District', dropoff: 'Williamsburg', fare: '$24.00', surge: '1.4x', rating: 5, status: 'Completed' },
+  { id: 'TRIP-8839', time: '10:15', pickup: 'Upper East Side', dropoff: 'Grand Central Terminal', fare: '$18.50', surge: '1.0x', rating: 5, status: 'Completed' },
+  { id: 'TRIP-8838', time: '08:30', pickup: 'LaGuardia Airport (LGA)', dropoff: 'Times Square', fare: '$36.00', surge: '1.2x', rating: 4, status: 'Cancelled' },
 ];
 
 export const Trips: React.FC = () => {

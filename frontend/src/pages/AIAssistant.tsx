@@ -25,11 +25,11 @@ export const AIAssistant: React.FC = () => {
     {
       id: 'm2',
       sender: 'ai',
-      text: 'I recommend repositioning to the Financial District. We are detecting a significant anomaly in demand clustering near Wall St & Broadway.',
+      text: 'I recommend repositioning to Midtown Manhattan. We are detecting a significant anomaly in demand clustering near JFK Airport & Commercial Hub.',
       analysis: {
         demandForecast: '+412%',
         historicalAvg: '2.4x',
-        distance: '3.2mi',
+        distance: '1.2 km',
       },
     },
     {
@@ -40,7 +40,7 @@ export const AIAssistant: React.FC = () => {
     {
       id: 'm4',
       sender: 'ai',
-      text: 'Current traffic conditions indicate a travel time of approximately 14m 30s via FDR Drive.',
+      text: 'Current traffic conditions indicate a travel time of approximately 12m 30s via FDR Drive.',
     },
   ]);
 
@@ -68,7 +68,7 @@ export const AIAssistant: React.FC = () => {
             analysis: {
               demandForecast: data.reasoning_chips?.[0]?.value || '+412%',
               historicalAvg: data.reasoning_chips?.[1]?.value || '2.4x',
-              distance: data.reasoning_chips?.[2]?.value || '3.2mi',
+              distance: data.reasoning_chips?.[2]?.value || '1.2 mi',
             },
           };
           setMessages((prev) => [...prev, aiMsg]);
@@ -77,7 +77,7 @@ export const AIAssistant: React.FC = () => {
           const fallbackMsg: ChatMessage = {
             id: `ai-err-${Date.now()}`,
             sender: 'ai',
-            text: 'I recommend repositioning to the Financial District. Demand forecast remains elevated at +412% with optimal staging conditions.',
+            text: 'I recommend repositioning to Midtown Manhattan. Demand forecast remains elevated at +412% with optimal staging conditions.',
           };
           setMessages((prev) => [...prev, fallbackMsg]);
         },

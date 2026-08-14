@@ -4,6 +4,8 @@ import { ThemeProvider, CssBaseline } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { theme } from './theme/theme';
 import { LandingPage } from './pages/LandingPage';
+import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
 import { DriverDashboard } from './pages/DriverDashboard';
 import { LiveDemandMap } from './pages/LiveDemandMap';
 import { AIAssistant } from './pages/AIAssistant';
@@ -30,7 +32,9 @@ export const App: React.FC = () => {
         <CssBaseline />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/dashboard" element={<DriverDashboard />} />
             <Route path="/live-map" element={<LiveDemandMap />} />
             <Route path="/ai-assistant" element={<AIAssistant />} />
