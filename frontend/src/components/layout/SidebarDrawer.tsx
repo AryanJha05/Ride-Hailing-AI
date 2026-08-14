@@ -11,6 +11,7 @@ import {
   LinearProgress,
   Paper,
   Divider,
+  Chip,
 } from '@mui/material';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
@@ -23,14 +24,17 @@ import HeadsetMicOutlinedIcon from '@mui/icons-material/HeadsetMicOutlined';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+import SecurityIcon from '@mui/icons-material/Security';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useAuth } from '../../auth/AuthContext';
+import { ROLES } from '../../auth/roles';
+import { ROUTES } from '../../routes/routes';
 
 export const DRAWER_WIDTH = 260;
 
 interface SidebarDrawerProps {
   mobileOpen?: boolean;
   onClose?: () => void;
-  isAdmin?: boolean;
 }
 
 interface NavItem {
@@ -47,10 +51,11 @@ interface NavGroup {
 export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
   mobileOpen = false,
   onClose,
-  isAdmin = true,
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { role, user } = useAuth();
+  const isAdminRole = role === ROLES.ADMIN;
 
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -59,40 +64,55 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
     }
   };
 
-  const navGroups: NavGroup[] = [
-    {
-      section: 'OVERVIEW',
-      items: [
-        { label: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="small" />, path: '/dashboard' },
-        { label: 'Live Demand Map', icon: <MapOutlinedIcon fontSize="small" />, path: '/live-map' },
-        { label: 'AI Assistant', icon: <SmartToyOutlinedIcon fontSize="small" />, path: '/ai-assistant' },
-      ],
-    },
-    {
-      section: 'PERFORMANCE',
-      items: [
-        { label: 'Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: '/analytics' },
-        { label: 'Trips', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: '/trips' },
-      ],
-    },
-    {
-      section: 'ACCOUNT',
-      items: [
-        { label: 'Profile', icon: <PersonOutlineOutlinedIcon fontSize="small" />, path: '/profile' },
-        { label: 'Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: '/settings' },
-        { label: 'Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: '/support' },
-      ],
-    },
-  ];
-
-  if (isAdmin) {
-    navGroups.push({
-      section: 'ADMIN',
-      items: [
-        { label: 'Admin Ops', icon: <AdminPanelSettingsOutlinedIcon fontSize="small" />, path: '/admin' },
-      ],
-    });
-  }
+  // Role-Aware Navigation Groups
+  const navGroups: NavGroup[] = isAdminRole
+    ? [
+        {
+          section: 'FLEET CONTROL',
+          items: [
+            { label: 'Admin Operations', icon: <AdminPanelSettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN },
+            { label: 'Demand Network Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.LIVE_MAP },
+          ],
+        },
+        {
+          section: 'ANALYTICS & NOC',
+          items: [
+            { label: 'Forecast Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ANALYTICS },
+          ],
+        },
+        {
+          section: 'MANAGEMENT',
+          items: [
+            { label: 'Fleet Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.SETTINGS },
+            { label: 'NOC Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.SUPPORT },
+          ],
+        },
+      ]
+    : [
+        {
+          section: 'OVERVIEW',
+          items: [
+            { label: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="small" />, path: ROUTES.DASHBOARD },
+            { label: 'Live Demand Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.LIVE_MAP },
+            { label: 'AI Assistant', icon: <SmartToyOutlinedIcon fontSize="small" />, path: ROUTES.AI_ASSISTANT },
+          ],
+        },
+        {
+          section: 'PERFORMANCE',
+          items: [
+            { label: 'Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ANALYTICS },
+            { label: 'Trips', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.TRIPS },
+          ],
+        },
+        {
+          section: 'ACCOUNT',
+          items: [
+            { label: 'Profile', icon: <PersonOutlineOutlinedIcon fontSize="small" />, path: ROUTES.PROFILE },
+            { label: 'Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.SETTINGS },
+            { label: 'Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.SUPPORT },
+          ],
+        },
+      ];
 
   const drawerContent = (
     <Box
@@ -117,28 +137,36 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
             borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
             mb: 2,
           }}
-          onClick={() => handleNavClick('/dashboard')}
+          onClick={() => handleNavClick(isAdminRole ? ROUTES.ADMIN : ROUTES.DASHBOARD)}
         >
           <Box
             sx={{
               width: 36,
               height: 36,
               borderRadius: '10px',
-              backgroundColor: 'rgba(124, 58, 237, 0.18)',
-              border: '1px solid rgba(124, 58, 237, 0.4)',
+              backgroundColor: isAdminRole ? 'rgba(0, 217, 192, 0.15)' : 'rgba(124, 58, 237, 0.18)',
+              border: `1px solid ${isAdminRole ? 'rgba(0, 217, 192, 0.4)' : 'rgba(124, 58, 237, 0.4)'}`,
               display: 'flex',
               alignItems: 'center',
               justify: 'center',
             }}
           >
-            <RocketLaunchIcon sx={{ color: VELOUR_TOKENS.accentPrimary, fontSize: 22 }} />
+            <RocketLaunchIcon sx={{ color: isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentPrimary, fontSize: 22 }} />
           </Box>
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 800, fontSize: 17, lineHeight: 1.1, color: '#FFF', letterSpacing: '-0.02em' }}>
               Ride AI
             </Typography>
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 9.5, letterSpacing: '0.12em', fontWeight: 700 }}>
-              DRIVER PORTAL
+            <Typography
+              variant="caption"
+              sx={{
+                color: isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
+                fontSize: 9.5,
+                letterSpacing: '0.12em',
+                fontWeight: 700,
+              }}
+            >
+              {isAdminRole ? 'ADMIN OPERATIONS' : 'DRIVER PORTAL'}
             </Typography>
           </Box>
         </Box>
@@ -172,12 +200,22 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                       sx={{
                         borderRadius: '8px',
                         padding: '8px 12px',
-                        backgroundColor: isActive ? 'rgba(124, 58, 237, 0.16)' : 'transparent',
-                        borderLeft: isActive ? `3px solid ${VELOUR_TOKENS.accentPrimary}` : '3px solid transparent',
+                        backgroundColor: isActive
+                          ? isAdminRole
+                            ? 'rgba(0, 217, 192, 0.14)'
+                            : 'rgba(124, 58, 237, 0.16)'
+                          : 'transparent',
+                        borderLeft: isActive
+                          ? `3px solid ${isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentPrimary}`
+                          : '3px solid transparent',
                         color: isActive ? '#FFF' : VELOUR_TOKENS.textSecondary,
                         transition: 'all 0.15s ease',
                         '&:hover': {
-                          backgroundColor: isActive ? 'rgba(124, 58, 237, 0.22)' : 'rgba(255, 255, 255, 0.05)',
+                          backgroundColor: isActive
+                            ? isAdminRole
+                              ? 'rgba(0, 217, 192, 0.2)'
+                              : 'rgba(124, 58, 237, 0.22)'
+                            : 'rgba(255, 255, 255, 0.05)',
                           color: '#FFF',
                           '& .MuiListItemIcon-root': {
                             color: '#FFF',
@@ -188,7 +226,11 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
                       <ListItemIcon
                         sx={{
                           minWidth: 32,
-                          color: isActive ? VELOUR_TOKENS.accentPrimary : VELOUR_TOKENS.textSecondary,
+                          color: isActive
+                            ? isAdminRole
+                              ? VELOUR_TOKENS.accentTeal
+                              : VELOUR_TOKENS.accentPrimary
+                            : VELOUR_TOKENS.textSecondary,
                           transition: 'color 0.15s ease',
                         }}
                       >
@@ -214,61 +256,104 @@ export const SidebarDrawer: React.FC<SidebarDrawerProps> = ({
         </Box>
       </Box>
 
-      {/* Pro Driver Gold Tier Footer Progress Card */}
+      {/* Footer Role Identity Card */}
       <Paper
         elevation={0}
         sx={{
           mt: 3,
           p: 1.6,
           backgroundColor: VELOUR_TOKENS.bgSurface2,
-          borderColor: 'rgba(212, 175, 55, 0.25)',
+          borderColor: isAdminRole ? 'rgba(0, 217, 192, 0.3)' : 'rgba(212, 175, 55, 0.25)',
           borderWidth: 1,
           borderStyle: 'solid',
           borderRadius: 2.5,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-          <Box
-            sx={{
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              backgroundColor: 'rgba(212, 175, 55, 0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justify: 'center',
-            }}
-          >
-            <EmojiEventsIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 17 }} />
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 12.5, color: '#FFF', lineHeight: 1.2 }}>
-              Pro Driver
-            </Typography>
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 10.5, fontWeight: 600 }}>
-              Gold Tier
-            </Typography>
-          </Box>
-        </Box>
+        {isAdminRole ? (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Box
+                sx={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(0, 217, 192, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justify: 'center',
+                }}
+              >
+                <SecurityIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 17 }} />
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 12.5, color: '#FFF', lineHeight: 1.2 }}>
+                  {user?.name || 'Administrator'}
+                </Typography>
 
-        <LinearProgress
-          variant="determinate"
-          value={84.5}
-          sx={{
-            height: 5,
-            borderRadius: 3,
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            '& .MuiLinearProgress-bar': {
-              backgroundColor: VELOUR_TOKENS.accentGold,
-              borderRadius: 3,
-            },
-            mb: 0.8,
-          }}
-        />
+                <Chip
+                  label="NOC Active"
+                  size="small"
+                  sx={{
+                    height: 16,
+                    fontSize: 9,
+                    fontWeight: 700,
+                    backgroundColor: 'rgba(0, 217, 192, 0.12)',
+                    color: VELOUR_TOKENS.accentTeal,
+                    mt: 0.3,
+                  }}
+                />
+              </Box>
+            </Box>
+            <Typography className="mono-num" variant="caption" sx={{ display: 'block', color: VELOUR_TOKENS.textSecondary, fontSize: 10, fontWeight: 500, fontFamily: VELOUR_TOKENS.fontMono }}>
+              ID: {user?.adminId || 'NOC-101'} · Full Access
+            </Typography>
+          </>
+        ) : (
+          <>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Box
+                sx={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(212, 175, 55, 0.15)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justify: 'center',
+                }}
+              >
+                <EmojiEventsIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 17 }} />
+              </Box>
+              <Box>
+                <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 12.5, color: '#FFF', lineHeight: 1.2 }}>
+                  {user?.name || 'Alex Morgan'}
+                </Typography>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 10.5, fontWeight: 600 }}>
+                  {user?.tier || 'Gold Driver'}
+                </Typography>
+              </Box>
+            </Box>
 
-        <Typography className="mono-num" variant="caption" sx={{ display: 'block', color: VELOUR_TOKENS.textSecondary, fontSize: 10, fontWeight: 500, fontFamily: VELOUR_TOKENS.fontMono }}>
-          8,450 / 10,000 pts
-        </Typography>
+            <LinearProgress
+              variant="determinate"
+              value={84.5}
+              sx={{
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                '& .MuiLinearProgress-bar': {
+                  backgroundColor: VELOUR_TOKENS.accentGold,
+                  borderRadius: 3,
+                },
+                mb: 0.8,
+              }}
+            />
+
+            <Typography className="mono-num" variant="caption" sx={{ display: 'block', color: VELOUR_TOKENS.textSecondary, fontSize: 10, fontWeight: 500, fontFamily: VELOUR_TOKENS.fontMono }}>
+              8,450 / 10,000 pts · ID: {user?.driverId || 'NYC-2048'}
+            </Typography>
+          </>
+        )}
       </Paper>
     </Box>
   );

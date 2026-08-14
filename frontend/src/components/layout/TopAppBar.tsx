@@ -14,6 +14,7 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
+  Chip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -26,7 +27,11 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import SecurityIcon from '@mui/icons-material/Security';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useAuth } from '../../auth/AuthContext';
+import { ROLES } from '../../auth/roles';
+import { ROUTES } from '../../routes/routes';
 
 interface TopAppBarProps {
   title?: string;
@@ -35,6 +40,8 @@ interface TopAppBarProps {
 
 export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMenuClick }) => {
   const navigate = useNavigate();
+  const { user, role, logout } = useAuth();
+  const isAdminRole = role === ROLES.ADMIN;
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [timeStr, setTimeStr] = useState<string>('');
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
@@ -53,26 +60,32 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
   const notifications = [
     {
       id: 1,
-      title: 'High Demand Zone Nearby',
-      desc: '+42% demand increase near Midtown Manhattan.',
+      title: isAdminRole ? 'Fleet Surge Spike' : 'High Demand Zone Nearby',
+      desc: isAdminRole ? 'Midtown Manhattan surge reached 1.85x.' : '+42% demand increase near Midtown Manhattan.',
       time: '2 mins ago',
       icon: <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 18 }} />,
     },
     {
       id: 2,
-      title: 'Weekly Payout Processed',
-      desc: '$1,842.00 transferred to your linked account.',
+      title: isAdminRole ? 'Weekly Fleet Revenue' : 'Weekly Payout Processed',
+      desc: isAdminRole ? '$48,920.00 total volume processed today.' : '$1,842.00 transferred to your linked account.',
       time: '1 hour ago',
       icon: <AccountBalanceWalletOutlinedIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 18 }} />,
     },
     {
       id: 3,
-      title: 'Driver Rating Verified',
-      desc: 'Your rating is 4.92 (Top 2% in NYC region).',
+      title: isAdminRole ? 'Ollama Model Health Verified' : 'Driver Rating Verified',
+      desc: isAdminRole ? 'Gemma2 model latency stable at 142ms.' : 'Your rating is 4.92 (Top 2% in NYC region).',
       time: '3 hours ago',
       icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 18 }} />,
     },
   ];
+
+  const handleSignOut = () => {
+    setProfileAnchor(null);
+    logout();
+    navigate(ROUTES.LOGIN);
+  };
 
   return (
     <Box
@@ -81,7 +94,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
         height: 64,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justify: 'space-between',
         px: { xs: 2, md: 3 },
         borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         backgroundColor: VELOUR_TOKENS.bgSurface1,
@@ -282,7 +295,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
           </List>
         </Popover>
 
-        {/* Driver Profile Control */}
+        {/* Profile Control */}
         <Box
           onClick={(e) => setProfileAnchor(e.currentTarget)}
           sx={{
@@ -297,16 +310,28 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
           }}
         >
           <Avatar
-            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
-            alt="Alex Morgan"
-            sx={{ width: 32, height: 32, border: `1.5px solid ${VELOUR_TOKENS.accentGold}` }}
+            src={user?.avatar}
+            alt={user?.name || 'User Profile'}
+            sx={{
+              width: 32,
+              height: 32,
+              border: `1.5px solid ${isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold}`,
+            }}
           />
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF', fontSize: 13, lineHeight: 1.2 }}>
-              Alex Morgan
+              {user?.name || 'Alex Morgan'}
             </Typography>
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 10.5, fontWeight: 600, display: 'block' }}>
-              Gold Driver · NYC-2048
+            <Typography
+              variant="caption"
+              sx={{
+                color: isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold,
+                fontSize: 10.5,
+                fontWeight: 600,
+                display: 'block',
+              }}
+            >
+              {isAdminRole ? `Fleet Admin · ${user?.adminId || 'NOC-101'}` : `${user?.tier || 'Gold Driver'} · ${user?.driverId || 'NYC-2048'}`}
             </Typography>
           </Box>
           <KeyboardArrowDownIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 16 }} />
@@ -322,7 +347,7 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
           PaperProps={{
             sx: {
               mt: 1,
-              width: 200,
+              width: 210,
               backgroundColor: VELOUR_TOKENS.bgSurface2,
               borderColor: VELOUR_TOKENS.borderSubtle,
               borderWidth: 1,
@@ -341,41 +366,53 @@ export const TopAppBar: React.FC<TopAppBarProps> = ({ title = 'Dashboard', onMen
             },
           }}
         >
+          {!isAdminRole && (
+            <MenuItem
+              onClick={() => {
+                setProfileAnchor(null);
+                navigate(ROUTES.PROFILE);
+              }}
+            >
+              <PersonOutlineIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentPrimary }} />
+              Profile & Rating
+            </MenuItem>
+          )}
+
+          {isAdminRole && (
+            <MenuItem
+              onClick={() => {
+                setProfileAnchor(null);
+                navigate(ROUTES.ADMIN);
+              }}
+            >
+              <SecurityIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentTeal }} />
+              Admin NOC Center
+            </MenuItem>
+          )}
+
           <MenuItem
             onClick={() => {
               setProfileAnchor(null);
-              navigate('/profile');
-            }}
-          >
-            <PersonOutlineIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentPrimary }} />
-            Profile & Rating
-          </MenuItem>
-          <MenuItem
-            onClick={() => {
-              setProfileAnchor(null);
-              navigate('/settings');
+              navigate(ROUTES.SETTINGS);
             }}
           >
             <SettingsOutlinedIcon fontSize="small" sx={{ color: VELOUR_TOKENS.textSecondary }} />
-            Shift Preferences
+            {isAdminRole ? 'Fleet Configuration' : 'Shift Preferences'}
           </MenuItem>
+
           <MenuItem
             onClick={() => {
               setProfileAnchor(null);
-              navigate('/support');
+              navigate(ROUTES.SUPPORT);
             }}
           >
             <HeadsetMicOutlinedIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentTeal }} />
-            Support & Fleet
+            Support & Help
           </MenuItem>
+
           <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.08)', my: 0.5 }} />
-          <MenuItem
-            onClick={() => {
-              setProfileAnchor(null);
-              navigate('/');
-            }}
-            sx={{ color: '#FF5252 !important' }}
-          >
+
+          <MenuItem onClick={handleSignOut} sx={{ color: '#FF5252 !important' }}>
             <LogoutIcon fontSize="small" sx={{ color: '#FF5252' }} />
             Sign Out
           </MenuItem>

@@ -5,6 +5,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MapIcon from '@mui/icons-material/Map';
 import { useNavigate } from 'react-router-dom';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { ROUTES } from '../../routes/routes';
 import { DemandZone } from '../../types/api.types';
 
 interface DemandSurgeRadarProps {
@@ -44,7 +45,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
           </Box>
           <Button
             size="small"
-            onClick={() => navigate('/live-map')}
+            onClick={() => navigate(ROUTES.LIVE_MAP)}
             endIcon={<ArrowForwardIcon fontSize="small" />}
             sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 12, fontWeight: 700, textTransform: 'none' }}
           >
@@ -54,7 +55,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
 
         {/* Leaflet Inset Simulated Preview Box */}
         <Box
-          onClick={() => navigate('/live-map')}
+          onClick={() => navigate(ROUTES.LIVE_MAP)}
           sx={{
             width: '100%',
             height: 110,

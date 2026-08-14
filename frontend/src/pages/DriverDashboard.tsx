@@ -21,6 +21,7 @@ import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useNavigate } from 'react-router-dom';
 import { PageShell } from '../components/layout/PageShell';
+import { ROUTES } from '../routes/routes';
 import { KpiCard } from '../components/dashboard/KpiCard';
 import { EarningsChart } from '../components/dashboard/EarningsChart';
 import { DemandSurgeRadar } from '../components/dashboard/DemandSurgeRadar';
@@ -236,7 +237,7 @@ export const DriverDashboard: React.FC = () => {
                     fullWidth
                     size="small"
                     variant="outlined"
-                    onClick={() => navigate('/analytics')}
+                    onClick={() => navigate(ROUTES.ANALYTICS)}
                     sx={{ mt: 'auto', color: VELOUR_TOKENS.textSecondary, borderColor: VELOUR_TOKENS.borderSubtle, fontSize: 12, py: 0.6 }}
                   >
                     View Full Schedule
@@ -305,7 +306,7 @@ export const DriverDashboard: React.FC = () => {
 
           <Button
             variant="contained"
-            onClick={() => navigate('/ai-assistant')}
+            onClick={() => navigate(ROUTES.AI_ASSISTANT)}
             endIcon={<ArrowForwardIcon />}
             sx={{
               backgroundColor: VELOUR_TOKENS.accentPrimary,

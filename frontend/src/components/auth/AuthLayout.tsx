@@ -15,6 +15,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { ROUTES } from '../../routes/routes';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -52,13 +53,14 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
       sx={{
         backgroundColor: VELOUR_TOKENS.bgBase,
         minHeight: '100vh',
+        width: '100vw',
         display: 'flex',
         flexDirection: 'column',
         color: '#FFF',
         overflowX: 'hidden',
       }}
     >
-      <Grid container sx={{ minHeight: '100vh', flex: 1 }}>
+      <Grid container sx={{ minHeight: '100vh', width: '100%', flex: 1, alignItems: 'stretch' }}>
         {/* LEFT SECTION — Product Information & NYC Telemetry Visual */}
         <Grid
           item
@@ -72,8 +74,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             py: { xs: 5, md: 6 },
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justify: 'center',
             alignItems: 'center',
+            minHeight: { md: '100vh' },
             position: 'relative',
             overflow: 'hidden',
           }}
@@ -105,7 +108,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           />
 
           {/* Left Content Container with Balanced Width */}
-          <Box sx={{ width: '100%', maxWidth: 540, position: 'relative', zIndex: 1 }}>
+          <Box sx={{ width: '100%', maxWidth: 540, position: 'relative', zIndex: 1, my: 'auto' }}>
             {/* Top Branding */}
             <Box
               sx={{
@@ -116,7 +119,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 mb: 4,
                 width: 'fit-content',
               }}
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate(ROUTES.DASHBOARD)}
             >
               <Box
                 sx={{
@@ -371,7 +374,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           </Box>
         </Grid>
 
-        {/* RIGHT SECTION — Authentication Card (Vertically Centered) */}
+        {/* RIGHT SECTION — Authentication Card (Strictly Vertically & Horizontally Centered) */}
         <Grid
           item
           xs={12}
@@ -384,10 +387,11 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             flexDirection: 'column',
             justify: 'center',
             alignItems: 'center',
+            minHeight: { md: '100vh' },
             position: 'relative',
           }}
         >
-          <Box sx={{ width: '100%', maxWidth: 430 }}>
+          <Box sx={{ width: '100%', maxWidth: 440, my: 'auto' }}>
             {children}
           </Box>
         </Grid>

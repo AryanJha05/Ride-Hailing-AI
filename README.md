@@ -155,8 +155,10 @@ The application architecture and frontend/backend implementation are under activ
 
 Current status:
 - ✅ React frontend (Velour enterprise design system)
+- ✅ Centralized Routing System (`src/routes/routes.ts`)
+- ✅ Role-Based Access Control (`ProtectedRoute.tsx` with `DRIVER` & `ADMIN` permissions)
+- ✅ Split-screen enterprise authentication entry point with side-by-side 50/50 Demo Driver & Demo Admin access
 - ✅ FastAPI backend with NYC spatial telemetry & USD currency models
-- ✅ Split-screen enterprise authentication entry point (`/login`, `/register`)
 - ✅ Production-ready Docker & Docker Compose infrastructure
 - ✅ SQLite database with NYC seed data (Alex Morgan, NYC-2048)
 - ✅ REST API contracts & JSON schemas

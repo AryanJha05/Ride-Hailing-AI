@@ -6,6 +6,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { PageShell } from '../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../theme/palette';
+import { ROUTES } from '../routes/routes';
 import { useDriverAdviceMutation } from '../hooks/useRideApi';
 import { ChatMessageStream, ChatMessage } from '../components/assistant/ChatMessageStream';
 import { QuickActionChips } from '../components/assistant/QuickActionChips';
@@ -151,7 +152,7 @@ export const AIAssistant: React.FC = () => {
           <ChatMessageStream
             messages={messages}
             isLoading={adviceMutation.isPending}
-            onNavigateToMap={() => navigate('/live-map')}
+            onNavigateToMap={() => navigate(ROUTES.LIVE_MAP)}
           />
 
           <Divider sx={{ borderColor: VELOUR_TOKENS.borderSubtle }} />

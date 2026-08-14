@@ -22,25 +22,31 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import { VELOUR_TOKENS } from '../theme/palette';
 import { AuthLayout } from '../components/auth/AuthLayout';
+import { useAuth } from '../auth/AuthContext';
+import { ROUTES } from '../routes/routes';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const { loginAsDriver, loginAsAdmin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Direct navigation to driver dashboard (Frontend demo entry point)
-    navigate('/dashboard');
+    // Default login action routes to Driver Dashboard for demo
+    loginAsDriver();
+    navigate(ROUTES.DASHBOARD);
   };
 
   const handleDemoDriver = () => {
-    navigate('/dashboard');
+    loginAsDriver();
+    navigate(ROUTES.DASHBOARD);
   };
 
   const handleDemoAdmin = () => {
-    navigate('/admin');
+    loginAsAdmin();
+    navigate(ROUTES.ADMIN);
   };
 
   return (
@@ -162,7 +168,7 @@ export const LoginPage: React.FC = () => {
                 <Link
                   component="button"
                   type="button"
-                  onClick={() => navigate('/dashboard')}
+                  onClick={() => navigate(ROUTES.DASHBOARD)}
                   sx={{
                     color: VELOUR_TOKENS.accentLavender,
                     fontSize: 11.5,
@@ -247,17 +253,17 @@ export const LoginPage: React.FC = () => {
             my: 2.8,
             borderColor: VELOUR_TOKENS.borderSubtle,
             color: VELOUR_TOKENS.textTertiary,
-            fontSize: 11,
+            fontSize: 10.5,
             fontWeight: 600,
-            letterSpacing: '0.05em',
+            letterSpacing: '0.06em',
           }}
         >
           DEMO PLATFORM ACCESS
         </Divider>
 
-        {/* Dual Role Demo Access Buttons */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-          {/* Primary Demo Access: Demo Driver */}
+        {/* Dual Role Demo Access Buttons — STRICTLY SAME ROW (50/50 Grid Split) */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+          {/* Demo Driver Button */}
           <Button
             fullWidth
             variant="contained"
@@ -269,10 +275,12 @@ export const LoginPage: React.FC = () => {
               color: '#FFF',
               border: `1px solid ${VELOUR_TOKENS.accentPrimary}`,
               py: 1.1,
+              px: 1,
               borderRadius: 2.5,
               fontWeight: 700,
-              fontSize: 13,
+              fontSize: 12.5,
               textTransform: 'none',
+              whiteSpace: 'nowrap',
               transition: 'all 0.2s ease',
               boxShadow: `0 2px 8px rgba(124, 58, 237, 0.15)`,
               '&:hover': {
@@ -281,10 +289,10 @@ export const LoginPage: React.FC = () => {
               },
             }}
           >
-            Continue as Demo Driver
+            Demo Driver
           </Button>
 
-          {/* Secondary Demo Access: Demo Admin */}
+          {/* Demo Admin Button */}
           <Button
             fullWidth
             variant="outlined"
@@ -295,10 +303,12 @@ export const LoginPage: React.FC = () => {
               borderColor: VELOUR_TOKENS.borderSubtle,
               color: VELOUR_TOKENS.textPrimary,
               py: 1.1,
+              px: 1,
               borderRadius: 2.5,
               fontWeight: 600,
-              fontSize: 13,
+              fontSize: 12.5,
               textTransform: 'none',
+              whiteSpace: 'nowrap',
               backgroundColor: 'rgba(255, 255, 255, 0.02)',
               transition: 'all 0.2s ease',
               '&:hover': {
@@ -308,7 +318,7 @@ export const LoginPage: React.FC = () => {
               },
             }}
           >
-            Continue as Demo Admin
+            Demo Admin
           </Button>
         </Box>
 
