@@ -136,12 +136,16 @@ Once running, navigate through the platform using the left sidebar:
 
 | Page | URL | Description |
 | :--- | :--- | :--- |
-| **Landing Page** | `http://localhost:3000/` | Product marketing overview, metric strip, & pipeline steps |
+| **Login Page (Default Entry)** | `http://localhost:3000/` or `/login` | Enterprise split-screen authentication entry point with NYC live telemetry visual |
+| **Register Page** | `http://localhost:3000/register` | Account creation with role selection (Driver vs Fleet Operator) |
 | **Operations View** | `http://localhost:3000/dashboard` | Main driver dashboard with bento grid metrics & AI recommendations |
-| **Live Demand Map** | `http://localhost:3000/live-map` | Spatial map with active zone filters & surge multipliers |
+| **Live Demand Map** | `http://localhost:3000/live-map` | Spatial Leaflet map with active zone filters & surge multipliers |
 | **AI Assistant** | `http://localhost:3000/ai-assistant` | Interactive AI command chat with real-time ML analysis chips |
 | **Forecast Analytics** | `http://localhost:3000/analytics` | 24h predictive area charts, zone comparisons & weekly heatmap |
-| **Driver Profile** | `http://localhost:3000/profile` | Driver rating, earnings history, and recent trip table |
+| **Driver Profile** | `http://localhost:3000/profile` | Driver rating (Alex Morgan, NYC-2048), earnings history, and recent trip table |
+| **Trips** | `http://localhost:3000/trips` | Detailed NYC trip logs and fare breakdowns |
+| **Settings** | `http://localhost:3000/settings` | Driver preference, vehicle, and dispatch configuration |
+| **Support** | `http://localhost:3000/support` | NYC driver support center and emergency contacts |
 | **Admin Dashboard** | `http://localhost:3000/admin` | NOC live status, ML model health monitoring & anomaly alerts |
 
 ---
@@ -151,15 +155,17 @@ Once running, navigate through the platform using the left sidebar:
 The application architecture and frontend/backend implementation are under active development.
 
 Current status:
-- ✅ React frontend
-- ✅ FastAPI backend
-- ✅ Database
-- ✅ API contracts
-- ✅ LLM integration structure
+- ✅ React frontend (Velour enterprise design system)
+- ✅ FastAPI backend with NYC spatial telemetry & USD currency models
+- ✅ Split-screen enterprise authentication entry point (`/login`, `/register`)
+- ✅ Production-ready Docker & Docker Compose infrastructure
+- ✅ SQLite database with NYC seed data (Alex Morgan, NYC-2048)
+- ✅ REST API contracts & JSON schemas
+- ✅ Ollama LLM integration structure (Gemma2 model)
 - 🚧 Student A ML Model (Pending Integration)
 - 🚧 Student B ML Model (Pending Integration)
 - 🚧 Student C ML Model (Pending Integration)
-- 🚧 Ollama production prompts (Pending)
+- 🚧 Backend JWT/OAuth authentication logic (Pending implementation)
 
 ## 📂 Project Structure
 
