@@ -262,7 +262,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justify: 'space-between',
+                  justifyContent: 'space-between',
                   mb: 2.5,
                   position: 'relative',
                   zIndex: 1,
@@ -345,7 +345,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                         border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
                         display: 'flex',
                         alignItems: 'center',
-                        justify: 'center',
+                        justifyContent: 'center',
                         flexShrink: 0,
                         mt: 0.2,
                       }}

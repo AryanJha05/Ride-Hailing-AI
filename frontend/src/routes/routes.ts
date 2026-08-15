@@ -2,7 +2,20 @@ export const ROUTES = {
   ROOT: '/',
   LOGIN: '/login',
 
-  // Driver Routes (/user/*)
+  // Driver Routes (/driver/*)
+  DRIVER: {
+    DASHBOARD: '/driver/dashboard',
+    DEMAND: '/driver/demand',
+    ASSISTANT: '/driver/assistant',
+    EARNINGS: '/driver/earnings',
+    TRIPS: '/driver/trips',
+    ANALYTICS: '/driver/analytics',
+    PROFILE: '/driver/profile',
+    SETTINGS: '/driver/settings',
+    SUPPORT: '/driver/support',
+  },
+
+  // Legacy Driver Aliases (/user/*) for backwards compatibility
   USER: {
     DASHBOARD: '/user/dashboard',
     LIVE_MAP: '/user/live-map',
@@ -18,12 +31,18 @@ export const ROUTES = {
   ADMIN: {
     DASHBOARD: '/admin/dashboard',
     FLEET: '/admin/fleet',
+    DRIVERS: '/admin/drivers',
     DEMAND: '/admin/demand',
-    FORECASTING: '/admin/forecasting',
+    FORECAST: '/admin/forecast',
     MODELS: '/admin/models',
+    RECOMMENDATIONS: '/admin/recommendations',
     ALERTS: '/admin/alerts',
+    SYSTEM: '/admin/system',
+    USERS: '/admin/users',
     SETTINGS: '/admin/settings',
-    SUPPORT: '/admin/support',
+    // Legacy mapping
+    FORECASTING: '/admin/forecast',
+    SUPPORT: '/admin/system',
   },
 } as const;
 

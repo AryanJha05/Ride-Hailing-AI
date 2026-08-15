@@ -14,7 +14,16 @@ import {
   DriverProfile,
   Trips,
   AIAssistant,
+  DriverEarningsPage,
   AdminDashboard,
+  AdminFleetPage,
+  AdminDriversPage,
+  AdminForecastPage,
+  AdminModelHealthPage,
+  AdminAIRecommendationsPage,
+  AdminAlertsPage,
+  AdminSystemStatusPage,
+  AdminUsersPage,
   LiveDemandMap,
   ForecastAnalytics,
   Settings,
@@ -42,7 +51,28 @@ export const App: React.FC = () => {
               <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.LOGIN} replace />} />
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
 
-              {/* Driver Route Namespace (/user/*) */}
+              {/* Driver Route Namespace (/driver/*) */}
+              <Route
+                path="/driver"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.DRIVER]}>
+                    <MainLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to={ROUTES.DRIVER.DASHBOARD} replace />} />
+                <Route path="dashboard" element={<DriverDashboard />} />
+                <Route path="demand" element={<LiveDemandMap />} />
+                <Route path="assistant" element={<AIAssistant />} />
+                <Route path="earnings" element={<DriverEarningsPage />} />
+                <Route path="trips" element={<Trips />} />
+                <Route path="analytics" element={<ForecastAnalytics />} />
+                <Route path="profile" element={<DriverProfile />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="support" element={<Support />} />
+              </Route>
+
+              {/* Legacy Driver Route Namespace (/user/*) for Backwards Compatibility */}
               <Route
                 path="/user"
                 element={
@@ -51,7 +81,7 @@ export const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
+                <Route index element={<Navigate to={ROUTES.DRIVER.DASHBOARD} replace />} />
                 <Route path="dashboard" element={<DriverDashboard />} />
                 <Route path="live-map" element={<LiveDemandMap />} />
                 <Route path="ai-assistant" element={<AIAssistant />} />
@@ -73,24 +103,29 @@ export const App: React.FC = () => {
               >
                 <Route index element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />} />
                 <Route path="dashboard" element={<AdminDashboard />} />
-                <Route path="fleet" element={<AdminDashboard />} />
+                <Route path="fleet" element={<AdminFleetPage />} />
+                <Route path="drivers" element={<AdminDriversPage />} />
                 <Route path="demand" element={<LiveDemandMap />} />
-                <Route path="forecasting" element={<ForecastAnalytics />} />
-                <Route path="models" element={<AdminDashboard />} />
-                <Route path="alerts" element={<AdminDashboard />} />
+                <Route path="forecast" element={<AdminForecastPage />} />
+                <Route path="forecasting" element={<AdminForecastPage />} />
+                <Route path="models" element={<AdminModelHealthPage />} />
+                <Route path="recommendations" element={<AdminAIRecommendationsPage />} />
+                <Route path="alerts" element={<AdminAlertsPage />} />
+                <Route path="system" element={<AdminSystemStatusPage />} />
+                <Route path="users" element={<AdminUsersPage />} />
                 <Route path="settings" element={<Settings />} />
-                <Route path="support" element={<Support />} />
+                <Route path="support" element={<AdminSystemStatusPage />} />
               </Route>
 
               {/* Legacy Flat Route Compatibility Redirects */}
-              <Route path="/dashboard" element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
-              <Route path="/live-map" element={<Navigate to={ROUTES.USER.LIVE_MAP} replace />} />
-              <Route path="/ai-assistant" element={<Navigate to={ROUTES.USER.AI_ASSISTANT} replace />} />
-              <Route path="/analytics" element={<Navigate to={ROUTES.USER.ANALYTICS} replace />} />
-              <Route path="/profile" element={<Navigate to={ROUTES.USER.PROFILE} replace />} />
-              <Route path="/trips" element={<Navigate to={ROUTES.USER.TRIPS} replace />} />
-              <Route path="/settings" element={<Navigate to={ROUTES.USER.SETTINGS} replace />} />
-              <Route path="/support" element={<Navigate to={ROUTES.USER.SUPPORT} replace />} />
+              <Route path="/dashboard" element={<Navigate to={ROUTES.DRIVER.DASHBOARD} replace />} />
+              <Route path="/live-map" element={<Navigate to={ROUTES.DRIVER.DEMAND} replace />} />
+              <Route path="/ai-assistant" element={<Navigate to={ROUTES.DRIVER.ASSISTANT} replace />} />
+              <Route path="/analytics" element={<Navigate to={ROUTES.DRIVER.ANALYTICS} replace />} />
+              <Route path="/profile" element={<Navigate to={ROUTES.DRIVER.PROFILE} replace />} />
+              <Route path="/trips" element={<Navigate to={ROUTES.DRIVER.TRIPS} replace />} />
+              <Route path="/settings" element={<Navigate to={ROUTES.DRIVER.SETTINGS} replace />} />
+              <Route path="/support" element={<Navigate to={ROUTES.DRIVER.SUPPORT} replace />} />
 
               {/* Catch-all Fallback Redirect */}
               <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />

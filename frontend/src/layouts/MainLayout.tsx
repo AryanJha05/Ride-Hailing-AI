@@ -5,7 +5,7 @@ import { Sidebar, DRAWER_WIDTH } from './Sidebar';
 import { Header } from './Header';
 import { VELOUR_TOKENS } from '../theme/palette';
 
-interface MainLayoutProps {
+export interface MainLayoutProps {
   children?: React.ReactNode;
   title?: string;
   hideHeader?: boolean;

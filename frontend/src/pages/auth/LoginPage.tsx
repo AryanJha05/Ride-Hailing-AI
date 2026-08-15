@@ -162,7 +162,7 @@ export const LoginPage: React.FC = () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                placeholder="alex.morgan@rideai.nyc"
+                placeholder="aryan@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"
@@ -306,26 +306,27 @@ export const LoginPage: React.FC = () => {
           {/* Demo Driver Button */}
           <Button
             fullWidth
-            variant="contained"
+            variant="outlined"
             size="medium"
             onClick={handleDemoDriver}
             startIcon={<DirectionsCarIcon fontSize="small" />}
             sx={{
-              backgroundColor: 'rgba(124, 58, 237, 0.18)',
-              color: '#FFF',
-              border: `1px solid ${VELOUR_TOKENS.accentPrimary}`,
+              borderColor: VELOUR_TOKENS.borderSubtle,
+              color: VELOUR_TOKENS.textPrimary,
               height: 46,
               px: 1,
               borderRadius: 2.5,
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: 13,
               textTransform: 'none',
               whiteSpace: 'nowrap',
-              transition: 'all 0.2s ease',
-              boxShadow: `0 2px 8px rgba(124, 58, 237, 0.15)`,
+              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              transition: 'all 180ms ease',
+              boxShadow: 'none',
               '&:hover': {
-                backgroundColor: VELOUR_TOKENS.accentPrimary,
-                borderColor: VELOUR_TOKENS.accentPrimaryHover,
+                borderColor: VELOUR_TOKENS.accentLavender,
+                color: VELOUR_TOKENS.accentLavender,
+                backgroundColor: 'rgba(124, 58, 237, 0.12)',
               },
             }}
           >
@@ -350,7 +351,8 @@ export const LoginPage: React.FC = () => {
               textTransform: 'none',
               whiteSpace: 'nowrap',
               backgroundColor: 'rgba(255, 255, 255, 0.02)',
-              transition: 'all 0.2s ease',
+              transition: 'all 180ms ease',
+              boxShadow: 'none',
               '&:hover': {
                 borderColor: VELOUR_TOKENS.accentTeal,
                 color: VELOUR_TOKENS.accentTeal,

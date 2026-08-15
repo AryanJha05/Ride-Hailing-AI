@@ -10,44 +10,23 @@ import {
   Typography,
   LinearProgress,
   Paper,
-  Divider,
   Chip,
 } from '@mui/material';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
-import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
-import AnalyticsOutlinedIcon from '@mui/icons-material/AnalyticsOutlined';
-import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined';
-import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import HeadsetMicOutlinedIcon from '@mui/icons-material/HeadsetMicOutlined';
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import SecurityIcon from '@mui/icons-material/Security';
-import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
-import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import { VELOUR_TOKENS } from '../theme/palette';
 import { useAuth } from '../auth/AuthContext';
 import { UserRole } from '../auth/roles';
 import { ROUTES } from '../routes/routes';
+import { ADMIN_NAV_GROUPS, DRIVER_NAV_GROUPS } from '../navigation';
 
 export const DRAWER_WIDTH = 260;
+export const HEADER_HEIGHT = 70;
 
 interface SidebarProps {
   mobileOpen?: boolean;
   onClose?: () => void;
-}
-
-interface NavItem {
-  label: string;
-  icon: React.ReactNode;
-  path: string;
-}
-
-interface NavGroup {
-  section: string;
-  items: NavItem[];
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -67,57 +46,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   };
 
   // Role-Aware Navigation Configuration
-  const navGroups: NavGroup[] = isAdminRole
-    ? [
-        {
-          section: 'FLEET CONTROL',
-          items: [
-            { label: 'Operations', icon: <AdminPanelSettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.DASHBOARD },
-            { label: 'Fleet', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.FLEET },
-            { label: 'Demand Monitoring', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.DEMAND },
-          ],
-        },
-        {
-          section: 'ANALYTICS & NOC',
-          items: [
-            { label: 'Forecasting', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.FORECASTING },
-            { label: 'Model Health', icon: <DnsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.MODELS },
-            { label: 'Alerts', icon: <NotificationsActiveOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.ALERTS },
-          ],
-        },
-        {
-          section: 'MANAGEMENT',
-          items: [
-            { label: 'Fleet Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.SETTINGS },
-            { label: 'NOC Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.SUPPORT },
-          ],
-        },
-      ]
-    : [
-        {
-          section: 'OVERVIEW',
-          items: [
-            { label: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="small" />, path: ROUTES.USER.DASHBOARD },
-            { label: 'Live Demand Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.USER.LIVE_MAP },
-            { label: 'AI Assistant', icon: <SmartToyOutlinedIcon fontSize="small" />, path: ROUTES.USER.AI_ASSISTANT },
-          ],
-        },
-        {
-          section: 'PERFORMANCE',
-          items: [
-            { label: 'Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.USER.ANALYTICS },
-            { label: 'Trip History', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.USER.TRIPS },
-            { label: 'Profile', icon: <PersonOutlineOutlinedIcon fontSize="small" />, path: ROUTES.USER.PROFILE },
-          ],
-        },
-        {
-          section: 'PREFERENCES',
-          items: [
-            { label: 'Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.USER.SETTINGS },
-            { label: 'Support & Help', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.USER.SUPPORT },
-          ],
-        },
-      ];
+  const navGroups = isAdminRole ? ADMIN_NAV_GROUPS : DRIVER_NAV_GROUPS;
 
   const drawerContent = (
     <Box
@@ -130,16 +59,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
         borderRight: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
       }}
     >
-      {/* Brand Header */}
+      {/* Brand Header — Aligned with App Header Height (70px) */}
       <Box
         sx={{
-          p: 2.5,
+          height: HEADER_HEIGHT,
+          minHeight: HEADER_HEIGHT,
+          maxHeight: HEADER_HEIGHT,
+          px: 2.5,
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
           cursor: 'pointer',
+          boxSizing: 'border-box',
+          borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         }}
-        onClick={() => handleNavClick(isAdminRole ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.DASHBOARD)}
+        onClick={() => handleNavClick(isAdminRole ? ROUTES.ADMIN.DASHBOARD : ROUTES.DRIVER.DASHBOARD)}
       >
         <Box
           sx={{
@@ -150,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             border: `1px solid ${isAdminRole ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
             display: 'flex',
             alignItems: 'center',
-            justify: 'center',
+            justifyContent: 'center',
             boxShadow: `0 0 16px ${isAdminRole ? 'rgba(0, 217, 192, 0.2)' : VELOUR_TOKENS.accentPrimaryDim}`,
           }}
         >
@@ -181,15 +115,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
               letterSpacing: '0.08em',
               fontWeight: 700,
               display: 'block',
-              mt: 0.2,
+              mt: 0.3,
             }}
           >
             {isAdminRole ? 'ENTERPRISE NOC' : 'MOBILITY INTELLIGENCE'}
           </Typography>
         </Box>
       </Box>
-
-      <Divider sx={{ borderColor: VELOUR_TOKENS.borderSubtle, mx: 2 }} />
 
       {/* Navigation Sections */}
       <Box sx={{ flexGrow: 1, px: 2, py: 2, overflowY: 'auto' }}>
