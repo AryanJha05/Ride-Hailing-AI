@@ -159,6 +159,9 @@ export const LoginPage: React.FC = () => {
               </Typography>
               <TextField
                 fullWidth
+                name="email"
+                type="email"
+                autoComplete="email"
                 placeholder="alex.morgan@rideai.nyc"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -214,7 +217,9 @@ export const LoginPage: React.FC = () => {
               </Box>
               <TextField
                 fullWidth
+                name="password"
                 type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
                 placeholder="••••••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -229,6 +234,8 @@ export const LoginPage: React.FC = () => {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
+                        type="button"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
                         onClick={() => setShowPassword(!showPassword)}
                         edge="end"
                         size="small"

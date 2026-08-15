@@ -26,22 +26,22 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
 
   const featureHighlights = [
     {
-      icon: <ShowChartIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20 }} />,
+      icon: <ShowChartIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 22 }} />,
       title: 'Real-time demand prediction',
       desc: 'Predictive passenger volume heatmaps accurate to 100m².',
     },
     {
-      icon: <AltRouteIcon sx={{ color: VELOUR_TOKENS.accentPrimary, fontSize: 20 }} />,
+      icon: <AltRouteIcon sx={{ color: VELOUR_TOKENS.accentPrimary, fontSize: 22 }} />,
       title: 'Intelligent driver positioning',
       desc: 'AI-guided staging vectors to eliminate deadheading.',
     },
     {
-      icon: <MemoryIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 20 }} />,
+      icon: <MemoryIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 22 }} />,
       title: 'ML powered mobility insights',
       desc: 'Neural spatial clustering trained on millions of NYC trips.',
     },
     {
-      icon: <PsychologyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 20 }} />,
+      icon: <PsychologyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 22 }} />,
       title: 'AI assistant for ops',
       desc: 'Natural language recommendations for active shift dispatch.',
     },
@@ -70,10 +70,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             borderRight: { md: `1px solid ${VELOUR_TOKENS.borderSubtle}` },
             borderBottom: { xs: `1px solid ${VELOUR_TOKENS.borderSubtle}`, md: 'none' },
             px: { xs: 4, sm: 6, md: 7, lg: 8, xl: 10 },
-            py: { xs: 5, md: 6 },
+            py: { xs: 5, md: 7 },
             display: 'flex',
             flexDirection: 'column',
-            justify: 'center',
+            justifyContent: 'center',
             alignItems: 'center',
             minHeight: { md: '100vh' },
             position: 'relative',
@@ -86,10 +86,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
               position: 'absolute',
               top: '-15%',
               left: '-10%',
-              width: '550px',
-              height: '550px',
+              width: '600px',
+              height: '600px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(124, 58, 237, 0.12) 0%, rgba(19, 18, 23, 0) 70%)',
+              background: 'radial-gradient(circle, rgba(124, 58, 237, 0.14) 0%, rgba(19, 18, 23, 0) 70%)',
               pointerEvents: 'none',
             }}
           />
@@ -98,10 +98,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
               position: 'absolute',
               bottom: '-15%',
               right: '-10%',
-              width: '500px',
-              height: '500px',
+              width: '550px',
+              height: '550px',
               borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(0, 217, 192, 0.08) 0%, rgba(19, 18, 23, 0) 70%)',
+              background: 'radial-gradient(circle, rgba(0, 217, 192, 0.10) 0%, rgba(19, 18, 23, 0) 70%)',
               pointerEvents: 'none',
             }}
           />
@@ -109,8 +109,8 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
           {/* Left Content Container */}
           <Box
             sx={{
-              width: { xs: '100%', lg: '85%' },
-              maxWidth: 680,
+              width: { xs: '100%', lg: '92%' },
+              maxWidth: 780,
               position: 'relative',
               zIndex: 1,
               my: 'auto',
@@ -122,34 +122,34 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 1.8,
+                gap: 2,
                 cursor: 'pointer',
-                mb: 3.5,
+                mb: 4.5,
                 width: 'fit-content',
               }}
               onClick={() => navigate(ROUTES.USER.DASHBOARD)}
             >
               <Box
                 sx={{
-                  width: 44,
-                  height: 44,
+                  width: 48,
+                  height: 48,
                   borderRadius: 2.5,
                   backgroundColor: VELOUR_TOKENS.accentPrimaryDim,
                   border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
                   display: 'flex',
                   alignItems: 'center',
-                  justify: 'center',
+                  justifyContent: 'center',
                   boxShadow: `0 0 20px ${VELOUR_TOKENS.accentPrimaryDim}`,
                 }}
               >
-                <RocketLaunchIcon sx={{ color: VELOUR_TOKENS.accentPrimary, fontSize: 24 }} />
+                <RocketLaunchIcon sx={{ color: VELOUR_TOKENS.accentPrimary, fontSize: 26 }} />
               </Box>
               <Box>
                 <Typography
                   variant="h6"
                   sx={{
                     fontWeight: 700,
-                    fontSize: 23,
+                    fontSize: 25,
                     color: '#FFF',
                     letterSpacing: '-0.02em',
                     lineHeight: 1,
@@ -161,10 +161,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                   variant="caption"
                   sx={{
                     color: VELOUR_TOKENS.textSecondary,
-                    fontSize: 11,
+                    fontSize: 11.5,
                     letterSpacing: '0.08em',
                     fontWeight: 600,
-                    mt: 0.2,
+                    mt: 0.3,
                     display: 'block',
                   }}
                 >
@@ -174,7 +174,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             </Box>
 
             {/* Main Product Headline & Description */}
-            <Box sx={{ mb: 3.5 }}>
+            <Box sx={{ mb: 4.5 }}>
               <Chip
                 label="ENTERPRISE MOBILITY PLATFORM"
                 size="small"
@@ -183,22 +183,23 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                   color: VELOUR_TOKENS.accentLavender,
                   border: `1px solid rgba(124, 58, 237, 0.3)`,
                   fontWeight: 700,
-                  fontSize: 10.5,
+                  fontSize: 11,
                   letterSpacing: '0.08em',
-                  mb: 2,
+                  mb: 2.5,
                   borderRadius: 1.5,
-                  px: 0.5,
+                  px: 0.6,
+                  height: 25,
                 }}
               />
               <Typography
                 variant="h3"
                 sx={{
-                  fontSize: { xs: 28, sm: 36, md: 44, lg: 48 },
+                  fontSize: { xs: 32, sm: 40, md: 48, lg: 52 },
                   fontWeight: 700,
-                  lineHeight: 1.1,
+                  lineHeight: 1.15,
                   letterSpacing: '-0.03em',
                   color: '#FFF',
-                  mb: 2,
+                  mb: 2.5,
                 }}
               >
                 Know where the ride is{' '}
@@ -217,9 +218,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 variant="body1"
                 sx={{
                   color: VELOUR_TOKENS.textSecondary,
-                  fontSize: { xs: 14.5, sm: 16.5 },
-                  lineHeight: 1.6,
-                  maxWidth: 600,
+                  fontSize: { xs: 15.5, sm: 17.5 },
+                  lineHeight: 1.65,
+                  maxWidth: 680,
                 }}
               >
                 AI-powered demand forecasting and driver positioning intelligence platform for modern urban mobility fleets.
@@ -235,9 +236,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 borderWidth: 1,
                 borderStyle: 'solid',
                 borderRadius: 3.5,
-                p: 2.5,
-                mb: 3.5,
-                maxWidth: 680,
+                p: 3.5,
+                mb: 4.5,
+                maxWidth: 780,
                 width: '100%',
                 position: 'relative',
                 overflow: 'hidden',
@@ -262,7 +263,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justify: 'space-between',
-                  mb: 2,
+                  mb: 2.5,
                   position: 'relative',
                   zIndex: 1,
                 }}
@@ -277,7 +278,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                       boxShadow: `0 0 10px ${VELOUR_TOKENS.accentTeal}`,
                     }}
                   />
-                  <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 10.5, color: VELOUR_TOKENS.textPrimary, letterSpacing: '0.04em' }}>
+                  <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 11.5, color: VELOUR_TOKENS.textPrimary, letterSpacing: '0.04em' }}>
                     NYC TELEMETRY NETWORK — LIVE
                   </Typography>
                 </Box>
@@ -288,15 +289,15 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                     backgroundColor: 'rgba(0, 217, 192, 0.1)',
                     color: VELOUR_TOKENS.accentTeal,
                     border: `1px solid rgba(0, 217, 192, 0.25)`,
-                    fontSize: 9.5,
+                    fontSize: 10.5,
                     fontWeight: 700,
-                    height: 20,
+                    height: 24,
                   }}
                 />
               </Box>
 
               {/* Simulated Heat Zones Grid */}
-              <Grid container spacing={1.5} sx={{ position: 'relative', zIndex: 1 }}>
+              <Grid container spacing={1.8} sx={{ position: 'relative', zIndex: 1 }}>
                 {[
                   { zone: 'Midtown Manhattan', surge: '1.65x Surge', delta: '+42% Demand', color: VELOUR_TOKENS.accentTeal },
                   { zone: 'JFK Corridor', surge: '1.80x Surge', delta: '+65% Requests', color: VELOUR_TOKENS.accentPrimary },
@@ -309,19 +310,19 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                         backdropFilter: 'blur(8px)',
                         border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
                         borderRadius: 2,
-                        p: 1.5,
+                        p: 1.8,
                       }}
                     >
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.4 }}>
-                        <LocationOnIcon sx={{ fontSize: 14, color: item.color }} />
-                        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 11, color: '#FFF' }} noWrap>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, mb: 0.5 }}>
+                        <LocationOnIcon sx={{ fontSize: 15, color: item.color }} />
+                        <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 12, color: '#FFF' }} noWrap>
                           {item.zone}
                         </Typography>
                       </Box>
-                      <Typography variant="caption" sx={{ display: 'block', color: item.color, fontWeight: 700, fontSize: 12 }}>
+                      <Typography variant="caption" sx={{ display: 'block', color: item.color, fontWeight: 700, fontSize: 13 }}>
                         {item.surge}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10 }}>
+                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
                         {item.delta}
                       </Typography>
                     </Box>
@@ -331,16 +332,16 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             </Paper>
 
             {/* Feature Highlights 2 x 2 Grid */}
-            <Grid container spacing={2.5} sx={{ position: 'relative', zIndex: 1 }}>
+            <Grid container spacing={3.5} sx={{ position: 'relative', zIndex: 1 }}>
               {featureHighlights.map((feat, index) => (
                 <Grid item xs={12} sm={6} key={index}>
-                  <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'flex-start' }}>
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
                     <Box
                       sx={{
-                        width: 34,
-                        height: 34,
-                        borderRadius: 2,
-                        backgroundColor: 'rgba(255, 255, 255, 0.03)',
+                        width: 42,
+                        height: 42,
+                        borderRadius: 2.5,
+                        backgroundColor: 'rgba(255, 255, 255, 0.04)',
                         border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
                         display: 'flex',
                         alignItems: 'center',
@@ -352,10 +353,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                       {feat.icon}
                     </Box>
                     <Box>
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 14.5, color: '#FFF', lineHeight: 1.2, mb: 0.3 }}>
+                      <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 15, color: '#FFF', lineHeight: 1.3, mb: 0.4 }}>
                         {feat.title}
                       </Typography>
-                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12.5, lineHeight: 1.4, display: 'block' }}>
+                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13, lineHeight: 1.45, display: 'block' }}>
                         {feat.desc}
                       </Typography>
                     </Box>

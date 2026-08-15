@@ -82,6 +82,15 @@ export const theme = createTheme({
         .mono-num {
           font-family: ${VELOUR_TOKENS.fontMono} !important;
         }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+          -webkit-box-shadow: 0 0 0 1000px ${VELOUR_TOKENS.bgSurface2} inset !important;
+          -webkit-text-fill-color: #FFFFFF !important;
+          caret-color: #FFFFFF !important;
+          transition: background-color 5000s ease-in-out 0s;
+        }
       `,
     },
     MuiPaper: {
