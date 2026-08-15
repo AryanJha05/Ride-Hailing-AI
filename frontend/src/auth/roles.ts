@@ -1,38 +1,43 @@
-export const ROLES = {
-  DRIVER: 'DRIVER',
-  ADMIN: 'ADMIN',
-} as const;
+export enum UserRole {
+  DRIVER = 'DRIVER',
+  ADMIN = 'ADMIN',
+}
 
-export type UserRole = (typeof ROLES)[keyof typeof ROLES];
+// Backward compatibility map
+export const ROLES = {
+  DRIVER: UserRole.DRIVER,
+  ADMIN: UserRole.ADMIN,
+} as const;
 
 export interface UserProfile {
   id: string;
   name: string;
   email: string;
   role: UserRole;
-  driverId?: string;
-  adminId?: string;
   avatar?: string;
-  tier?: string;
+  rating?: number;
+  badge?: string;
+  vehicle?: string;
 }
 
 export const DEMO_USERS: Record<UserRole, UserProfile> = {
-  [ROLES.DRIVER]: {
-    id: 'usr-driver-2048',
+  [UserRole.DRIVER]: {
+    id: 'driver-001',
     name: 'Alex Morgan',
-    email: 'alex.morgan@rideai.nyc',
-    role: ROLES.DRIVER,
-    driverId: 'NYC-2048',
-    tier: 'Gold Driver',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+    email: 'alex.morgan@rideai.com',
+    role: UserRole.DRIVER,
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+    rating: 4.92,
+    badge: 'Gold Driver',
+    vehicle: 'Tesla Model Y (NYC-2048)',
   },
-  [ROLES.ADMIN]: {
-    id: 'usr-admin-101',
+  [UserRole.ADMIN]: {
+    id: 'admin-001',
     name: 'Ride AI Administrator',
-    email: 'admin@rideai.nyc',
-    role: ROLES.ADMIN,
-    adminId: 'NOC-101',
-    tier: 'Fleet Operations Lead',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    email: 'admin@rideai.com',
+    role: UserRole.ADMIN,
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
+    badge: 'Fleet Ops Director',
+    vehicle: 'Fleet Operation Center (NYC NOC)',
   },
 };

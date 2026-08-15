@@ -23,9 +23,9 @@ import {
   LineChart,
   Line,
 } from 'recharts';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { useSystemHealth } from '../hooks/useRideApi';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { useSystemHealth } from '../../hooks/useRideApi';
 
 export const AdminDashboard: React.FC = () => {
   const { data: health } = useSystemHealth();

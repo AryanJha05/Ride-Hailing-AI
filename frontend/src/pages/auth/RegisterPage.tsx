@@ -21,8 +21,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import BusinessIcon from '@mui/icons-material/Business';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { AuthLayout } from '../components/auth/AuthLayout';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { AuthLayout } from '../../components/auth/AuthLayout';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();

@@ -14,8 +14,8 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PhoneInTalkIcon from '@mui/icons-material/PhoneInTalk';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const Support: React.FC = () => {
   return (

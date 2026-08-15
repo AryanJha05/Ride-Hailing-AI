@@ -17,7 +17,7 @@ import CpuIcon from '@mui/icons-material/Memory';
 import RouteIcon from '@mui/icons-material/AltRoute';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import { VELOUR_TOKENS } from '../theme/palette';
+import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();

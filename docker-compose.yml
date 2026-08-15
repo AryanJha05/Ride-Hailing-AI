@@ -1,6 +1,9 @@
 services:
-  # 1. LLM Service Container (Ollama Runtime)
+  # 1. LLM Service Container (Ollama Runtime - Optional via 'llm' or 'full' profile)
   llm-service:
+    profiles:
+      - llm
+      - full
     build:
       context: ./llm-service
       dockerfile: Dockerfile
@@ -29,8 +32,6 @@ services:
       - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2}
     volumes:
       - ./backend/ride_ai.db:/app/ride_ai.db
-    depends_on:
-      - llm-service
     networks:
       - ride-ai-network
 

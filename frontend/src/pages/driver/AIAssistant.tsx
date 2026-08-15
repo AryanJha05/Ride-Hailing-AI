@@ -4,13 +4,13 @@ import { Box, Paper, Typography, IconButton, Avatar, Divider } from '@mui/materi
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import HistoryIcon from '@mui/icons-material/History';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { ROUTES } from '../routes/routes';
-import { useDriverAdviceMutation } from '../hooks/useRideApi';
-import { ChatMessageStream, ChatMessage } from '../components/assistant/ChatMessageStream';
-import { QuickActionChips } from '../components/assistant/QuickActionChips';
-import { AssistantInputBar } from '../components/assistant/AssistantInputBar';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { ROUTES } from '../../routes/routes';
+import { useDriverAdviceMutation } from '../../hooks/useRideApi';
+import { ChatMessageStream, ChatMessage } from '../../components/assistant/ChatMessageStream';
+import { QuickActionChips } from '../../components/assistant/QuickActionChips';
+import { AssistantInputBar } from '../../components/assistant/AssistantInputBar';
 
 export const AIAssistant: React.FC = () => {
   const navigate = useNavigate();

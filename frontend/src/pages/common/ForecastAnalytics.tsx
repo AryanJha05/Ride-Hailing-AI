@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Container, Grid, Card, CardContent, Typography, Box, MenuItem, Select } from '@mui/material';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { useForecast } from '../hooks/useRideApi';
-import { ForecastChart } from '../components/analytics/ForecastChart';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { useForecast } from '../../hooks/useRideApi';
+import { ForecastChart } from '../../components/analytics/ForecastChart';
 
 export const ForecastAnalytics: React.FC = () => {
   const [selectedZone, setSelectedZone] = useState('Midtown Manhattan');

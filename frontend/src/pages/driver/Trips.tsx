@@ -16,8 +16,8 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import StarIcon from '@mui/icons-material/Star';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
 
 const MOCK_TRIPS = [
   { id: 'TRIP-8841', time: '14:20', pickup: 'Midtown Manhattan', dropoff: 'JFK Airport (JFK)', fare: '$48.50', surge: '1.8x', rating: 5, status: 'Completed' },

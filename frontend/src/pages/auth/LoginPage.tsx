@@ -20,10 +20,10 @@ import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { AuthLayout } from '../components/auth/AuthLayout';
-import { useAuth } from '../auth/AuthContext';
-import { ROUTES } from '../routes/routes';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { AuthLayout } from '../../components/auth/AuthLayout';
+import { useAuth } from '../../auth/AuthContext';
+import { ROUTES } from '../../routes/routes';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ export const LoginPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Default login action routes to Driver Dashboard for demo
     loginAsDriver();
     navigate(ROUTES.DASHBOARD);
   };
@@ -59,14 +58,14 @@ export const LoginPage: React.FC = () => {
           borderWidth: 1,
           borderStyle: 'solid',
           borderRadius: 4,
-          p: { xs: 3.5, sm: 4.5 },
+          p: { xs: 4, sm: 4.5 },
           boxShadow: '0 24px 48px rgba(0, 0, 0, 0.6)',
           width: '100%',
         }}
       >
         {/* Header with Enterprise Managed Access Badge */}
-        <Box sx={{ mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+        <Box sx={{ mb: 3.5 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.2 }}>
             <Chip
               label="MANAGED ACCESS"
               size="small"
@@ -75,12 +74,13 @@ export const LoginPage: React.FC = () => {
                 color: VELOUR_TOKENS.accentTeal,
                 border: `1px solid rgba(0, 217, 192, 0.25)`,
                 fontWeight: 700,
-                fontSize: 9.5,
-                height: 20,
+                fontSize: 10,
+                height: 22,
                 borderRadius: 1,
+                px: 0.5,
               }}
             />
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontSize: 10.5 }}>
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontSize: 11 }}>
               v2.4 Enterprise
             </Typography>
           </Box>
@@ -89,7 +89,7 @@ export const LoginPage: React.FC = () => {
             variant="h4"
             sx={{
               fontWeight: 700,
-              fontSize: { xs: 22, sm: 25 },
+              fontSize: { xs: 24, sm: 28, md: 30 },
               color: '#FFF',
               mb: 0.8,
               letterSpacing: '-0.02em',
@@ -101,7 +101,7 @@ export const LoginPage: React.FC = () => {
             variant="body2"
             sx={{
               color: VELOUR_TOKENS.textSecondary,
-              fontSize: 13,
+              fontSize: 14,
               lineHeight: 1.5,
             }}
           >
@@ -111,16 +111,16 @@ export const LoginPage: React.FC = () => {
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
             {/* Email Address */}
             <Box>
               <Typography
                 variant="caption"
                 sx={{
                   color: VELOUR_TOKENS.textSecondary,
-                  fontSize: 12,
+                  fontSize: 12.5,
                   fontWeight: 600,
-                  mb: 0.6,
+                  mb: 0.8,
                   display: 'block',
                 }}
               >
@@ -136,14 +136,15 @@ export const LoginPage: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <EmailOutlinedIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 18 }} />
+                      <EmailOutlinedIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 19 }} />
                     </InputAdornment>
                   ),
                   sx: {
                     backgroundColor: VELOUR_TOKENS.bgSurface2,
                     color: '#FFF',
                     borderRadius: 2.5,
-                    fontSize: 13.5,
+                    fontSize: 14,
+                    height: 46,
                     '& fieldset': { borderColor: VELOUR_TOKENS.borderSubtle },
                     '&:hover fieldset': { borderColor: VELOUR_TOKENS.accentLavender },
                     '&.Mui-focused fieldset': { borderColor: VELOUR_TOKENS.accentPrimary },
@@ -154,12 +155,12 @@ export const LoginPage: React.FC = () => {
 
             {/* Password */}
             <Box>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.6 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8 }}>
                 <Typography
                   variant="caption"
                   sx={{
                     color: VELOUR_TOKENS.textSecondary,
-                    fontSize: 12,
+                    fontSize: 12.5,
                     fontWeight: 600,
                   }}
                 >
@@ -171,7 +172,7 @@ export const LoginPage: React.FC = () => {
                   onClick={() => navigate(ROUTES.DASHBOARD)}
                   sx={{
                     color: VELOUR_TOKENS.accentLavender,
-                    fontSize: 11.5,
+                    fontSize: 12,
                     textDecoration: 'none',
                     fontWeight: 600,
                     '&:hover': { textDecoration: 'underline' },
@@ -191,7 +192,7 @@ export const LoginPage: React.FC = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <LockOutlinedIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 18 }} />
+                      <LockOutlinedIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 19 }} />
                     </InputAdornment>
                   ),
                   endAdornment: (
@@ -210,7 +211,8 @@ export const LoginPage: React.FC = () => {
                     backgroundColor: VELOUR_TOKENS.bgSurface2,
                     color: '#FFF',
                     borderRadius: 2.5,
-                    fontSize: 13.5,
+                    fontSize: 14,
+                    height: 46,
                     '& fieldset': { borderColor: VELOUR_TOKENS.borderSubtle },
                     '&:hover fieldset': { borderColor: VELOUR_TOKENS.accentLavender },
                     '&.Mui-focused fieldset': { borderColor: VELOUR_TOKENS.accentPrimary },
@@ -229,11 +231,11 @@ export const LoginPage: React.FC = () => {
               sx={{
                 backgroundColor: VELOUR_TOKENS.accentPrimary,
                 color: '#FFF',
-                py: 1.25,
+                height: 48,
                 mt: 0.5,
                 borderRadius: 2.5,
                 fontWeight: 700,
-                fontSize: 13.5,
+                fontSize: 14,
                 letterSpacing: '0.02em',
                 textTransform: 'none',
                 boxShadow: `0 4px 14px ${VELOUR_TOKENS.accentPrimaryDim}`,
@@ -250,10 +252,10 @@ export const LoginPage: React.FC = () => {
         {/* Separator */}
         <Divider
           sx={{
-            my: 2.8,
+            my: 3,
             borderColor: VELOUR_TOKENS.borderSubtle,
             color: VELOUR_TOKENS.textTertiary,
-            fontSize: 10.5,
+            fontSize: 11,
             fontWeight: 600,
             letterSpacing: '0.06em',
           }}
@@ -262,7 +264,7 @@ export const LoginPage: React.FC = () => {
         </Divider>
 
         {/* Dual Role Demo Access Buttons — STRICTLY SAME ROW (50/50 Grid Split) */}
-        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.2 }}>
           {/* Demo Driver Button */}
           <Button
             fullWidth
@@ -274,11 +276,11 @@ export const LoginPage: React.FC = () => {
               backgroundColor: 'rgba(124, 58, 237, 0.18)',
               color: '#FFF',
               border: `1px solid ${VELOUR_TOKENS.accentPrimary}`,
-              py: 1.1,
+              height: 46,
               px: 1,
               borderRadius: 2.5,
               fontWeight: 700,
-              fontSize: 12.5,
+              fontSize: 13,
               textTransform: 'none',
               whiteSpace: 'nowrap',
               transition: 'all 0.2s ease',
@@ -302,11 +304,11 @@ export const LoginPage: React.FC = () => {
             sx={{
               borderColor: VELOUR_TOKENS.borderSubtle,
               color: VELOUR_TOKENS.textPrimary,
-              py: 1.1,
+              height: 46,
               px: 1,
               borderRadius: 2.5,
               fontWeight: 600,
-              fontSize: 12.5,
+              fontSize: 13,
               textTransform: 'none',
               whiteSpace: 'nowrap',
               backgroundColor: 'rgba(255, 255, 255, 0.02)',
@@ -326,7 +328,7 @@ export const LoginPage: React.FC = () => {
         <Box
           sx={{
             mt: 3,
-            pt: 2.2,
+            pt: 2.5,
             borderTop: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
             display: 'flex',
             alignItems: 'center',
@@ -339,7 +341,7 @@ export const LoginPage: React.FC = () => {
             variant="caption"
             sx={{
               color: VELOUR_TOKENS.textSecondary,
-              fontSize: 11,
+              fontSize: 11.5,
               textAlign: 'center',
               lineHeight: 1.3,
             }}

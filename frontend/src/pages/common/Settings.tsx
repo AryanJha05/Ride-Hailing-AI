@@ -12,8 +12,8 @@ import {
   MenuItem,
   Grid,
 } from '@mui/material';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const Settings: React.FC = () => {
   return (

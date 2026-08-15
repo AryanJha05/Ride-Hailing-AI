@@ -20,13 +20,13 @@ import StarOutlinedIcon from '@mui/icons-material/StarOutlined';
 import DirectionsCarOutlinedIcon from '@mui/icons-material/DirectionsCarOutlined';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useNavigate } from 'react-router-dom';
-import { PageShell } from '../components/layout/PageShell';
-import { ROUTES } from '../routes/routes';
-import { KpiCard } from '../components/dashboard/KpiCard';
-import { EarningsChart } from '../components/dashboard/EarningsChart';
-import { DemandSurgeRadar } from '../components/dashboard/DemandSurgeRadar';
-import { useDemandZones } from '../hooks/useRideApi';
-import { VELOUR_TOKENS } from '../theme/palette';
+import { PageShell } from '../../components/layout/PageShell';
+import { ROUTES } from '../../routes/routes';
+import { KpiCard } from '../../components/dashboard/KpiCard';
+import { EarningsChart } from '../../components/dashboard/EarningsChart';
+import { DemandSurgeRadar } from '../../components/dashboard/DemandSurgeRadar';
+import { useDemandZones } from '../../hooks/useRideApi';
+import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const DriverDashboard: React.FC = () => {
   const navigate = useNavigate();

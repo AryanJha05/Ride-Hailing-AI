@@ -3,12 +3,12 @@ import { Box, Paper, IconButton } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { PageShell } from '../components/layout/PageShell';
-import { VELOUR_TOKENS } from '../theme/palette';
-import { useDemandZones } from '../hooks/useRideApi';
-import { DemandMap } from '../components/map/DemandMap';
-import { MapFilterPanel } from '../components/map/MapFilterPanel';
-import { MapSearchBar } from '../components/map/MapSearchBar';
+import { PageShell } from '../../components/layout/PageShell';
+import { VELOUR_TOKENS } from '../../theme/palette';
+import { useDemandZones } from '../../hooks/useRideApi';
+import { DemandMap } from '../../components/map/DemandMap';
+import { MapFilterPanel } from '../../components/map/MapFilterPanel';
+import { MapSearchBar } from '../../components/map/MapSearchBar';
 
 export const LiveDemandMap: React.FC = () => {
   const [filter, setFilter] = useState<'Demand' | 'Drivers' | 'Events'>('Demand');

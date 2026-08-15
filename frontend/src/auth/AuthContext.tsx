@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { UserProfile, UserRole, ROLES, DEMO_USERS } from './roles';
+import { Permission, hasPermission as checkPermission } from './permissions';
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -8,6 +9,8 @@ interface AuthContextType {
   loginAsDriver: () => void;
   loginAsAdmin: () => void;
   logout: () => void;
+  hasRole: (allowedRole: UserRole | UserRole[]) => boolean;
+  hasPermission: (permission: Permission) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -20,6 +23,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Default to DRIVER for initial demo state if none saved
     return DEMO_USERS.DRIVER;
   });
+
+  const role = user?.role || null;
 
   const loginAsDriver = () => {
     setUser(DEMO_USERS.DRIVER);
@@ -36,15 +41,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('ride_ai_role');
   };
 
+  const hasRole = (allowedRole: UserRole | UserRole[]): boolean => {
+    if (!role) return false;
+    if (Array.isArray(allowedRole)) {
+      return allowedRole.includes(role);
+    }
+    return role === allowedRole;
+  };
+
+  const hasPermission = (permission: Permission): boolean => {
+    return checkPermission(role, permission);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
-        role: user?.role || null,
+        role,
         isAuthenticated: !!user,
         loginAsDriver,
         loginAsAdmin,
         logout,
+        hasRole,
+        hasPermission,
       }}
     >
       {children}
