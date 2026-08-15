@@ -237,7 +237,7 @@ export const DriverDashboard: React.FC = () => {
                     fullWidth
                     size="small"
                     variant="outlined"
-                    onClick={() => navigate(ROUTES.ANALYTICS)}
+                    onClick={() => navigate(ROUTES.USER.ANALYTICS)}
                     sx={{ mt: 'auto', color: VELOUR_TOKENS.textSecondary, borderColor: VELOUR_TOKENS.borderSubtle, fontSize: 12, py: 0.6 }}
                   >
                     View Full Schedule
@@ -306,7 +306,7 @@ export const DriverDashboard: React.FC = () => {
 
           <Button
             variant="contained"
-            onClick={() => navigate(ROUTES.AI_ASSISTANT)}
+            onClick={() => navigate(ROUTES.USER.AI_ASSISTANT)}
             endIcon={<ArrowForwardIcon />}
             sx={{
               backgroundColor: VELOUR_TOKENS.accentPrimary,

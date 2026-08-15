@@ -22,6 +22,7 @@ import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import BusinessIcon from '@mui/icons-material/Business';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { ROUTES } from '../../routes/routes';
 import { AuthLayout } from '../../components/auth/AuthLayout';
 
 export const RegisterPage: React.FC = () => {
@@ -36,8 +37,8 @@ export const RegisterPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Direct navigation to dashboard (Frontend entry point)
-    navigate('/dashboard');
+    // Direct navigation to user dashboard
+    navigate(ROUTES.USER.DASHBOARD);
   };
 
   return (

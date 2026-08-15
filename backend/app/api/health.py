@@ -4,7 +4,7 @@ from fastapi import APIRouter
 from app.core.config import settings
 from app.schemas.pydantic_schemas import SystemHealthResponse
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 @router.get("/health", response_model=SystemHealthResponse)
 def get_system_health():

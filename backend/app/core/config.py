@@ -14,7 +14,12 @@ class Settings(BaseSettings):
     OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma2")
     LLM_TIMEOUT_SECONDS: float = 8.0
 
-    # Security & CORS
+    # Security & JWT
+    JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "dev_secret_key_change_in_production_123456789")
+    JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
+    JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
+
+    # CORS
     CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",

@@ -5,8 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { theme } from './theme/theme';
 import { AuthProvider } from './auth/AuthContext';
 import { ProtectedRoute } from './auth/ProtectedRoute';
-import { UserRole, ROLES } from './auth/roles';
-import { Permission } from './auth/permissions';
+import { ROLES } from './auth/roles';
 import { ROUTES } from './routes/routes';
 import { MainLayout } from './layouts/MainLayout';
 import {
@@ -40,143 +39,58 @@ export const App: React.FC = () => {
           <BrowserRouter>
             <Routes>
               {/* Public Authentication Routes */}
-              <Route path={ROUTES.ROOT} element={<LoginPage />} />
+              <Route path={ROUTES.ROOT} element={<Navigate to={ROUTES.LOGIN} replace />} />
               <Route path={ROUTES.LOGIN} element={<LoginPage />} />
 
-              {/* Shared MainLayout Application Shell (Protected) */}
+              {/* Driver Route Namespace (/user/*) */}
               <Route
+                path="/user"
                 element={
-                  <ProtectedRoute allowedRoles={[ROLES.DRIVER, ROLES.ADMIN]}>
+                  <ProtectedRoute allowedRoles={[ROLES.DRIVER]}>
                     <MainLayout />
                   </ProtectedRoute>
                 }
               >
-                {/* Driver-Specific Protected Routes */}
-                <Route
-                  path={ROUTES.DASHBOARD}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.DRIVER]}
-                      requiredPermission={Permission.VIEW_DRIVER_DASHBOARD}
-                    >
-                      <DriverDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.AI_ASSISTANT}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.DRIVER]}
-                      requiredPermission={Permission.USE_AI_ASSISTANT}
-                    >
-                      <AIAssistant />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.TRIPS}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.DRIVER]}
-                      requiredPermission={Permission.VIEW_TRIPS}
-                    >
-                      <Trips />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.PROFILE}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.DRIVER]}
-                      requiredPermission={Permission.VIEW_PROFILE}
-                    >
-                      <DriverProfile />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {/* Common / Shared Module Routes */}
-                <Route
-                  path={ROUTES.LIVE_MAP}
-                  element={
-                    <ProtectedRoute requiredPermission={Permission.VIEW_LIVE_MAP}>
-                      <LiveDemandMap />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.ANALYTICS}
-                  element={
-                    <ProtectedRoute requiredPermission={Permission.VIEW_ANALYTICS}>
-                      <ForecastAnalytics />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.SETTINGS}
-                  element={
-                    <ProtectedRoute requiredPermission={Permission.VIEW_SETTINGS}>
-                      <Settings />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.SUPPORT}
-                  element={
-                    <ProtectedRoute requiredPermission={Permission.VIEW_SUPPORT}>
-                      <Support />
-                    </ProtectedRoute>
-                  }
-                />
-
-                {/* Admin-Specific Protected Routes */}
-                <Route
-                  path={ROUTES.ADMIN}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.ADMIN]}
-                      requiredPermission={Permission.VIEW_ADMIN_DASHBOARD}
-                    >
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.FLEET}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.ADMIN]}
-                      requiredPermission={Permission.VIEW_FLEET}
-                    >
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.MODELS}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.ADMIN]}
-                      requiredPermission={Permission.VIEW_MODEL_HEALTH}
-                    >
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path={ROUTES.ALERTS}
-                  element={
-                    <ProtectedRoute
-                      allowedRoles={[ROLES.ADMIN]}
-                      requiredPermission={Permission.VIEW_ALERTS}
-                    >
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  }
-                />
+                <Route index element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
+                <Route path="dashboard" element={<DriverDashboard />} />
+                <Route path="live-map" element={<LiveDemandMap />} />
+                <Route path="ai-assistant" element={<AIAssistant />} />
+                <Route path="analytics" element={<ForecastAnalytics />} />
+                <Route path="profile" element={<DriverProfile />} />
+                <Route path="trips" element={<Trips />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="support" element={<Support />} />
               </Route>
+
+              {/* Admin Route Namespace (/admin/*) */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute allowedRoles={[ROLES.ADMIN]}>
+                    <MainLayout />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<Navigate to={ROUTES.ADMIN.DASHBOARD} replace />} />
+                <Route path="dashboard" element={<AdminDashboard />} />
+                <Route path="fleet" element={<AdminDashboard />} />
+                <Route path="demand" element={<LiveDemandMap />} />
+                <Route path="forecasting" element={<ForecastAnalytics />} />
+                <Route path="models" element={<AdminDashboard />} />
+                <Route path="alerts" element={<AdminDashboard />} />
+                <Route path="settings" element={<Settings />} />
+                <Route path="support" element={<Support />} />
+              </Route>
+
+              {/* Legacy Flat Route Compatibility Redirects */}
+              <Route path="/dashboard" element={<Navigate to={ROUTES.USER.DASHBOARD} replace />} />
+              <Route path="/live-map" element={<Navigate to={ROUTES.USER.LIVE_MAP} replace />} />
+              <Route path="/ai-assistant" element={<Navigate to={ROUTES.USER.AI_ASSISTANT} replace />} />
+              <Route path="/analytics" element={<Navigate to={ROUTES.USER.ANALYTICS} replace />} />
+              <Route path="/profile" element={<Navigate to={ROUTES.USER.PROFILE} replace />} />
+              <Route path="/trips" element={<Navigate to={ROUTES.USER.TRIPS} replace />} />
+              <Route path="/settings" element={<Navigate to={ROUTES.USER.SETTINGS} replace />} />
+              <Route path="/support" element={<Navigate to={ROUTES.USER.SUPPORT} replace />} />
 
               {/* Catch-all Fallback Redirect */}
               <Route path="*" element={<Navigate to={ROUTES.LOGIN} replace />} />

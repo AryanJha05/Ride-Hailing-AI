@@ -45,7 +45,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
           </Box>
           <Button
             size="small"
-            onClick={() => navigate(ROUTES.LIVE_MAP)}
+            onClick={() => navigate(ROUTES.USER.LIVE_MAP)}
             endIcon={<ArrowForwardIcon fontSize="small" />}
             sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 12, fontWeight: 700, textTransform: 'none' }}
           >
@@ -55,7 +55,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
 
         {/* Leaflet Inset Simulated Preview Box */}
         <Box
-          onClick={() => navigate(ROUTES.LIVE_MAP)}
+          onClick={() => navigate(ROUTES.USER.LIVE_MAP)}
           sx={{
             width: '100%',
             height: 110,

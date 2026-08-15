@@ -1,11 +1,27 @@
 import uuid
 from datetime import datetime
-from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text, JSON
+from enum import Enum as PyEnum
+from sqlalchemy import Column, String, Float, Integer, DateTime, ForeignKey, Text, JSON, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import relationship
 from app.models.database import Base
 
 def generate_uuid():
     return str(uuid.uuid4())
+
+class UserRole(str, PyEnum):
+    DRIVER = "DRIVER"
+    ADMIN = "ADMIN"
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(String, primary_key=True, default=generate_uuid)
+    name = Column(String(120), nullable=False)
+    email = Column(String(160), unique=True, index=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    role = Column(SQLEnum(UserRole), nullable=False, default=UserRole.DRIVER)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
 
 class Driver(Base):
     __tablename__ = "drivers"

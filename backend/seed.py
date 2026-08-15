@@ -3,13 +3,47 @@ from os.path import dirname, abspath
 sys.path.append(dirname(abspath(__file__)))
 
 from app.models.database import SessionLocal, engine, Base
-from app.models.entities import Driver, DemandZone, Trip, AIRecommendation
+from app.models.entities import User, UserRole, Driver, DemandZone, Trip, AIRecommendation
+from app.core.security import get_password_hash
 
 def seed_database():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     
     try:
+        # Seed Users
+        driver_user = db.query(User).filter(User.email == "alex.morgan@rideai.nyc").first()
+        if not driver_user:
+            driver_user = User(
+                id="user-driver-001",
+                name="Alex Morgan",
+                email="alex.morgan@rideai.nyc",
+                password_hash=get_password_hash("driver123"),
+                role=UserRole.DRIVER,
+                is_active=True
+            )
+            db.add(driver_user)
+            print("Seeded User: Driver (alex.morgan@rideai.nyc)")
+        else:
+            driver_user.password_hash = get_password_hash("driver123")
+            driver_user.role = UserRole.DRIVER
+
+        admin_user = db.query(User).filter(User.email == "admin@rideai.nyc").first()
+        if not admin_user:
+            admin_user = User(
+                id="user-admin-001",
+                name="Ride AI Administrator",
+                email="admin@rideai.nyc",
+                password_hash=get_password_hash("admin123"),
+                role=UserRole.ADMIN,
+                is_active=True
+            )
+            db.add(admin_user)
+            print("Seeded User: Admin (admin@rideai.nyc)")
+        else:
+            admin_user.password_hash = get_password_hash("admin123")
+            admin_user.role = UserRole.ADMIN
+
         # Check if driver already exists
         existing_driver = db.query(Driver).filter(Driver.id == "driver-001").first()
         if not existing_driver:

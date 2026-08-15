@@ -3,6 +3,24 @@ export interface Location {
   lng: number;
 }
 
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'DRIVER' | 'ADMIN';
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  user: AuthUser;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
 export interface DataChip {
   label: string;
   value: string;

@@ -380,7 +380,7 @@ export const Header: React.FC<HeaderProps> = ({ title = 'Dashboard', onMenuClick
             <MenuItem
               onClick={() => {
                 setProfileAnchor(null);
-                navigate(ROUTES.PROFILE);
+                navigate(ROUTES.USER.PROFILE);
               }}
             >
               <PersonOutlineIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentLavender }} />
@@ -392,7 +392,7 @@ export const Header: React.FC<HeaderProps> = ({ title = 'Dashboard', onMenuClick
             <MenuItem
               onClick={() => {
                 setProfileAnchor(null);
-                navigate(ROUTES.ADMIN);
+                navigate(ROUTES.ADMIN.DASHBOARD);
               }}
             >
               <SecurityIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentTeal }} />
@@ -403,7 +403,7 @@ export const Header: React.FC<HeaderProps> = ({ title = 'Dashboard', onMenuClick
           <MenuItem
             onClick={() => {
               setProfileAnchor(null);
-              navigate(ROUTES.SETTINGS);
+              navigate(isAdminRole ? ROUTES.ADMIN.SETTINGS : ROUTES.USER.SETTINGS);
             }}
           >
             <SettingsOutlinedIcon fontSize="small" sx={{ color: VELOUR_TOKENS.textSecondary }} />
@@ -413,7 +413,7 @@ export const Header: React.FC<HeaderProps> = ({ title = 'Dashboard', onMenuClick
           <MenuItem
             onClick={() => {
               setProfileAnchor(null);
-              navigate(ROUTES.SUPPORT);
+              navigate(isAdminRole ? ROUTES.ADMIN.SUPPORT : ROUTES.USER.SUPPORT);
             }}
           >
             <HeadsetMicOutlinedIcon fontSize="small" sx={{ color: VELOUR_TOKENS.accentTeal }} />

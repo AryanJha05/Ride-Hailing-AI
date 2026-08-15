@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.models.database import engine, Base
-from app.api import health, driver_advice, forecast, demand_zones, driver_performance
+from app.api import health, driver_advice, forecast, demand_zones, driver_performance, auth, admin
 
 # Create database tables if they do not exist
 Base.metadata.create_all(bind=engine)
@@ -35,6 +35,8 @@ app.add_middleware(
 )
 
 # Include API Routers
+app.include_router(auth.router)
+app.include_router(admin.router)
 app.include_router(health.router, tags=["Health"])
 app.include_router(driver_advice.router, tags=["AI Driver Advice"])
 app.include_router(forecast.router, tags=["Demand Forecast"])

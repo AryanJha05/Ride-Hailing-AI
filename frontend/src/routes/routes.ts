@@ -2,24 +2,29 @@ export const ROUTES = {
   ROOT: '/',
   LOGIN: '/login',
 
-  // Driver Routes
-  DASHBOARD: '/dashboard',
-  LIVE_MAP: '/live-map',
-  AI_ASSISTANT: '/ai-assistant',
-  ANALYTICS: '/analytics',
-  PROFILE: '/profile',
-  TRIPS: '/trips',
+  // Driver Routes (/user/*)
+  USER: {
+    DASHBOARD: '/user/dashboard',
+    LIVE_MAP: '/user/live-map',
+    AI_ASSISTANT: '/user/ai-assistant',
+    ANALYTICS: '/user/analytics',
+    PROFILE: '/user/profile',
+    TRIPS: '/user/trips',
+    SETTINGS: '/user/settings',
+    SUPPORT: '/user/support',
+  },
 
-  // Shared / Common Routes
-  SETTINGS: '/settings',
-  SUPPORT: '/support',
-
-  // Admin Routes
-  ADMIN: '/admin',
-  FLEET: '/admin/fleet',
-  MODELS: '/admin/models',
-  ALERTS: '/admin/alerts',
+  // Admin Routes (/admin/*)
+  ADMIN: {
+    DASHBOARD: '/admin/dashboard',
+    FLEET: '/admin/fleet',
+    DEMAND: '/admin/demand',
+    FORECASTING: '/admin/forecasting',
+    MODELS: '/admin/models',
+    ALERTS: '/admin/alerts',
+    SETTINGS: '/admin/settings',
+    SUPPORT: '/admin/support',
+  },
 } as const;
 
 export type RouteKey = keyof typeof ROUTES;
-export type RoutePath = (typeof ROUTES)[RouteKey];

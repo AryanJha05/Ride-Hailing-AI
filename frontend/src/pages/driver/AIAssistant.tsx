@@ -152,7 +152,7 @@ export const AIAssistant: React.FC = () => {
           <ChatMessageStream
             messages={messages}
             isLoading={adviceMutation.isPending}
-            onNavigateToMap={() => navigate(ROUTES.LIVE_MAP)}
+            onNavigateToMap={() => navigate(ROUTES.USER.LIVE_MAP)}
           />
 
           <Divider sx={{ borderColor: VELOUR_TOKENS.borderSubtle }} />

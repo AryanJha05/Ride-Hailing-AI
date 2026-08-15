@@ -13,7 +13,6 @@ import AltRouteIcon from '@mui/icons-material/AltRoute';
 import MemoryIcon from '@mui/icons-material/Memory';
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { ROUTES } from '../../routes/routes';
 
@@ -74,7 +73,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             py: { xs: 5, md: 6 },
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'center',
+            justify: 'center',
             alignItems: 'center',
             minHeight: { md: '100vh' },
             position: 'relative',
@@ -107,7 +106,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
             }}
           />
 
-          {/* Left Content Container with 80-85% Width & Max-Width 680px */}
+          {/* Left Content Container */}
           <Box
             sx={{
               width: { xs: '100%', lg: '85%' },
@@ -128,7 +127,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 mb: 3.5,
                 width: 'fit-content',
               }}
-              onClick={() => navigate(ROUTES.DASHBOARD)}
+              onClick={() => navigate(ROUTES.USER.DASHBOARD)}
             >
               <Box
                 sx={{
@@ -227,7 +226,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
               </Typography>
             </Box>
 
-            {/* NYC Telemetry Network Visualization (Width: 100%, Max-Width: 680px, Height: ~180px) */}
+            {/* NYC Telemetry Network Visualization */}
             <Paper
               elevation={0}
               sx={{
@@ -364,32 +363,10 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
                 </Grid>
               ))}
             </Grid>
-
-            {/* Bottom Enterprise Footer */}
-            <Box
-              sx={{
-                mt: 3.5,
-                pt: 2.5,
-                borderTop: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'space-between',
-              }}
-            >
-              <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontSize: 11 }}>
-                © 2026 Ride AI Mobility Inc. All rights reserved.
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                <CheckCircleIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentTeal }} />
-                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, fontWeight: 600 }}>
-                  SOC2 Type II Certified
-                </Typography>
-              </Box>
-            </Box>
           </Box>
         </Grid>
 
-        {/* RIGHT SECTION — 50% Authentication Card (Centered Vertically & Horizontally) */}
+        {/* RIGHT SECTION — 50% Authentication Card */}
         <Grid
           item
           xs={12}

@@ -25,6 +25,8 @@ import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettin
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import SecurityIcon from '@mui/icons-material/Security';
+import DnsOutlinedIcon from '@mui/icons-material/DnsOutlined';
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
 import { VELOUR_TOKENS } from '../theme/palette';
 import { useAuth } from '../auth/AuthContext';
 import { UserRole } from '../auth/roles';
@@ -54,7 +56,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { role, user } = useAuth();
+  const { role } = useAuth();
   const isAdminRole = role === UserRole.ADMIN;
 
   const handleNavClick = (path: string) => {
@@ -70,21 +72,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           section: 'FLEET CONTROL',
           items: [
-            { label: 'Admin Operations', icon: <AdminPanelSettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN },
-            { label: 'Demand Network Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.LIVE_MAP },
+            { label: 'Operations', icon: <AdminPanelSettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.DASHBOARD },
+            { label: 'Fleet', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.FLEET },
+            { label: 'Demand Monitoring', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.DEMAND },
           ],
         },
         {
           section: 'ANALYTICS & NOC',
           items: [
-            { label: 'Forecast Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ANALYTICS },
+            { label: 'Forecasting', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.FORECASTING },
+            { label: 'Model Health', icon: <DnsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.MODELS },
+            { label: 'Alerts', icon: <NotificationsActiveOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.ALERTS },
           ],
         },
         {
           section: 'MANAGEMENT',
           items: [
-            { label: 'Fleet Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.SETTINGS },
-            { label: 'NOC Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.SUPPORT },
+            { label: 'Fleet Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.SETTINGS },
+            { label: 'NOC Support', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.ADMIN.SUPPORT },
           ],
         },
       ]
@@ -92,24 +97,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {
           section: 'OVERVIEW',
           items: [
-            { label: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="small" />, path: ROUTES.DASHBOARD },
-            { label: 'Live Demand Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.LIVE_MAP },
-            { label: 'AI Assistant', icon: <SmartToyOutlinedIcon fontSize="small" />, path: ROUTES.AI_ASSISTANT },
+            { label: 'Dashboard', icon: <DashboardOutlinedIcon fontSize="small" />, path: ROUTES.USER.DASHBOARD },
+            { label: 'Live Demand Map', icon: <MapOutlinedIcon fontSize="small" />, path: ROUTES.USER.LIVE_MAP },
+            { label: 'AI Assistant', icon: <SmartToyOutlinedIcon fontSize="small" />, path: ROUTES.USER.AI_ASSISTANT },
           ],
         },
         {
           section: 'PERFORMANCE',
           items: [
-            { label: 'Forecast Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.ANALYTICS },
-            { label: 'Trip History', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.TRIPS },
-            { label: 'Driver Profile', icon: <PersonOutlineOutlinedIcon fontSize="small" />, path: ROUTES.PROFILE },
+            { label: 'Analytics', icon: <AnalyticsOutlinedIcon fontSize="small" />, path: ROUTES.USER.ANALYTICS },
+            { label: 'Trip History', icon: <DirectionsCarOutlinedIcon fontSize="small" />, path: ROUTES.USER.TRIPS },
+            { label: 'Profile', icon: <PersonOutlineOutlinedIcon fontSize="small" />, path: ROUTES.USER.PROFILE },
           ],
         },
         {
           section: 'PREFERENCES',
           items: [
-            { label: 'Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.SETTINGS },
-            { label: 'Support & Help', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.SUPPORT },
+            { label: 'Settings', icon: <SettingsOutlinedIcon fontSize="small" />, path: ROUTES.USER.SETTINGS },
+            { label: 'Support & Help', icon: <HeadsetMicOutlinedIcon fontSize="small" />, path: ROUTES.USER.SUPPORT },
           ],
         },
       ];
@@ -134,7 +139,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           gap: 1.5,
           cursor: 'pointer',
         }}
-        onClick={() => handleNavClick(isAdminRole ? ROUTES.ADMIN : ROUTES.DASHBOARD)}
+        onClick={() => handleNavClick(isAdminRole ? ROUTES.ADMIN.DASHBOARD : ROUTES.USER.DASHBOARD)}
       >
         <Box
           sx={{

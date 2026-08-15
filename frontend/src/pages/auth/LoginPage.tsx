@@ -10,13 +10,12 @@ import {
   IconButton,
   Divider,
   Link,
-  Chip,
+  Alert,
 } from '@mui/material';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined';
@@ -27,25 +26,60 @@ import { ROUTES } from '../../routes/routes';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { loginAsDriver, loginAsAdmin } = useAuth();
+  const { login, loginAsDriver, loginAsAdmin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginAsDriver();
-    navigate(ROUTES.DASHBOARD);
+    setErrorMsg(null);
+    setIsSubmitting(true);
+    try {
+      const loginEmail = email.trim() || 'alex.morgan@rideai.nyc';
+      const loginPass = password || 'driver123';
+      const profile = await login(loginEmail, loginPass);
+      if (profile.role === 'ADMIN') {
+        navigate(ROUTES.ADMIN.DASHBOARD);
+      } else {
+        navigate(ROUTES.USER.DASHBOARD);
+      }
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || err?.message || 'Authentication failed. Please check your credentials.';
+      setErrorMsg(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDemoDriver = () => {
-    loginAsDriver();
-    navigate(ROUTES.DASHBOARD);
+  const handleDemoDriver = async () => {
+    setErrorMsg(null);
+    setIsSubmitting(true);
+    try {
+      await loginAsDriver();
+      navigate(ROUTES.USER.DASHBOARD);
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || err?.message || 'Demo Driver login failed.';
+      setErrorMsg(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleDemoAdmin = () => {
-    loginAsAdmin();
-    navigate(ROUTES.ADMIN);
+  const handleDemoAdmin = async () => {
+    setErrorMsg(null);
+    setIsSubmitting(true);
+    try {
+      await loginAsAdmin();
+      navigate(ROUTES.ADMIN.DASHBOARD);
+    } catch (err: any) {
+      const msg = err?.response?.data?.detail || err?.message || 'Demo Admin login failed.';
+      setErrorMsg(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,28 +97,8 @@ export const LoginPage: React.FC = () => {
           width: '100%',
         }}
       >
-        {/* Header with Enterprise Managed Access Badge */}
+        {/* Header — Beginning directly with Welcome Back */}
         <Box sx={{ mb: 3.5 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1.2 }}>
-            <Chip
-              label="MANAGED ACCESS"
-              size="small"
-              sx={{
-                backgroundColor: 'rgba(0, 217, 192, 0.1)',
-                color: VELOUR_TOKENS.accentTeal,
-                border: `1px solid rgba(0, 217, 192, 0.25)`,
-                fontWeight: 700,
-                fontSize: 10,
-                height: 22,
-                borderRadius: 1,
-                px: 0.5,
-              }}
-            />
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontSize: 11 }}>
-              v2.4 Enterprise
-            </Typography>
-          </Box>
-
           <Typography
             variant="h4"
             sx={{
@@ -108,6 +122,23 @@ export const LoginPage: React.FC = () => {
             Access your Ride AI intelligence platform
           </Typography>
         </Box>
+
+        {errorMsg && (
+          <Alert
+            severity="error"
+            onClose={() => setErrorMsg(null)}
+            sx={{
+              mb: 2.5,
+              borderRadius: 2.5,
+              backgroundColor: 'rgba(239, 68, 68, 0.12)',
+              color: '#F87171',
+              border: '1px solid rgba(239, 68, 68, 0.3)',
+              '& .MuiAlert-icon': { color: '#F87171' },
+            }}
+          >
+            {errorMsg}
+          </Alert>
+        )}
 
         {/* Login Form */}
         <form onSubmit={handleSubmit}>
@@ -169,7 +200,7 @@ export const LoginPage: React.FC = () => {
                 <Link
                   component="button"
                   type="button"
-                  onClick={() => navigate(ROUTES.DASHBOARD)}
+                  onClick={() => navigate(ROUTES.USER.DASHBOARD)}
                   sx={{
                     color: VELOUR_TOKENS.accentLavender,
                     fontSize: 12,
@@ -322,32 +353,6 @@ export const LoginPage: React.FC = () => {
           >
             Demo Admin
           </Button>
-        </Box>
-
-        {/* Managed Enterprise Security Note */}
-        <Box
-          sx={{
-            mt: 3,
-            pt: 2.5,
-            borderTop: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
-            display: 'flex',
-            alignItems: 'center',
-            justify: 'center',
-            gap: 0.8,
-          }}
-        >
-          <SecurityOutlinedIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 14 }} />
-          <Typography
-            variant="caption"
-            sx={{
-              color: VELOUR_TOKENS.textSecondary,
-              fontSize: 11.5,
-              textAlign: 'center',
-              lineHeight: 1.3,
-            }}
-          >
-            Managed access for Ride AI drivers & fleet administrators
-          </Typography>
         </Box>
       </Paper>
     </AuthLayout>

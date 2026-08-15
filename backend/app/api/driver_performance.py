@@ -1,10 +1,15 @@
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, Depends
 from app.schemas.pydantic_schemas import DriverPerformanceResponse
+from app.models.entities import User, UserRole
+from app.core.security import require_role
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
 
 @router.get("/driver-performance", response_model=DriverPerformanceResponse)
-def get_driver_performance(driver_id: str = Query("driver-001")):
+def get_driver_performance(
+    driver_id: str = Query("driver-001"),
+    current_user: User = Depends(require_role([UserRole.DRIVER, UserRole.ADMIN]))
+):
     return {
         "driver_id": driver_id,
         "name": "Alex Morgan",

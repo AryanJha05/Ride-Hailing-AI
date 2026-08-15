@@ -1,12 +1,12 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuth } from './AuthContext';
 import { UserRole, ROLES } from './roles';
 import { Permission } from './permissions';
 import { ROUTES } from '../routes/routes';
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   allowedRoles?: UserRole[];
   requiredPermission?: Permission;
 }
@@ -26,22 +26,22 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   // Check role authorization if allowedRoles is provided
   if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(role)) {
     if (role === ROLES.DRIVER) {
-      return <Navigate to={ROUTES.DASHBOARD} replace />;
+      return <Navigate to={ROUTES.USER.DASHBOARD} replace />;
     }
     if (role === ROLES.ADMIN) {
-      return <Navigate to={ROUTES.ADMIN} replace />;
+      return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
     }
   }
 
   // Check permission authorization if requiredPermission is provided
   if (requiredPermission && !hasPermission(requiredPermission)) {
     if (role === ROLES.DRIVER) {
-      return <Navigate to={ROUTES.DASHBOARD} replace />;
+      return <Navigate to={ROUTES.USER.DASHBOARD} replace />;
     }
     if (role === ROLES.ADMIN) {
-      return <Navigate to={ROUTES.ADMIN} replace />;
+      return <Navigate to={ROUTES.ADMIN.DASHBOARD} replace />;
     }
   }
 
-  return <>{children}</>;
+  return children ? <>{children}</> : <Outlet />;
 };
