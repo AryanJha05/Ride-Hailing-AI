@@ -1,25 +1,26 @@
-# Ride AI — Demand Forecasting & Driver Assistant Platform
+# Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting and driver positioning assistant. It combines multi-model machine learning services (Trip Duration prediction, Demand Zone clustering, and Time-Series demand forecasting) with an Ollama-powered LLM reasoning engine to give drivers real-time, actionable positioning advice.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Trip Duration prediction, Demand Zone clustering, and Time-Series demand forecasting) with an Ollama-powered LLM reasoning engine to give drivers real-time, actionable positioning advice, while empowering fleet admins with full transactional account control and operational metrics.
 
-The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial demand heatmaps, bento grid dashboards, and real-time AI command chat.
+The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial demand heatmaps, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
 
 ---
 
 ## 🎨 Tech Stack & Architecture
 
 - **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React Query, Vite
-- **Backend**: FastAPI, Python 3.10+, SQLAlchemy, Pydantic v2, Uvicorn
+- **Backend**: FastAPI, Python 3.10+, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
 - **AI / ML Layer**: 
   - **Student A**: Trip Duration Prediction Service
   - **Student B**: Demand Zone Detection & Clustering Service
   - **Student C**: 24h Hourly Demand Forecasting Service
   - **Student D**: Ollama LLM Reasoning Service (Gemma2 model default with circuit-breaker fallback)
-- **Database**: SQLite (SQLAlchemy ORM with pre-seeded demonstration data)
+- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC demonstration data)
+- **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
 ---
 
-## 🚀 How to Run locally on Your PC
+## 🚀 How to Run Locally on Your PC
 
 Follow these steps after cloning the repository.
 
@@ -61,7 +62,7 @@ cd Ride-Hailing-AI
    pip install -r backend/requirements.txt
    ```
 
-3. Seed the Database with initial mock data:
+3. Seed the Database with initial demonstration data (Admin & Driver accounts, NYC demand zones):
 
    ```bash
    python backend/seed.py
@@ -74,7 +75,7 @@ cd Ride-Hailing-AI
    ```
 
    The backend will start at **`http://localhost:8000`**.
-   - API Documentation (Swagger): `http://localhost:8000/docs`
+   - API Documentation (Swagger UI): `http://localhost:8000/docs`
 
 ---
 
@@ -106,7 +107,7 @@ Open a new terminal window/tab:
 
 ### Step 4: (Optional) Local Ollama LLM Setup
 
-If you want the AI Assistant to generate responses using a local Ollama model instead of the rule-based circuit-breaker fallback:
+If you want the AI Assistant to generate responses using a local Ollama model instead of the rule-based fallback:
 
 1. Download and start [Ollama](https://ollama.com).
 2. Pull the default Gemma2 model:
@@ -130,64 +131,99 @@ docker-compose up --build
 
 ---
 
-## 📱 Platform Pages & Navigation
+## 🔑 Demo Access Credentials
 
-Once running, navigate through the platform using the left sidebar:
-
-| Page | URL | Description |
-| :--- | :--- | :--- |
-| **Login Page (Default Entry)** | `http://localhost:3000/` or `/login` | Enterprise split-screen managed authentication entry point (Demo Driver & Demo Admin options) |
-| **Operations View** | `http://localhost:3000/dashboard` | Main driver dashboard with bento grid metrics & AI recommendations |
-| **Live Demand Map** | `http://localhost:3000/live-map` | Spatial Leaflet map with active zone filters & surge multipliers |
-| **AI Assistant** | `http://localhost:3000/ai-assistant` | Interactive AI command chat with real-time ML analysis chips |
-| **Forecast Analytics** | `http://localhost:3000/analytics` | 24h predictive area charts, zone comparisons & weekly heatmap |
-| **Driver Profile** | `http://localhost:3000/profile` | Driver rating (Alex Morgan, NYC-2048), earnings history, and recent trip table |
-| **Trips** | `http://localhost:3000/trips` | Detailed NYC trip logs and fare breakdowns |
-| **Settings** | `http://localhost:3000/settings` | Driver preference, vehicle, and dispatch configuration |
-| **Support** | `http://localhost:3000/support` | NYC driver support center and emergency contacts |
-| **Admin Dashboard** | `http://localhost:3000/admin` | NOC live status, ML model health monitoring & anomaly alerts |
+| Role | Email | Password | Allowed Section |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@rideai.nyc` | `admin123` | `/admin/*` (Full Administrative & Fleet Control) |
+| **Driver** | `alex.morgan@rideai.nyc` | `driver123` | `/driver/*` (Driver Operational Dashboard & AI Assistant) |
 
 ---
 
-## 🚧 Current Development Status
+## 📱 Navigation & Routing Architecture
 
-The application architecture and frontend/backend implementation are under active development.
+Ride AI uses a unified application shell with role-protected route namespaces:
 
-Current status:
-- ✅ React frontend (Velour enterprise design system)
-- ✅ Centralized Routing System (`src/routes/routes.ts`)
-- ✅ Role-Based Access Control (`ProtectedRoute.tsx` with `DRIVER` & `ADMIN` permissions)
-- ✅ Split-screen enterprise authentication entry point with side-by-side 50/50 Demo Driver & Demo Admin access
-- ✅ FastAPI backend with NYC spatial telemetry & USD currency models
-- ✅ Production-ready Docker & Docker Compose infrastructure
-- ✅ SQLite database with NYC seed data (Alex Morgan, NYC-2048)
-- ✅ REST API contracts & JSON schemas
-- ✅ Ollama LLM integration structure (Gemma2 model)
-- 🚧 Student A ML Model (Pending Integration)
-- 🚧 Student B ML Model (Pending Integration)
-- 🚧 Student C ML Model (Pending Integration)
-- 🚧 Backend JWT/OAuth authentication logic (Pending implementation)
+### Authentication & Public Routes
+| Page | URL | Description |
+| :--- | :--- | :--- |
+| **Login Page** | `/login` | Enterprise 50/50 split authentication page with quick demo login buttons |
+
+### Driver Portal (`/driver/*`)
+| Page | URL | Description |
+| :--- | :--- | :--- |
+| **Driver Dashboard** | `/driver/dashboard` | Main driver hub with bento grid metrics, quick actions & positioning advice |
+| **Live Demand Map** | `/driver/demand` | Spatial Leaflet map with active NYC demand zones & surge multipliers |
+| **AI Assistant** | `/driver/assistant` | Interactive AI command chat with real-time ML reasoning chips |
+| **Earnings** | `/driver/earnings` | Detailed earnings analytics, shift performance & AI bonus breakdowns |
+| **Trips** | `/driver/trips` | NYC trip log table with fares, ratings, and route details |
+| **Forecast Analytics** | `/driver/analytics` | Hourly predictive demand charts and zone comparisons |
+| **Driver Profile** | `/driver/profile` | Driver rating, vehicle assignment, and operational stats |
+| **Settings & Support** | `/driver/settings`, `/driver/support` | Preferences, vehicle config, and NYC driver support center |
+
+### Admin Operations Portal (`/admin/*`)
+| Page | URL | Description |
+| :--- | :--- | :--- |
+| **Admin Dashboard** | `/admin/dashboard` | Fleet NOC overview, active drivers, total trips, and revenue metrics |
+| **Fleet Management** | `/admin/fleet` | Live vehicle status, vehicle models, and maintenance alerts |
+| **Driver Management** | `/admin/drivers` | Enterprise driver directory, real-time search, status filter, transactional account creation, and detail views |
+| **Live Demand** | `/admin/demand` | Spatial surge map across NYC demand zones |
+| **Demand Forecast** | `/admin/forecast` | Time-series demand forecasting by borough and zone |
+| **Model Health** | `/admin/models` | ML latency monitoring, throughput, and model drift metrics |
+| **AI Recommendations** | `/admin/recommendations` | System-wide automated dispatch & surge optimization rules |
+| **Alerts & System Status**| `/admin/alerts`, `/admin/system` | Real-time anomaly notifications & microservice health checks |
+| **Users & Roles** | `/admin/users` | RBAC account directory and permission management |
+
+---
+
+## ⚡ Key Platform Features
+
+- ✅ **Unified App Shell Architecture**: Shared Header, Sidebar, Theme, and Typography across Driver and Admin portals while maintaining strict role-based navigation.
+- ✅ **JWT Authentication & RBAC Protection**: Secure login via `/api/auth/login`, bcrypt password hashing, and route protection for `DRIVER` and `ADMIN` roles.
+- ✅ **Admin Driver Management**: Full transactional driver account creation (`POST /api/admin/drivers`), linking a `User` account (`role=DRIVER`) with a `Driver` profile, temporary password modal prompt, detail viewer, and active/inactive status toggling.
+- ✅ **NYC Telemetry & Spatial Intelligence**: Real NYC demand zones (Midtown Manhattan, JFK Airport, Financial District, Grand Central, Williamsburg, etc.) with live surge multipliers.
+- ✅ **Multi-Model ML Integration**: Predicts trip duration, identifies high-demand clusters, and forecasts 24h demand horizons.
+- ✅ **Automated RBAC Test Suite**: Backend test suite (`test_admin_drivers_rbac.py`) validating role isolation and unauthorized access prevention.
+
+---
 
 ## 📂 Project Structure
 
-Ride-AI/
-
-├── frontend/
-
+```
+Ride-Hailing-AI/
 ├── backend/
+│   ├── app/
+│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, etc.)
+│   │   ├── core/            # Security, JWT, hashing, RBAC middleware
+│   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
+│   │   ├── schemas/         # Pydantic validation schemas
+│   │   └── services/        # Business logic services (driver_service, etc.)
+│   ├── main.py              # FastAPI application entry point
+│   ├── seed.py              # Database seeder with demonstration data
+│   └── test_admin_drivers_rbac.py # RBAC and security test suite
+├── frontend/
+│   ├── src/
+│   │   ├── auth/            # AuthContext, ProtectedRoute, role definitions
+│   │   ├── components/      # Shared layout, AppShell, Header, Sidebar
+│   │   ├── hooks/           # React Query hooks (useRideApi)
+│   │   ├── layouts/         # MainLayout shell
+│   │   ├── navigation/      # Admin and Driver sidebar navigation configs
+│   │   ├── pages/           # Admin and Driver page components
+│   │   ├── routes/          # Centralized route definitions
+│   │   ├── services/        # Axios API client
+│   │   └── theme/           # Velour color palette & MUI theme
+│   └── package.json
+├── docker-compose.yml
+└── README.md
+```
 
-├── docs/
-
-├── README.md
-
-└── .gitignore
-
+---
 
 ## 👥 Team
 
 | Member | Responsibility |
 |---------|----------------|
-| Student A | Trip Duration Prediction |
-| Student B | Demand Zone Detection |
-| Student C | Demand Forecasting |
-| Student D | AI Driver Assistant, Ollama Integration, Full Stack Integration |
+| **Student A** | Trip Duration Prediction |
+| **Student B** | Demand Zone Detection |
+| **Student C** | Demand Forecasting |
+| **Student D** | AI Driver Assistant, Ollama Integration, Full Stack Integration |

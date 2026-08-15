@@ -10,6 +10,9 @@ import {
   LoginCredentials,
   LoginResponse,
   AuthUser,
+  DriverRecord,
+  CreateDriverPayload,
+  UpdateDriverPayload,
 } from '../types/api.types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
@@ -82,4 +85,25 @@ export const rideApi = {
     });
     return res.data;
   },
+
+  getAdminDrivers: async (): Promise<DriverRecord[]> => {
+    const res = await apiClient.get('/admin/drivers');
+    return res.data;
+  },
+
+  createAdminDriver: async (payload: CreateDriverPayload): Promise<DriverRecord> => {
+    const res = await apiClient.post('/admin/drivers', payload);
+    return res.data;
+  },
+
+  getAdminDriver: async (driverId: string): Promise<DriverRecord> => {
+    const res = await apiClient.get(`/admin/drivers/${driverId}`);
+    return res.data;
+  },
+
+  updateAdminDriver: async (driverId: string, payload: UpdateDriverPayload): Promise<DriverRecord> => {
+    const res = await apiClient.patch(`/admin/drivers/${driverId}`, payload);
+    return res.data;
+  },
 };
+

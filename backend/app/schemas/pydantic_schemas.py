@@ -17,6 +17,36 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
     user: UserResponse
 
+class DriverCreateRequest(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    driver_id: Optional[str] = None
+    license_number: Optional[str] = None
+    status: Optional[str] = "Active"
+    password: Optional[str] = None
+
+class DriverUpdateRequest(BaseModel):
+    phone: Optional[str] = None
+    license_number: Optional[str] = None
+    status: Optional[str] = None
+    is_active: Optional[bool] = None
+
+class DriverResponseSchema(BaseModel):
+    id: str
+    user_id: Optional[str] = None
+    driver_id: Optional[str] = None
+    name: str
+    email: str
+    phone: Optional[str] = None
+    license_number: Optional[str] = None
+    status: str
+    rating: float
+    total_trips: int
+    total_earnings: float
+    created_at: Optional[str] = None
+    temp_password: Optional[str] = None
+
 
 class LocationSchema(BaseModel):
     lat: float

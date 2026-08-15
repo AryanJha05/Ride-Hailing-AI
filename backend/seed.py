@@ -49,8 +49,13 @@ def seed_database():
         if not existing_driver:
             driver = Driver(
                 id="driver-001",
+                user_id=driver_user.id,
+                driver_id="NYC-DRV-001",
                 name="Alex Morgan",
                 email="alex.morgan@rideai.nyc",
+                phone="+1 (555) 234-5678",
+                license_number="NYC-TLC-99821",
+                status="Active",
                 rating=4.92,
                 total_trips=1284,
                 total_earnings=7480.00,
@@ -60,13 +65,57 @@ def seed_database():
             db.add(driver)
             print("Seeded driver: Alex Morgan")
         else:
+            existing_driver.user_id = driver_user.id
+            existing_driver.driver_id = "NYC-DRV-001"
             existing_driver.name = "Alex Morgan"
             existing_driver.email = "alex.morgan@rideai.nyc"
+            existing_driver.phone = "+1 (555) 234-5678"
+            existing_driver.license_number = "NYC-TLC-99821"
+            existing_driver.status = "Active"
             existing_driver.rating = 4.92
             existing_driver.total_trips = 1284
             existing_driver.total_earnings = 7480.00
             existing_driver.acceptance_rate = 97.0
             existing_driver.cancellation_rate = 2.0
+
+        # Additional NYC Drivers for rich demo UI
+        extra_drivers_data = [
+            ("driver-002", "Mike Johnson", "mike.johnson@rideai.nyc", "+1 (555) 345-6789", "NYC-TLC-88192", "Active", 4.85, 942, 5820.00),
+            ("driver-003", "Sarah Jenkins", "sarah.jenkins@rideai.nyc", "+1 (555) 456-7890", "NYC-TLC-77210", "Offline", 4.98, 1420, 9150.00),
+            ("driver-004", "Carlos Rodriguez", "carlos.r@rideai.nyc", "+1 (555) 567-8901", "NYC-TLC-66103", "Active", 4.79, 610, 3940.00),
+        ]
+
+        for d_id, name, email, phone, lic, st, rat, trips, earn in extra_drivers_data:
+            drv = db.query(Driver).filter(Driver.id == d_id).first()
+            if not drv:
+                # Create corresponding User account
+                u = db.query(User).filter(User.email == email).first()
+                if not u:
+                    u = User(
+                        name=name,
+                        email=email,
+                        password_hash=get_password_hash("driver123"),
+                        role=UserRole.DRIVER,
+                        is_active=(st != "Inactive")
+                    )
+                    db.add(u)
+                    db.flush()
+                
+                new_drv = Driver(
+                    id=d_id,
+                    user_id=u.id,
+                    driver_id=f"NYC-DRV-00{d_id[-1]}",
+                    name=name,
+                    email=email,
+                    phone=phone,
+                    license_number=lic,
+                    status=st,
+                    rating=rat,
+                    total_trips=trips,
+                    total_earnings=earn
+                )
+                db.add(new_drv)
+                print(f"Seeded driver: {name}")
 
         # Seed NYC Demand Zones
         zones_data = [

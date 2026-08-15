@@ -37,3 +37,25 @@ export const useDriverAdviceMutation = () => {
     mutationFn: (req: DriverAdviceRequest) => rideApi.getDriverAdvice(req),
   });
 };
+
+export const useAdminDrivers = () => {
+  return useQuery({
+    queryKey: ['adminDrivers'],
+    queryFn: rideApi.getAdminDrivers,
+    refetchInterval: 15000,
+  });
+};
+
+export const useCreateDriverMutation = () => {
+  return useMutation({
+    mutationFn: rideApi.createAdminDriver,
+  });
+};
+
+export const useUpdateDriverMutation = () => {
+  return useMutation({
+    mutationFn: ({ driverId, payload }: { driverId: string; payload: any }) =>
+      rideApi.updateAdminDriver(driverId, payload),
+  });
+};
+

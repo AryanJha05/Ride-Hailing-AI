@@ -27,8 +27,13 @@ class Driver(Base):
     __tablename__ = "drivers"
 
     id = Column(String, primary_key=True, default=generate_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=True)
+    driver_id = Column(String(60), nullable=True, index=True)
     name = Column(String(120), nullable=False)
     email = Column(String(160), unique=True, nullable=False)
+    phone = Column(String(40), nullable=True)
+    license_number = Column(String(60), nullable=True)
+    status = Column(String(30), default="Active", nullable=False)
     rating = Column(Float, default=5.00)
     total_trips = Column(Integer, default=0)
     total_earnings = Column(Float, default=0.0)
@@ -37,6 +42,7 @@ class Driver(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships
+    user = relationship("User", foreign_keys=[user_id])
     trips = relationship("Trip", back_populates="driver")
     ai_recommendations = relationship("AIRecommendation", back_populates="driver")
 

@@ -114,3 +114,37 @@ export interface SystemHealthResponse {
   avg_model_latency_ms: number;
   services: Record<string, string>;
 }
+
+export interface DriverRecord {
+  id: string;
+  user_id?: string | null;
+  driver_id: string;
+  name: string;
+  email: string;
+  phone: string;
+  license_number: string;
+  status: 'Active' | 'Offline' | 'Inactive' | string;
+  rating: number;
+  total_trips: number;
+  total_earnings: number;
+  created_at?: string;
+  temp_password?: string;
+}
+
+export interface CreateDriverPayload {
+  name: string;
+  email: string;
+  phone?: string;
+  driver_id?: string;
+  license_number?: string;
+  status?: string;
+  password?: string;
+}
+
+export interface UpdateDriverPayload {
+  phone?: string;
+  license_number?: string;
+  status?: string;
+  is_active?: boolean;
+}
+
