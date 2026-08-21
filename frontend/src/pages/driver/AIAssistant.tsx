@@ -19,29 +19,9 @@ export const AIAssistant: React.FC = () => {
   const [inputQuery, setInputQuery] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
-      id: 'm1',
-      sender: 'user',
-      text: 'Where should I stage for the highest surge in the next 30 minutes?',
-    },
-    {
-      id: 'm2',
+      id: 'm-init',
       sender: 'ai',
-      text: 'I recommend repositioning to Midtown Manhattan. We are detecting a significant anomaly in demand clustering near JFK Airport & Commercial Hub.',
-      analysis: {
-        demandForecast: '+412%',
-        historicalAvg: '2.4x',
-        distance: '1.2 km',
-      },
-    },
-    {
-      id: 'm3',
-      sender: 'user',
-      text: "What's the estimated time to get there?",
-    },
-    {
-      id: 'm4',
-      sender: 'ai',
-      text: 'Current traffic conditions indicate a travel time of approximately 12m 30s via FDR Drive.',
+      text: "Hello! I am your AI Dispatch Assistant. Ask me for real-time dispatch advice, pickup optimization, or surge queries.",
     },
   ]);
 
@@ -65,22 +45,22 @@ export const AIAssistant: React.FC = () => {
           const aiMsg: ChatMessage = {
             id: `ai-${Date.now()}`,
             sender: 'ai',
-            text: data.recommendation + ' ' + data.reason,
-            analysis: {
-              demandForecast: data.reasoning_chips?.[0]?.value || '+412%',
-              historicalAvg: data.reasoning_chips?.[1]?.value || '2.4x',
-              distance: data.reasoning_chips?.[2]?.value || '1.2 mi',
-            },
+            text: (data.recommendation ? `${data.recommendation} ` : '') + (data.reason || ''),
+            analysis: data.reasoning_chips?.[0] ? {
+              demandForecast: data.reasoning_chips[0]?.value,
+              historicalAvg: data.reasoning_chips[1]?.value,
+              distance: data.reasoning_chips[2]?.value,
+            } : undefined,
           };
           setMessages((prev) => [...prev, aiMsg]);
         },
         onError: () => {
-          const fallbackMsg: ChatMessage = {
+          const errorMsg: ChatMessage = {
             id: `ai-err-${Date.now()}`,
             sender: 'ai',
-            text: 'I recommend repositioning to Midtown Manhattan. Demand forecast remains elevated at +412% with optimal staging conditions.',
+            text: 'AI Dispatch Assistant service unavailable. Please verify backend microservice connectivity.',
           };
-          setMessages((prev) => [...prev, fallbackMsg]);
+          setMessages((prev) => [...prev, errorMsg]);
         },
       }
     );

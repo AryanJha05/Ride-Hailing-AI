@@ -13,6 +13,8 @@ import {
   DriverRecord,
   CreateDriverPayload,
   UpdateDriverPayload,
+  TripDurationRequest,
+  TripDurationResponse,
 } from '../types/api.types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
@@ -103,6 +105,11 @@ export const rideApi = {
 
   updateAdminDriver: async (driverId: string, payload: UpdateDriverPayload): Promise<DriverRecord> => {
     const res = await apiClient.patch(`/admin/drivers/${driverId}`, payload);
+    return res.data;
+  },
+
+  predictTripDuration: async (payload: TripDurationRequest): Promise<TripDurationResponse> => {
+    const res = await apiClient.post('/driver/trip-duration', payload);
     return res.data;
   },
 };

@@ -59,3 +59,9 @@ export const useUpdateDriverMutation = () => {
   });
 };
 
+export const useTripDurationMutation = () => {
+  return useMutation({
+    mutationFn: rideApi.predictTripDuration,
+  });
+};
+

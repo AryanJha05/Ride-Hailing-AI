@@ -27,9 +27,10 @@ def get_system_health():
         "avg_model_latency_ms": 14.2,
         "services": {
             "database": "online",
-            "trip_duration_model": "active (Student A)",
-            "demand_zone_model": "active (Student B)",
-            "demand_forecast_model": "active (Student C)",
+            "trip_duration_model": "active (Student A - XGBoost V3)",
+            "demand_zone_model": "pending_integration (Student B)",
+            "demand_forecast_model": "pending_integration (Student C)",
             "ollama_llm": ollama_status
         }
     }
+

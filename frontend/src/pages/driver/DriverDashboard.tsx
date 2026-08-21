@@ -25,12 +25,14 @@ import { ROUTES } from '../../routes/routes';
 import { KpiCard } from '../../components/dashboard/KpiCard';
 import { EarningsChart } from '../../components/dashboard/EarningsChart';
 import { DemandSurgeRadar } from '../../components/dashboard/DemandSurgeRadar';
-import { useDemandZones } from '../../hooks/useRideApi';
+import { TripDurationPredictorCard } from '../../components/dashboard/TripDurationPredictorCard';
+import { useDemandZones, useDriverPerformance } from '../../hooks/useRideApi';
 import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const DriverDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { data: zones } = useDemandZones();
+  const { data: perfRes } = useDriverPerformance();
   const [isOnline, setIsOnline] = useState(true);
 
   return (
@@ -53,7 +55,7 @@ export const DriverDashboard: React.FC = () => {
         >
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 20, md: 22 }, mb: 0.5 }}>
-              Good evening, Alex Morgan 👋
+              Good evening, {perfRes?.name || 'Alex Morgan'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
               High demand near <strong style={{ color: VELOUR_TOKENS.accentTeal }}>Midtown Manhattan (+42%)</strong>. Optimal positioning active.
@@ -87,7 +89,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TODAY'S EARNINGS"
-              value="$285.00"
+              value={`$${perfRes?.projected_shift_earnings || 285.00}`}
               change="+18.4% vs yesterday"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentPrimary}
@@ -98,7 +100,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="ACCEPTANCE RATE"
-              value="97%"
+              value={`${perfRes?.acceptance_rate || 97}%`}
               change="Top 2% of drivers"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentTeal}
@@ -109,7 +111,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="DRIVER RATING"
-              value="4.92"
+              value={`${perfRes?.rating || 4.92}`}
               subtext="Excellent rating"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentGold}
@@ -120,7 +122,7 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TOTAL TRIPS"
-              value="1,284"
+              value={`${perfRes?.total_trips?.toLocaleString() || '1,284'}`}
               change="+14 today"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentLavender}
@@ -133,17 +135,27 @@ export const DriverDashboard: React.FC = () => {
         {/* Row 2 — Bento Grid Core Layout */}
         <Grid container spacing={2.5} sx={{ mb: 3 }}>
           {/* Earnings Overview Area Chart */}
-          <Grid item xs={12} lg={5.5}>
-            <EarningsChart />
+          <Grid item xs={12} lg={7}>
+            <EarningsChart data={perfRes?.performance_history} />
           </Grid>
 
+
+
           {/* Demand Radar with Leaflet Inset */}
-          <Grid item xs={12} md={6} lg={3.5}>
+          <Grid item xs={12} lg={5}>
             <DemandSurgeRadar zones={zones || []} />
+          </Grid>
+        </Grid>
+
+        {/* Row 3 — ML Intelligence & Goal Metrics */}
+        <Grid container spacing={2.5} sx={{ mb: 3 }}>
+          {/* XGBoost V3 Trip Duration Predictor */}
+          <Grid item xs={12} md={6} lg={6}>
+            <TripDurationPredictorCard />
           </Grid>
 
           {/* Today's Goal & Upcoming Peak Hours Stacked Cards */}
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={6} lg={6}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, height: '100%' }}>
               {/* Today's Goal Card */}
               <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3 }}>

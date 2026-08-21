@@ -5,59 +5,16 @@ import {
   Card,
   Typography,
   Chip,
-  List,
-  Button,
 } from '@mui/material';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useSystemHealth } from '../../hooks/useRideApi';
 
 export const AdminAlertsPage: React.FC = () => {
-  const alertsList = [
-    {
-      id: 'ALT-401',
-      severity: 'CRITICAL',
-      title: 'Surge Demand Anomaly Spike Detected',
-      desc: 'Midtown Manhattan (Zone 161) trip requests spiked by +350% above 30-day baseline in under 15 minutes.',
-      time: '4 mins ago',
-      source: 'XGBoost Demand Classifier',
-      color: '#FF5252',
-      icon: <ErrorOutlineIcon sx={{ color: '#FF5252' }} />,
-    },
-    {
-      id: 'ALT-398',
-      severity: 'WARNING',
-      title: 'API Gateway Latency Transient Warning',
-      desc: 'Gateway p99 response time momentarily hit 182ms during peak batch trip dispatch sync.',
-      time: '28 mins ago',
-      source: 'FastAPI Gateway',
-      color: VELOUR_TOKENS.warning,
-      icon: <WarningAmberIcon sx={{ color: VELOUR_TOKENS.warning }} />,
-    },
-    {
-      id: 'ALT-395',
-      severity: 'INFO',
-      title: 'Ollama LLM Model Health Verification Passed',
-      desc: 'Gemma-2-9B model state validated with zero memory leaks and stable 140ms response latency.',
-      time: '1 hour ago',
-      source: 'Ollama Health Monitor',
-      color: VELOUR_TOKENS.accentTeal,
-      icon: <InfoOutlinedIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
-    },
-    {
-      id: 'ALT-392',
-      severity: 'RESOLVED',
-      title: 'JFK Airport Terminal 2 Driver Supply Deficit Resolved',
-      desc: 'Automated dispatch staged +120 drivers to JFK T2, reducing passenger queue wait time to 1.8 mins.',
-      time: '2 hours ago',
-      source: 'Auto-Dispatcher',
-      color: VELOUR_TOKENS.success,
-      icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.success }} />,
-    },
-  ];
+  const { data: healthRes } = useSystemHealth();
+
+  const isHealthy = healthRes?.status === 'healthy' || healthRes?.status === 'ok';
 
   return (
     <PageShell title="NOC Operational & System Alerts">
@@ -66,17 +23,17 @@ export const AdminAlertsPage: React.FC = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'ACTIVE UNRESOLVED ALERTS', val: '2 ALERTS', color: '#FF5252' },
-              { label: 'CRITICAL SEVERITY', val: '1 CRITICAL', color: '#FF5252' },
-              { label: 'WARNING SEVERITY', val: '1 WARNING', color: VELOUR_TOKENS.warning },
-              { label: 'RESOLVED TODAY', val: '42 RESOLVED', color: VELOUR_TOKENS.success },
+              { label: 'ACTIVE UNRESOLVED ALERTS', val: '0 ALERTS', color: VELOUR_TOKENS.success },
+              { label: 'CRITICAL SEVERITY', val: '0 CRITICAL', color: VELOUR_TOKENS.textSecondary },
+              { label: 'WARNING SEVERITY', val: '0 WARNING', color: VELOUR_TOKENS.textSecondary },
+              { label: 'SYSTEM HEALTH STATUS', val: isHealthy ? 'OPERATIONAL' : 'DEGRADED', color: isHealthy ? VELOUR_TOKENS.success : VELOUR_TOKENS.warning },
             ].map((stat, idx) => (
               <Grid item xs={6} md={3} key={idx}>
                 <Card sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, letterSpacing: '0.06em' }}>
                     {stat.label}
                   </Typography>
-                  <Typography className="mono-num" variant="h5" sx={{ fontWeight: 700, color: stat.color, mt: 1 }}>
+                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: stat.color, mt: 1 }}>
                     {stat.val}
                   </Typography>
                 </Card>
@@ -85,63 +42,24 @@ export const AdminAlertsPage: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Alerts Log List */}
+        {/* Alerts Log List Empty State */}
         <Grid item xs={12}>
-          <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-                Real-Time System Signal Log
+          <Card sx={{ p: 4, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, textAlign: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', py: 4 }}>
+              <Box sx={{ p: 2, borderRadius: '50%', backgroundColor: 'rgba(34, 197, 94, 0.1)', mb: 2 }}>
+                <NotificationsNoneIcon sx={{ color: VELOUR_TOKENS.success, fontSize: 40 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', mb: 1 }}>
+                No Active System Telemetry Alerts
               </Typography>
-              <Chip label="Live NOC Telemetry" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.1)', color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 600 }} />
+              <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, maxWidth: 480, mb: 3 }}>
+                All backend system services, database connections, and integrated ML model microservices are operating nominal with zero active warnings.
+              </Typography>
+              <Chip
+                label="System Signal Monitoring Active"
+                sx={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: VELOUR_TOKENS.success, fontWeight: 600, border: `1px solid rgba(34, 197, 94, 0.3)` }}
+              />
             </Box>
-
-            <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {alertsList.map((alert) => (
-                <Box
-                  key={alert.id}
-                  sx={{
-                    p: 2.5,
-                    backgroundColor: VELOUR_TOKENS.bgSurface2,
-                    borderLeft: `4px solid ${alert.color}`,
-                    borderRadius: '0 8px 8px 0',
-                    borderTop: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    borderRight: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 1,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 1 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                      {alert.icon}
-                      <Typography variant="body1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 15 }}>
-                        {alert.title}
-                      </Typography>
-                      <Chip label={alert.severity} size="small" sx={{ backgroundColor: `${alert.color}20`, color: alert.color, fontSize: 10, fontWeight: 700 }} />
-                    </Box>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontFamily: VELOUR_TOKENS.fontMono }}>
-                      {alert.time} • Source: {alert.source}
-                    </Typography>
-                  </Box>
-
-                  <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, pl: 4 }}>
-                    {alert.desc}
-                  </Typography>
-
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 0.5 }}>
-                    <Button variant="outlined" size="small" sx={{ borderColor: VELOUR_TOKENS.borderSubtle, color: VELOUR_TOKENS.textSecondary, textTransform: 'none', fontSize: 12 }}>
-                      Acknowledge
-                    </Button>
-                    {alert.severity === 'CRITICAL' && (
-                      <Button variant="contained" size="small" color="error" sx={{ textTransform: 'none', fontSize: 12, fontWeight: 700 }}>
-                        Dispatch Mitigation Team
-                      </Button>
-                    )}
-                  </Box>
-                </Box>
-              ))}
-            </List>
           </Card>
         </Grid>
       </Grid>

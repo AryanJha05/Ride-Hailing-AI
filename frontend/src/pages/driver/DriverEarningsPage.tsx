@@ -5,36 +5,30 @@ import {
   Card,
   Typography,
   Chip,
-  LinearProgress,
   List,
-  ListItem,
-  ListItemText,
 } from '@mui/material';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useDriverPerformance } from '../../hooks/useRideApi';
 
 export const DriverEarningsPage: React.FC = () => {
-  const recentPayouts = [
-    { id: 'PAY-8841', date: 'Today, 16:30 EST', desc: '14 Completed Shifts & Surge Bonuses', amount: '+$285.00', status: 'COMPLETED' },
-    { id: 'PAY-8720', date: 'Yesterday', desc: '18 Completed Shifts & Airport Trips', amount: '+$342.50', status: 'COMPLETED' },
-    { id: 'PAY-8611', date: 'Aug 13, 2026', desc: 'Weekly Automatic Payout to Chase Bank ****4921', amount: '+$1,842.00', status: 'TRANSFERRED' },
-  ];
+  const { data: driver } = useDriverPerformance('driver-001');
+
+  const shiftEarnings = driver?.projected_shift_earnings || 0;
+  const recentTrips = driver?.recent_trips || [];
 
   return (
-    <PageShell title="Driver Earnings & Performance Payouts">
+    <PageShell title="Driver Earnings & Shift Payouts">
       <Grid container spacing={3}>
         {/* Earnings Summary Cards */}
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'TODAY\'S EARNINGS', val: '$285.00', color: VELOUR_TOKENS.accentTeal, sub: '82% of $350.00 shift goal' },
-              { label: 'THIS WEEK TOTAL', val: '$1,842.00', color: '#FFF', sub: '+14% vs last week' },
-              { label: 'PASSENGER TIPS', val: '$148.50', color: VELOUR_TOKENS.accentGold, sub: 'Included in total' },
-              { label: 'SURGE INCENTIVES', val: '$94.00', color: VELOUR_TOKENS.accentLavender, sub: 'Midtown & JFK surges' },
+              { label: 'PROJECTED SHIFT EARNINGS', val: `$${shiftEarnings.toFixed(2)}`, color: VELOUR_TOKENS.accentTeal, sub: 'Calculated from completed shifts' },
+              { label: 'COMPLETED SHIFT TRIPS', val: driver?.total_trips !== undefined ? driver.total_trips.toLocaleString() : '—', color: '#FFF', sub: 'Database Logged Trips' },
+              { label: 'DRIVER RATING', val: driver?.rating ? `${driver.rating} ★` : '—', color: VELOUR_TOKENS.accentGold, sub: 'Passenger feedback score' },
+              { label: 'ACCEPTANCE RATE', val: driver?.acceptance_rate ? `${driver.acceptance_rate}%` : '—', color: VELOUR_TOKENS.accentLavender, sub: 'Real-time dispatch rate' },
             ].map((stat, idx) => (
               <Grid item xs={6} md={3} key={idx}>
                 <Card sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
@@ -53,83 +47,80 @@ export const DriverEarningsPage: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Daily Shift Target Progress Widget */}
+        {/* Shift Summary Card */}
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, height: '100%' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <EmojiEventsIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 24 }} />
                 <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-                  Daily Shift Goal Progress
+                  Driver Telemetry Overview
                 </Typography>
               </Box>
-              <Chip label="82% Complete" size="small" sx={{ backgroundColor: 'rgba(0,217,192,0.1)', color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }} />
+              <Chip label="Database Verified" size="small" sx={{ backgroundColor: 'rgba(0,217,192,0.1)', color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }} />
             </Box>
 
-            <Box sx={{ my: 3 }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>Current: $285.00</Typography>
-                <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>Target: $350.00</Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={82}
-                sx={{
-                  height: 10,
-                  borderRadius: 5,
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: VELOUR_TOKENS.accentTeal,
-                    borderRadius: 5,
-                  },
-                }}
-              />
+            <Box sx={{ p: 2.5, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, my: 2 }}>
+              <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 1 }}>
+                Logged-in Driver: <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>{driver?.name || 'Alex Morgan'}</Box>
+              </Typography>
+              <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                Account Email: <Box component="span" sx={{ color: VELOUR_TOKENS.accentLavender }}>{driver?.email || 'alex.morgan@rideai.nyc'}</Box>
+              </Typography>
             </Box>
 
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, display: 'block' }}>
-              Complete 3 more trips during the Midtown peak hours to trigger the $40.00 shift completion bonus.
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, display: 'block' }}>
+              All trip duration estimates and fares are verified against Student A's XGBoost V3 Trip Duration model.
             </Typography>
           </Card>
         </Grid>
 
-        {/* Recent Payout Activity */}
+        {/* Recent Trip Activity Log */}
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, height: '100%' }}>
             <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16, mb: 2 }}>
-              Recent Earnings Payout Log
+              Recent Completed Trips Log
             </Typography>
 
-            <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              {recentPayouts.map((payout) => (
-                <Box
-                  key={payout.id}
-                  sx={{
-                    p: 2,
-                    borderRadius: 2,
-                    backgroundColor: VELOUR_TOKENS.bgSurface2,
-                    border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    display: 'flex',
-                    justify: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box>
-                    <Typography variant="body2" sx={{ fontWeight: 700, color: '#FFF' }}>
-                      {payout.desc}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontFamily: VELOUR_TOKENS.fontMono }}>
-                      {payout.date} • {payout.id}
-                    </Typography>
+            {recentTrips.length === 0 ? (
+              <Box sx={{ p: 3, textAlign: 'center', backgroundColor: VELOUR_TOKENS.bgSurface2, borderRadius: 2 }}>
+                <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                  No completed trip records found for current shift.
+                </Typography>
+              </Box>
+            ) : (
+              <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {recentTrips.map((trip) => (
+                  <Box
+                    key={trip.id}
+                    sx={{
+                      p: 2,
+                      borderRadius: 2,
+                      backgroundColor: VELOUR_TOKENS.bgSurface2,
+                      border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+                      display: 'flex',
+                      justify: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Box>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: '#FFF' }}>
+                        {trip.zone}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontFamily: VELOUR_TOKENS.fontMono }}>
+                        {trip.id} • {trip.date} • {trip.duration}
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
+                        {trip.fare}
+                      </Typography>
+                      <Chip label={`★ ${trip.rating}`} size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 10, fontWeight: 700 }} />
+                    </Box>
                   </Box>
-                  <Box sx={{ textAlign: 'right' }}>
-                    <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
-                      {payout.amount}
-                    </Typography>
-                    <Chip label={payout.status} size="small" sx={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: VELOUR_TOKENS.success, fontSize: 9, fontWeight: 700 }} />
-                  </Box>
-                </Box>
-              ))}
-            </List>
+                ))}
+              </List>
+            )}
           </Card>
         </Grid>
       </Grid>

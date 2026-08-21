@@ -116,3 +116,33 @@ class SystemHealthResponse(BaseModel):
     system_uptime: str
     avg_model_latency_ms: float
     services: dict
+
+class TripDurationRequest(BaseModel):
+    origin_lat: float = Field(..., ge=-90.0, le=90.0, description="Pickup latitude")
+    origin_lng: float = Field(..., ge=-180.0, le=180.0, description="Pickup longitude")
+    dest_lat: float = Field(..., ge=-90.0, le=90.0, description="Dropoff latitude")
+    dest_lng: float = Field(..., ge=-180.0, le=180.0, description="Dropoff longitude")
+    pickup_datetime: Optional[str] = Field(default=None, description="Pickup timestamp (ISO format or YYYY-MM-DD HH:MM:SS)")
+    passenger_count: Optional[int] = Field(default=1, ge=1, le=9, description="Number of passengers")
+    vendor_id: Optional[int] = Field(default=1, ge=1, le=2, description="Vendor ID (1 or 2)")
+    store_and_fwd_flag: Optional[str] = Field(default="N", description="Store and forward flag ('N' or 'Y')")
+    
+    # Optional weather inputs
+    temp: Optional[float] = None
+    windspeed: Optional[float] = None
+    humidity: Optional[float] = None
+    precip: Optional[float] = None
+    pressure: Optional[float] = None
+    dailyprecip: Optional[float] = None
+    dailysnow: Optional[float] = None
+    fog: Optional[float] = None
+    conditions: Optional[str] = None
+
+class TripDurationResponse(BaseModel):
+    duration_min: float
+    formatted_duration: str
+    predicted_seconds: float
+    distance_km: float
+    distance_miles: float
+    model: str = "xgboost-v3"
+    status: str = "success"

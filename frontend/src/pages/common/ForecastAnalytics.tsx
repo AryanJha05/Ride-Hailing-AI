@@ -63,12 +63,16 @@ export const ForecastAnalytics: React.FC = () => {
                   </Box>
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                      Model Accuracy Score
+                      Model Status
                     </Typography>
-                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: '#FFF' }}>
-                      94.2% (MAPE 5.8%)
+                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentGold, fontSize: 15 }}>
+                      Pending Student C Integration
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+                      (Currently rendering historical baseline trend)
                     </Typography>
                   </Box>
+
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
                       Recommended Shift Action

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.models.database import engine, Base
-from app.api import health, driver_advice, forecast, demand_zones, driver_performance, auth, admin
+from app.api import health, driver_advice, forecast, demand_zones, driver_performance, auth, admin, trip_duration
 
 # Create database tables if they do not exist
 Base.metadata.create_all(bind=engine)
@@ -42,6 +42,7 @@ app.include_router(driver_advice.router, tags=["AI Driver Advice"])
 app.include_router(forecast.router, tags=["Demand Forecast"])
 app.include_router(demand_zones.router, tags=["Demand Zones"])
 app.include_router(driver_performance.router, tags=["Driver Performance"])
+app.include_router(trip_duration.router, tags=["Trip Duration"])
 
 @app.get("/")
 def read_root():

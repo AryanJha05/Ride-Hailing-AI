@@ -6,7 +6,11 @@ import SpeedIcon from '@mui/icons-material/Speed';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 import { VELOUR_TOKENS } from '../../theme/palette';
 
-const mockWeeklyData = [
+interface EarningsChartProps {
+  data?: { day: string; earnings: number; trips?: number }[];
+}
+
+const DEFAULT_WEEKLY_DATA = [
   { day: 'Mon', earnings: 210 },
   { day: 'Tue', earnings: 265 },
   { day: 'Wed', earnings: 230 },
@@ -16,7 +20,10 @@ const mockWeeklyData = [
   { day: 'Sun', earnings: 270 },
 ];
 
-export const EarningsChart: React.FC = () => {
+export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
+  const chartData = data && data.length > 0 ? data : DEFAULT_WEEKLY_DATA;
+  const totalEarnings = chartData.reduce((acc, curr) => acc + (curr.earnings || 0), 0);
+
   return (
     <Card
       sx={{
@@ -35,14 +42,15 @@ export const EarningsChart: React.FC = () => {
               Weekly Earnings Overview
             </Typography>
             <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: 26, mt: 0.5 }}>
-              $1,845.00 <span style={{ color: VELOUR_TOKENS.accentTeal, fontSize: 14, fontWeight: 600 }}>↑ 24.6%</span>
+              ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
+              <span style={{ color: VELOUR_TOKENS.accentTeal, fontSize: 14, fontWeight: 600 }}>↑ 24.6%</span>
             </Typography>
           </Box>
         </Box>
 
         <Box sx={{ width: '100%', height: 180, mb: 2 }}>
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={mockWeeklyData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <defs>
                 <linearGradient id="earningsGrad" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor={VELOUR_TOKENS.accentPrimary} stopOpacity={0.4} />
@@ -107,3 +115,4 @@ export const EarningsChart: React.FC = () => {
     </Card>
   );
 };
+

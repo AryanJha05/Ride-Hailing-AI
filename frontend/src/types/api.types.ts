@@ -148,3 +148,33 @@ export interface UpdateDriverPayload {
   is_active?: boolean;
 }
 
+export interface TripDurationRequest {
+  origin_lat: number;
+  origin_lng: number;
+  dest_lat: number;
+  dest_lng: number;
+  pickup_datetime?: string;
+  passenger_count?: number;
+  vendor_id?: number;
+  store_and_fwd_flag?: string;
+  temp?: number;
+  windspeed?: number;
+  humidity?: number;
+  precip?: number;
+  pressure?: number;
+  dailyprecip?: number;
+  dailysnow?: number;
+  fog?: number;
+  conditions?: string;
+}
+
+export interface TripDurationResponse {
+  duration_min: number;
+  formatted_duration: string;
+  predicted_seconds: number;
+  distance_km: number;
+  distance_miles: number;
+  model: string;
+  status: string;
+}
+

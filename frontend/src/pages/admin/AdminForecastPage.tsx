@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { useForecast } from '../../hooks/useRideApi';
@@ -34,7 +35,7 @@ export const AdminForecastPage: React.FC = () => {
                     Spatial-Temporal ML Demand Forecasting Engine
                   </Typography>
                   <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                    Predictive time-series model outputs vs actual NYC passenger demand.
+                    Historical baseline demand trend vs real-time zone telemetry.
                   </Typography>
                 </Box>
               </Box>
@@ -66,9 +67,9 @@ export const AdminForecastPage: React.FC = () => {
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600, fontSize: 13 }}>
-                24-Hour Predicted vs. Actual Demand Curve ({selectedZone})
+                24-Hour Demand Baseline Curve ({selectedZone})
               </Typography>
-              <Chip label="XGBoost + LSTM Ensemble" size="small" sx={{ backgroundColor: VELOUR_TOKENS.accentPrimaryDim, color: VELOUR_TOKENS.accentLavender, fontSize: 11, fontWeight: 600 }} />
+              <Chip icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />} label="Historical Trend (Student C Model Pending)" size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }} />
             </Box>
             <ForecastChart data={forecastRes?.data || []} />
           </Card>
@@ -93,22 +94,25 @@ export const AdminForecastPage: React.FC = () => {
 
                 <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                    MODEL ACCURACY SCORE (MAPE)
+                    MODEL ACCURACY STATUS
                   </Typography>
-                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: '#FFF', mt: 0.5 }}>
-                    94.2% (MAPE 5.8%)
+                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentGold, mt: 0.5, fontSize: 15 }}>
+                    Pending Student C Integration
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+                    (LSTM Time-Series Model pending pipeline deployment)
                   </Typography>
                 </Box>
 
                 <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                    <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 18 }} />
+                    <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 18 }} />
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700 }}>
                       RECOMMENDED ACTION
                     </Typography>
                   </Box>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.accentLavender }}>
-                    Pre-stage +250 fleet units in {selectedZone} prior to 17:30 peak onset.
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary }}>
+                    Automated staging recommendations unavailable until Student C forecasting model integration is complete.
                   </Typography>
                 </Box>
               </Box>

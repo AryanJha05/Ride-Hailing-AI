@@ -8,6 +8,7 @@ import {
   List,
 } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import DnsIcon from '@mui/icons-material/Dns';
 import StorageIcon from '@mui/icons-material/Storage';
 import CloudDoneIcon from '@mui/icons-material/CloudDone';
@@ -19,11 +20,45 @@ import { useSystemHealth } from '../../hooks/useRideApi';
 export const AdminSystemStatusPage: React.FC = () => {
   const { data: health } = useSystemHealth();
 
+  const isHealthy = health?.status === 'healthy' || health?.status === 'ok';
+  const tripDurationStatus = health?.services?.['trip_duration'] || health?.services?.['trip_duration_v3'] || 'ACTIVE';
+
   const infrastructureServices = [
-    { name: 'FastAPI Backend REST Services', port: '8000', status: 'ONLINE', latency: `${health?.avg_model_latency_ms || 4.2}ms`, uptime: '99.99%', icon: <CloudDoneIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> },
-    { name: 'PostgreSQL Relational Database', port: '5432', status: 'ONLINE', latency: '1.8ms', uptime: '99.98%', icon: <StorageIcon sx={{ color: VELOUR_TOKENS.success }} /> },
-    { name: 'Ollama LLM Microservice Container', port: '11434', status: 'HEALTHY', latency: '140ms', uptime: '99.95%', icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.accentGold }} /> },
-    { name: 'Vite Frontend Application Shell', port: '3000', status: 'ONLINE', latency: '0.8ms', uptime: '100.0%', icon: <DnsIcon sx={{ color: VELOUR_TOKENS.accentLavender }} /> },
+    {
+      name: 'FastAPI Backend REST Services',
+      port: '8000',
+      status: isHealthy ? 'ONLINE' : 'CHECKING',
+      latency: health?.avg_model_latency_ms ? `${health.avg_model_latency_ms}ms` : '—',
+      icon: <CloudDoneIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
+    },
+    {
+      name: 'PostgreSQL Relational Database',
+      port: '5432',
+      status: health?.services?.['database'] || 'ONLINE',
+      latency: 'Connected',
+      icon: <StorageIcon sx={{ color: VELOUR_TOKENS.success }} />,
+    },
+    {
+      name: 'XGBoost V3 Trip Duration Model (Student A)',
+      port: 'Internal',
+      status: tripDurationStatus,
+      latency: health?.avg_model_latency_ms ? `${health.avg_model_latency_ms}ms` : '—',
+      icon: <CheckCircleIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
+    },
+    {
+      name: 'Ollama LLM Microservice Container',
+      port: '11434',
+      status: 'PENDING',
+      latency: 'Not Connected',
+      icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.textSecondary }} />,
+    },
+    {
+      name: 'Vite Frontend Application Shell',
+      port: '3000',
+      status: 'ONLINE',
+      latency: 'Active Session',
+      icon: <DnsIcon sx={{ color: VELOUR_TOKENS.accentLavender }} />,
+    },
   ];
 
   return (
@@ -33,10 +68,10 @@ export const AdminSystemStatusPage: React.FC = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'PLATFORM INFRASTRUCTURE STATUS', val: 'ALL SYSTEMS OPERATIONAL', color: VELOUR_TOKENS.success },
-              { label: 'SYSTEM UPTIME (30 DAYS)', val: health?.system_uptime || '99.98%', color: '#FFF' },
-              { label: 'API GATEWAY LATENCY', val: '4.2 ms', color: VELOUR_TOKENS.accentTeal },
-              { label: 'ACTIVE SOCKET CONNECTIONS', val: '14,921 CONNECTED', color: VELOUR_TOKENS.accentLavender },
+              { label: 'PLATFORM INFRASTRUCTURE STATUS', val: isHealthy ? 'ALL SYSTEMS OPERATIONAL' : 'SYSTEM CHECKING', color: isHealthy ? VELOUR_TOKENS.success : VELOUR_TOKENS.warning },
+              { label: 'SYSTEM HEALTH CHECK', val: health?.status || 'HEALTHY', color: '#FFF' },
+              { label: 'AVERAGE MODEL LATENCY', val: health?.avg_model_latency_ms ? `${health.avg_model_latency_ms} ms` : '—', color: VELOUR_TOKENS.accentTeal },
+              { label: 'ACTIVE DATABASE DRIVERS', val: health?.active_drivers !== undefined ? `${health.active_drivers} ONLINE` : '—', color: VELOUR_TOKENS.accentLavender },
             ].map((stat, idx) => (
               <Grid item xs={6} md={3} key={idx}>
                 <Card sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
@@ -57,60 +92,67 @@ export const AdminSystemStatusPage: React.FC = () => {
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-                Core Infrastructure & Network Services
+                Core Infrastructure & Microservice Status
               </Typography>
-              <Chip label="Continuous Telemetry Active" size="small" sx={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: VELOUR_TOKENS.success, fontSize: 11, fontWeight: 600 }} />
+              <Chip label="Real-time Health Telemetry" size="small" sx={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: VELOUR_TOKENS.success, fontSize: 11, fontWeight: 600 }} />
             </Box>
 
             <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {infrastructureServices.map((svc, idx) => (
-                <Box
-                  key={idx}
-                  sx={{
-                    p: 2.5,
-                    borderRadius: 2,
-                    backgroundColor: VELOUR_TOKENS.bgSurface2,
-                    border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justify: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: 2,
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ p: 1.5, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.04)', display: 'flex' }}>
-                      {svc.icon}
-                    </Box>
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 15 }}>
-                        {svc.name}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontFamily: VELOUR_TOKENS.fontMono }}>
-                        Service Port: :{svc.port} • System Uptime: {svc.uptime}
-                      </Typography>
-                    </Box>
-                  </Box>
+              {infrastructureServices.map((svc, idx) => {
+                const isSvcActive = svc.status === 'ONLINE' || svc.status === 'ACTIVE' || svc.status === 'healthy';
+                const isPending = svc.status === 'PENDING';
+                const chipColor = isSvcActive ? VELOUR_TOKENS.success : isPending ? VELOUR_TOKENS.accentGold : VELOUR_TOKENS.textSecondary;
+                const chipBg = isSvcActive ? 'rgba(34, 197, 94, 0.1)' : isPending ? 'rgba(234, 179, 8, 0.1)' : 'rgba(255, 255, 255, 0.05)';
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-                    <Box sx={{ textAlign: 'right' }}>
-                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, display: 'block' }}>
-                        PING LATENCY
-                      </Typography>
-                      <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
-                        {svc.latency}
-                      </Typography>
+                return (
+                  <Box
+                    key={idx}
+                    sx={{
+                      p: 2.5,
+                      borderRadius: 2,
+                      backgroundColor: VELOUR_TOKENS.bgSurface2,
+                      border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justify: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: 2,
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                      <Box sx={{ p: 1.5, borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.04)', display: 'flex' }}>
+                        {svc.icon}
+                      </Box>
+                      <Box>
+                        <Typography variant="body1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 15 }}>
+                          {svc.name}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontFamily: VELOUR_TOKENS.fontMono }}>
+                          Service Port / Protocol: :{svc.port}
+                        </Typography>
+                      </Box>
                     </Box>
 
-                    <Chip
-                      icon={<CheckCircleIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.success} !important` }} />}
-                      label={svc.status}
-                      size="small"
-                      sx={{ backgroundColor: 'rgba(34, 197, 94, 0.1)', color: VELOUR_TOKENS.success, fontSize: 11, fontWeight: 700, px: 0.5 }}
-                    />
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                      <Box sx={{ textAlign: 'right' }}>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, display: 'block' }}>
+                          TELEMETRY LATENCY
+                        </Typography>
+                        <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
+                          {svc.latency}
+                        </Typography>
+                      </Box>
+
+                      <Chip
+                        icon={isPending ? <HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${chipColor} !important` }} /> : <CheckCircleIcon sx={{ fontSize: '14px !important', color: `${chipColor} !important` }} />}
+                        label={svc.status}
+                        size="small"
+                        sx={{ backgroundColor: chipBg, color: chipColor, fontSize: 11, fontWeight: 700, px: 0.5 }}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-              ))}
+                );
+              })}
             </List>
           </Card>
         </Grid>

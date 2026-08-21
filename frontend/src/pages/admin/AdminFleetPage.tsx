@@ -5,34 +5,24 @@ import {
   Card,
   Typography,
   Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
 } from '@mui/material';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BuildIcon from '@mui/icons-material/Build';
 import LocalTaxiIcon from '@mui/icons-material/LocalTaxi';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useSystemHealth } from '../../hooks/useRideApi';
 
 export const AdminFleetPage: React.FC = () => {
-  const fleetSummaryStats = [
-    { label: 'TOTAL VEHICLES', val: '18,500', color: '#FFF', icon: <LocalTaxiIcon sx={{ color: VELOUR_TOKENS.accentLavender }} /> },
-    { label: 'ACTIVE DISPATCHED', val: '14,921', color: VELOUR_TOKENS.accentTeal, icon: <DirectionsCarIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> },
-    { label: 'AVAILABLE STAGED', val: '2,840', color: VELOUR_TOKENS.success, icon: <CheckCircleIcon sx={{ color: VELOUR_TOKENS.success }} /> },
-    { label: 'IN MAINTENANCE', val: '739', color: VELOUR_TOKENS.warning, icon: <BuildIcon sx={{ color: VELOUR_TOKENS.warning }} /> },
-  ];
+  const { data: healthRes } = useSystemHealth();
 
-  const boroughDistribution = [
-    { borough: 'Manhattan (Midtown / Downtown)', total: 7850, active: 6420, staged: 1150, maintenance: 280, utilization: '96.4%' },
-    { borough: 'Brooklyn (Williamsburg / DUMBO)', total: 4200, active: 3410, staged: 610, maintenance: 180, utilization: '95.7%' },
-    { borough: 'Queens (JFK / LGA / LIC)', total: 3900, active: 3180, staged: 580, maintenance: 140, utilization: '96.1%' },
-    { borough: 'The Bronx & Staten Island', total: 2550, active: 1911, staged: 500, maintenance: 139, utilization: '94.2%' },
+  const fleetSummaryStats = [
+    { label: 'TOTAL REGISTERED FLEET', val: '—', sub: 'Fleet Backend Not Connected', color: VELOUR_TOKENS.textSecondary, icon: <LocalTaxiIcon sx={{ color: VELOUR_TOKENS.accentLavender }} /> },
+    { label: 'ACTIVE DISPATCHED DRIVERS', val: healthRes?.active_drivers ? healthRes.active_drivers.toLocaleString() : '—', sub: healthRes?.active_drivers ? 'Live Database Active' : 'No Live Telemetry', color: VELOUR_TOKENS.accentTeal, icon: <DirectionsCarIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> },
+    { label: 'STAGED IN ZONES', val: '—', sub: 'Zone Staging Pending', color: VELOUR_TOKENS.textSecondary, icon: <CheckCircleIcon sx={{ color: VELOUR_TOKENS.textSecondary }} /> },
+    { label: 'IN MAINTENANCE', val: '—', sub: 'Telematics Unavailable', color: VELOUR_TOKENS.textSecondary, icon: <BuildIcon sx={{ color: VELOUR_TOKENS.textSecondary }} /> },
   ];
 
   return (
@@ -53,50 +43,33 @@ export const AdminFleetPage: React.FC = () => {
                   <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: stat.color, mt: 1 }}>
                     {stat.val}
                   </Typography>
+                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, mt: 0.5, display: 'block' }}>
+                    {stat.sub}
+                  </Typography>
                 </Card>
               </Grid>
             ))}
           </Grid>
         </Grid>
 
-        {/* NYC Borough Fleet Distribution Table */}
+        {/* Fleet Status Container */}
         <Grid item xs={12}>
-          <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-                NYC Borough Fleet Distribution & Status
+          <Card sx={{ p: 4, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, textAlign: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', py: 4 }}>
+              <Box sx={{ p: 2, borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.04)', mb: 2 }}>
+                <InfoOutlinedIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 40 }} />
+              </Box>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', mb: 1 }}>
+                Fleet Telemetry & Vehicle Service Unavailable
               </Typography>
-              <Chip label="Real-time Telemetry" size="small" sx={{ backgroundColor: 'rgba(0,217,192,0.1)', color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 600 }} />
+              <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, maxWidth: 480, mb: 3 }}>
+                Vehicle-level telematics, maintenance tracking, and per-borough fleet distribution APIs are not connected to live hardware telemetry.
+              </Typography>
+              <Chip
+                label="Fleet Management API Pending Integration"
+                sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, color: VELOUR_TOKENS.accentGold, fontWeight: 600, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}
+              />
             </Box>
-
-            <TableContainer component={Paper} sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, borderRadius: 2 }}>
-              <Table>
-                <TableHead>
-                  <TableRow sx={{ borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>BOROUGH ZONE</TableCell>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>TOTAL FLEET</TableCell>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>ACTIVE DISPATCHED</TableCell>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>AVAILABLE STAGED</TableCell>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>MAINTENANCE</TableCell>
-                    <TableCell sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, fontSize: 12 }}>EFFICIENCY</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {boroughDistribution.map((row, idx) => (
-                    <TableRow key={idx} sx={{ '&:last-child td, &:last-child th': { border: 0 }, borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
-                      <TableCell sx={{ color: '#FFF', fontWeight: 600, fontSize: 13 }}>{row.borough}</TableCell>
-                      <TableCell className="mono-num" sx={{ color: VELOUR_TOKENS.textPrimary, fontWeight: 600 }}>{row.total.toLocaleString()}</TableCell>
-                      <TableCell className="mono-num" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>{row.active.toLocaleString()}</TableCell>
-                      <TableCell className="mono-num" sx={{ color: VELOUR_TOKENS.success, fontWeight: 600 }}>{row.staged.toLocaleString()}</TableCell>
-                      <TableCell className="mono-num" sx={{ color: VELOUR_TOKENS.warning, fontWeight: 600 }}>{row.maintenance}</TableCell>
-                      <TableCell>
-                        <Chip label={row.utilization} size="small" sx={{ backgroundColor: 'rgba(0,217,192,0.1)', color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 700 }} />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
           </Card>
         </Grid>
       </Grid>
