@@ -13,7 +13,7 @@ import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const AdminAIRecommendationsPage: React.FC = () => {
   return (
-    <PageShell title="AI & LLM Dispatch Recommendations">
+    <PageShell title="AI Dispatch Recommendations">
       <Grid container spacing={3}>
         {/* Header Summary Banner */}
         <Grid item xs={12}>
@@ -24,15 +24,15 @@ export const AdminAIRecommendationsPage: React.FC = () => {
               </Box>
               <Box sx={{ flexGrow: 1 }}>
                 <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF' }}>
-                  Ollama Autonomous Dispatch Reasoning Engine
+                  Autonomous Dispatch Reasoning Engine
                 </Typography>
                 <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                  Real-time LLM generated operational recommendations for fleet staging, surge optimization, and spatial rebalancing.
+                  Real-time automated operational recommendations for fleet staging, surge optimization, and spatial rebalancing.
                 </Typography>
               </Box>
               <Chip
                 icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />}
-                label="LLM DISPATCH PENDING"
+                label="SERVICE PENDING"
                 sx={{ backgroundColor: 'rgba(234, 179, 8, 0.1)', color: VELOUR_TOKENS.accentGold, fontWeight: 700 }}
               />
             </Box>
@@ -50,10 +50,10 @@ export const AdminAIRecommendationsPage: React.FC = () => {
                 AI Recommendation Service Not Connected
               </Typography>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, maxWidth: 520, mb: 3 }}>
-                Autonomous dispatch recommendations require the Ollama LLM microservice pipeline. No automated suggestions are active at this time.
+                Autonomous dispatch recommendations require the AI Reasoning microservice pipeline. No automated suggestions are active at this time.
               </Typography>
               <Chip
-                label="Ollama LLM Orchestration Pending Deployment"
+                label="AI Reasoning Microservice Integration Planned for Future Phase"
                 sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, color: VELOUR_TOKENS.accentLavender, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, fontWeight: 600 }}
               />
             </Box>

@@ -1,23 +1,5 @@
 services:
-  # 1. LLM Service Container (Ollama Runtime - Optional via 'llm' or 'full' profile)
-  llm-service:
-    profiles:
-      - llm
-      - full
-    build:
-      context: ./llm-service
-      dockerfile: Dockerfile
-    container_name: ride-ai-llm-service
-    ports:
-      - "${LLM_PORT:-11435}:11434"
-    volumes:
-      - ollama_data:/root/.ollama
-    environment:
-      - OLLAMA_HOST=0.0.0.0:11434
-    networks:
-      - ride-ai-network
-
-  # 2. Backend Service Container (FastAPI + Python + SQLAlchemy)
+  # 1. Backend Service Container (FastAPI + Python + SQLAlchemy)
   backend:
     build:
       context: ./backend
@@ -28,14 +10,12 @@ services:
     environment:
       - PORT=8000
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./ride_ai.db}
-      - OLLAMA_HOST=${OLLAMA_HOST:-http://llm-service:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2}
     volumes:
       - ./backend/ride_ai.db:/app/ride_ai.db
     networks:
       - ride-ai-network
 
-  # 3. Frontend Service Container (React + TypeScript + Vite + Nginx)
+  # 2. Frontend Service Container (React + TypeScript + Vite + Nginx)
   frontend:
     build:
       context: ./frontend
@@ -49,10 +29,6 @@ services:
       - backend
     networks:
       - ride-ai-network
-
-volumes:
-  ollama_data:
-    driver: local
 
 networks:
   ride-ai-network:

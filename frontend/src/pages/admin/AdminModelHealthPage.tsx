@@ -53,30 +53,29 @@ export const AdminModelHealthPage: React.FC = () => {
       icon: <DnsIcon sx={{ color: VELOUR_TOKENS.accentLavender }} />,
     },
     {
-      name: 'Ollama LLM (Gemma2 Dispatch Assistant)',
-      type: 'LLM (Gemma-2-9B)',
-      status: services?.ollama_llm?.includes('online') ? 'ONLINE' : 'FALLBACK ACTIVE',
-      isPending: false,
-      latency: services?.ollama_llm?.includes('online') ? '140ms' : 'Rule Engine',
-      loss: 'Rule Engine Active',
-      updated: 'Real-time Status',
-      icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.accentPrimary }} />,
+      name: 'AI Reasoning Model (Planned)',
+      type: 'LLM Reasoning Service',
+      status: 'PENDING INTEGRATION',
+      isPending: true,
+      latency: 'N/A',
+      loss: 'Planned Feature',
+      updated: 'Future Phase Integration',
+      icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.textSecondary }} />,
     },
   ];
 
   return (
-    <PageShell title="ML & LLM Model Health NOC">
+    <PageShell title="ML Model Health NOC">
       <Grid container spacing={3}>
         {/* Model NOC Status Bar */}
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'REGISTERED MODELS', val: '1 ACTIVE / 2 PENDING', color: '#FFF' },
+              { label: 'REGISTERED MODELS', val: '1 ACTIVE / 3 PENDING', color: '#FFF' },
               { label: 'ACTIVE MODEL', val: 'XGBoost V3 (Student A)', color: VELOUR_TOKENS.accentTeal },
-              { label: 'OLLAMA LLM STATUS', val: services?.ollama_llm?.includes('online') ? 'ONLINE' : 'FALLBACK ACTIVE', color: VELOUR_TOKENS.accentGold },
+              { label: 'AI REASONING SERVICE', val: 'PLANNED (FUTURE PHASE)', color: VELOUR_TOKENS.accentGold },
               { label: 'SYSTEM HEALTH', val: healthRes?.status ? 'HEALTHY (200 OK)' : 'ONLINE', color: VELOUR_TOKENS.success },
             ].map((stat, idx) => (
-
               <Grid item xs={6} md={3} key={idx}>
                 <Card sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, letterSpacing: '0.06em' }}>

@@ -1,23 +1,11 @@
-import httpx
 from datetime import datetime
 from fastapi import APIRouter
-from app.core.config import settings
 from app.schemas.pydantic_schemas import SystemHealthResponse
 
 router = APIRouter(prefix="/api")
 
 @router.get("/health", response_model=SystemHealthResponse)
 def get_system_health():
-    # Check Ollama connection
-    ollama_status = "offline"
-    try:
-        with httpx.Client(timeout=1.5) as client:
-            r = client.get(f"{settings.OLLAMA_HOST}/api/tags")
-            if r.status_code == 200:
-                ollama_status = "online"
-    except Exception:
-        ollama_status = "offline (using ML rule engine fallback)"
-
     return {
         "status": "ok",
         "timestamp": datetime.utcnow().isoformat(),
@@ -29,8 +17,6 @@ def get_system_health():
             "database": "online",
             "trip_duration_model": "active (Student A - XGBoost V3)",
             "demand_zone_model": "pending_integration (Student B)",
-            "demand_forecast_model": "pending_integration (Student C)",
-            "ollama_llm": ollama_status
+            "demand_forecast_model": "pending_integration (Student C)"
         }
     }
-

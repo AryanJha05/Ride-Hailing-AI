@@ -8,11 +8,6 @@ class Settings(BaseSettings):
     
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./ride_ai.db")
-    
-    # Ollama LLM Configuration
-    OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-    OLLAMA_MODEL: str = os.getenv("OLLAMA_MODEL", "gemma2")
-    LLM_TIMEOUT_SECONDS: float = 8.0
 
     # Security & JWT
     JWT_SECRET_KEY: str = os.getenv("JWT_SECRET_KEY", "dev_secret_key_change_in_production_123456789")

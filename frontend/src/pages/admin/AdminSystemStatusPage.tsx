@@ -46,8 +46,8 @@ export const AdminSystemStatusPage: React.FC = () => {
       icon: <CheckCircleIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
     },
     {
-      name: 'Ollama LLM Microservice Container',
-      port: '11434',
+      name: 'AI Reasoning Microservice (Planned)',
+      port: 'Internal',
       status: 'PENDING',
       latency: 'Not Connected',
       icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.textSecondary }} />,

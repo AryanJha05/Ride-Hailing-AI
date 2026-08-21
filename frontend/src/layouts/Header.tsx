@@ -108,8 +108,8 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
     },
     {
       id: 3,
-      title: isAdminRole ? 'Ollama Model Health Verified' : 'Driver Rating Verified',
-      desc: isAdminRole ? 'Gemma2 model latency stable at 142ms.' : 'Your rating is 4.92 (Top 2% in NYC region).',
+      title: isAdminRole ? 'Backend Health Verified' : 'Driver Rating Verified',
+      desc: isAdminRole ? 'Core API telemetry and database latency stable.' : 'Your rating is 4.92 (Top 2% in NYC region).',
       time: '3 hours ago',
       icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 18 }} />,
     },

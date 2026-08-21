@@ -103,7 +103,7 @@ class AIRecommendation(Base):
     recommendation = Column(Text, nullable=False)
     reason = Column(Text, nullable=False)
     confidence = Column(Float, default=0.95)
-    model_used = Column(String(60), default="gemma2-local")
+    model_used = Column(String(60), default="ai-reasoning-planned")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships

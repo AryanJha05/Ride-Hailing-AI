@@ -1,6 +1,6 @@
 # Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Trip Duration prediction, Demand Zone clustering, and Time-Series demand forecasting) with an Ollama-powered LLM reasoning engine to give drivers real-time, actionable positioning advice, while empowering fleet admins with full transactional account control and operational metrics.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Trip Duration prediction, Demand Zone clustering, and Time-Series demand forecasting) with an AI positioning assistant framework (LLM reasoning integration is planned for a future development phase), while empowering fleet admins with full transactional account control and operational metrics.
 
 The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial demand heatmaps, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
 
@@ -11,10 +11,10 @@ The user interface follows the **Velour** design system built with React and Mat
 - **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React Query, Vite
 - **Backend**: FastAPI, Python 3.10+, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
 - **AI / ML Layer**: 
-  - **Student A**: Trip Duration Prediction Service
-  - **Student B**: Demand Zone Detection & Clustering Service
-  - **Student C**: 24h Hourly Demand Forecasting Service
-  - **Student D**: Ollama LLM Reasoning Service (Gemma2 model default with circuit-breaker fallback)
+  - **Student A**: Trip Duration Prediction Service (XGBoost V3 Active)
+  - **Student B**: Demand Zone Detection & Clustering Service (Pending Integration)
+  - **Student C**: 24h Hourly Demand Forecasting Service (Pending Integration)
+  - **Student D**: AI Driver Assistant Framework (LLM reasoning service integration planned for future phase)
 - **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC demonstration data)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
@@ -29,7 +29,6 @@ Follow these steps after cloning the repository.
 Ensure you have the following installed on your machine:
 - **Node.js** (v18+ recommended) & `npm`
 - **Python** (v3.10+ recommended) & `pip`
-- *(Optional)* **Ollama** installed locally if you wish to run full local LLM inference (`ollama pull gemma2`).
 
 ---
 
@@ -105,19 +104,6 @@ Open a new terminal window/tab:
 
 ---
 
-### Step 4: (Optional) Local Ollama LLM Setup
-
-If you want the AI Assistant to generate responses using a local Ollama model instead of the rule-based fallback:
-
-1. Download and start [Ollama](https://ollama.com).
-2. Pull the default Gemma2 model:
-   ```bash
-   ollama pull gemma2
-   ```
-3. Ensure Ollama is running at `http://localhost:11434`.
-
----
-
 ## 🐳 Alternative: Running with Docker Compose
 
 If you have Docker installed, you can start the entire stack (Backend + Frontend) with a single command:
@@ -154,7 +140,7 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 | :--- | :--- | :--- |
 | **Driver Dashboard** | `/driver/dashboard` | Main driver hub with bento grid metrics, quick actions & positioning advice |
 | **Live Demand Map** | `/driver/demand` | Spatial Leaflet map with active NYC demand zones & surge multipliers |
-| **AI Assistant** | `/driver/assistant` | Interactive AI command chat with real-time ML reasoning chips |
+| **AI Assistant** | `/driver/assistant` | Interactive AI command chat with real-time ML positioning advice |
 | **Earnings** | `/driver/earnings` | Detailed earnings analytics, shift performance & AI bonus breakdowns |
 | **Trips** | `/driver/trips` | NYC trip log table with fares, ratings, and route details |
 | **Forecast Analytics** | `/driver/analytics` | Hourly predictive demand charts and zone comparisons |
@@ -182,7 +168,7 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 - ✅ **JWT Authentication & RBAC Protection**: Secure login via `/api/auth/login`, bcrypt password hashing, and route protection for `DRIVER` and `ADMIN` roles.
 - ✅ **Admin Driver Management**: Full transactional driver account creation (`POST /api/admin/drivers`), linking a `User` account (`role=DRIVER`) with a `Driver` profile, temporary password modal prompt, detail viewer, and active/inactive status toggling.
 - ✅ **NYC Telemetry & Spatial Intelligence**: Real NYC demand zones (Midtown Manhattan, JFK Airport, Financial District, Grand Central, Williamsburg, etc.) with live surge multipliers.
-- ✅ **Multi-Model ML Integration**: Predicts trip duration, identifies high-demand clusters, and forecasts 24h demand horizons.
+- ✅ **Multi-Model ML Integration**: Predicts trip duration using Student A's XGBoost V3 model, identifies high-demand clusters, and forecasts 24h demand horizons.
 - ✅ **Automated RBAC Test Suite**: Backend test suite (`test_admin_drivers_rbac.py`) validating role isolation and unauthorized access prevention.
 
 ---
@@ -223,7 +209,7 @@ Ride-Hailing-AI/
 
 | Member | Responsibility |
 |---------|----------------|
-| **Student A** | Trip Duration Prediction |
-| **Student B** | Demand Zone Detection |
-| **Student C** | Demand Forecasting |
-| **Student D** | AI Driver Assistant, Ollama Integration, Full Stack Integration |
+| **Student A** | Trip Duration Prediction (XGBoost V3 Active) |
+| **Student B** | Demand Zone Detection (Pending Integration) |
+| **Student C** | Demand Forecasting (Pending Integration) |
+| **Student D** | AI Driver Assistant, Full Stack Integration (LLM Reasoning Microservice Planned for Future Phase) |
