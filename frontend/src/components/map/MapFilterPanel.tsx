@@ -94,56 +94,72 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
         ACTIVE ZONES
       </Typography>
 
-      <List disablePadding sx={{ mb: 3, maxHeight: 220, overflowY: 'auto' }}>
-        {(zones.length > 0 ? zones : [
-          { id: '1', zone_name: 'Midtown Manhattan', demand_percentage: '+42%', surge_multiplier: 1.65, demand_score: 94, trend: 'up' },
-          { id: '2', zone_name: 'JFK Airport (JFK)', demand_percentage: '+65%', surge_multiplier: 1.8, demand_score: 98, trend: 'up' },
-          { id: '3', zone_name: 'Financial District', demand_percentage: '+28%', surge_multiplier: 1.4, demand_score: 82, trend: 'up' },
-        ]).map((z) => (
-          <ListItem
-            key={z.id}
-            sx={{
-              px: 0,
-              py: 1,
-              borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-              display: 'flex',
-              justifyContent: 'space-between',
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Box
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  backgroundColor: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
-                }}
-              />
-              <ListItemText
-                primary={z.zone_name}
-                primaryTypographyProps={{ fontSize: 13, fontWeight: 500, color: '#FFF' }}
-              />
-            </Box>
-            <Box sx={{ textAlign: 'right' }}>
-              <Typography
-                className="mono-num"
-                variant="caption"
-                sx={{
-                  color: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
-                  fontWeight: 700,
-                  fontSize: 12,
-                  display: 'block',
-                }}
-              >
-                {z.surge_multiplier > 1.5 ? 'Surge' : z.surge_multiplier > 1.2 ? 'High' : 'Med'}
-              </Typography>
-              <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                {z.demand_percentage}
-              </Typography>
-            </Box>
-          </ListItem>
-        ))}
-      </List>
+      {zones.length > 0 ? (
+        <List disablePadding sx={{ mb: 3, maxHeight: 220, overflowY: 'auto' }}>
+          {zones.map((z) => (
+            <ListItem
+              key={z.id}
+              sx={{
+                px: 0,
+                py: 1,
+                borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+                display: 'flex',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    backgroundColor: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
+                  }}
+                />
+                <ListItemText
+                  primary={z.zone_name}
+                  primaryTypographyProps={{ fontSize: 13, fontWeight: 500, color: '#FFF' }}
+                />
+              </Box>
+              <Box sx={{ textAlign: 'right' }}>
+                <Typography
+                  className="mono-num"
+                  variant="caption"
+                  sx={{
+                    color: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
+                    fontWeight: 700,
+                    fontSize: 12,
+                    display: 'block',
+                  }}
+                >
+                  {z.surge_multiplier > 1.5 ? 'Surge' : z.surge_multiplier > 1.2 ? 'High' : 'Med'}
+                </Typography>
+                <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+                  {z.demand_percentage}
+                </Typography>
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      ) : (
+        <Box
+          sx={{
+            p: 2,
+            mb: 3,
+            borderRadius: 2,
+            backgroundColor: VELOUR_TOKENS.bgSurface2,
+            border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
+            textAlign: 'center',
+          }}
+        >
+          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700, display: 'block' }}>
+            MODEL PENDING
+          </Typography>
+          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+            No active demand zones detected. Student B model integration pending.
+          </Typography>
+        </Box>
+      )}
 
       {/* Heatmap Bar */}
       <Box>

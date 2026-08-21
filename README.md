@@ -1,21 +1,21 @@
 # Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Trip Duration prediction, Demand Zone clustering, and Time-Series demand forecasting) with an AI positioning assistant framework (LLM reasoning integration is planned for a future development phase), while empowering fleet admins with full transactional account control and operational metrics.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Student A's real XGBoost V3 Trip Duration prediction active) with an AI positioning assistant framework, while empowering fleet admins with full transactional account control and operational metrics.
 
-The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial demand heatmaps, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
+The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
 
 ---
 
 ## 🎨 Tech Stack & Architecture
 
-- **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React Query, Vite
+- **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React-Leaflet, React Query, Vite
 - **Backend**: FastAPI, Python 3.10+, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
 - **AI / ML Layer**: 
-  - **Student A**: Trip Duration Prediction Service (XGBoost V3 Active)
-  - **Student B**: Demand Zone Detection & Clustering Service (Pending Integration)
-  - **Student C**: 24h Hourly Demand Forecasting Service (Pending Integration)
-  - **Student D**: AI Driver Assistant Framework (LLM reasoning service integration planned for future phase)
-- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC demonstration data)
+  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Active**) — accepts exact numerical float coordinates via dynamic Leaflet route picker
+  - **Student B**: Demand Zone Clustering Service (Pending Integration — honest empty states rendered)
+  - **Student C**: 24h Hourly Demand Forecasting Service (Pending Integration — honest empty states rendered)
+  - **Student D**: AI Driver Assistant Framework (LLM reasoning microservice planned for future phase)
+- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC operational data)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
 ---
@@ -109,11 +109,16 @@ Open a new terminal window/tab:
 If you have Docker installed, you can start the entire stack (Backend + Frontend) with a single command:
 
 ```bash
-docker-compose up --build
+docker compose up --build -d
 ```
 
 - Frontend UI: `http://localhost:3000`
 - Backend API: `http://localhost:8000`
+
+To stop the Docker stack:
+```bash
+docker compose down
+```
 
 ---
 
@@ -164,11 +169,11 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 
 ## ⚡ Key Platform Features
 
-- ✅ **Unified App Shell Architecture**: Shared Header, Sidebar, Theme, and Typography across Driver and Admin portals while maintaining strict role-based navigation.
-- ✅ **JWT Authentication & RBAC Protection**: Secure login via `/api/auth/login`, bcrypt password hashing, and route protection for `DRIVER` and `ADMIN` roles.
+- ✅ **Unified Route Map Picker & Reverse Geocoding**: Interactive 2-click Leaflet map selection (1st click = 🟢 Pickup, 2nd click = 🟣 Drop-off, connecting route polyline, auto-fitting bounds). Live reverse-geocoding displays human-readable place names (`Midtown Manhattan, New York, NY`) while sending exact numerical float coordinates (`origin_lat`, `origin_lng`, `dest_lat`, `dest_lng`) to XGBoost V3.
+- ✅ **Real XGBoost V3 Integration**: Student A's ML model produces live trip duration predictions through the FastAPI backend (`POST /api/driver/trip-duration`).
+- ✅ **Honest Data Integrity Policy**: All obsolete prototype-era mock graph arrays and dummy fallback zones have been purged. Un-integrated microservices display transparent "Model Pending Integration" states.
 - ✅ **Admin Driver Management**: Full transactional driver account creation (`POST /api/admin/drivers`), linking a `User` account (`role=DRIVER`) with a `Driver` profile, temporary password modal prompt, detail viewer, and active/inactive status toggling.
-- ✅ **NYC Telemetry & Spatial Intelligence**: Real NYC demand zones (Midtown Manhattan, JFK Airport, Financial District, Grand Central, Williamsburg, etc.) with live surge multipliers.
-- ✅ **Multi-Model ML Integration**: Predicts trip duration using Student A's XGBoost V3 model, identifies high-demand clusters, and forecasts 24h demand horizons.
+- ✅ **JWT Authentication & RBAC Protection**: Secure login via `/api/auth/login`, bcrypt password hashing, and route protection for `DRIVER` and `ADMIN` roles.
 - ✅ **Automated RBAC Test Suite**: Backend test suite (`test_admin_drivers_rbac.py`) validating role isolation and unauthorized access prevention.
 
 ---
@@ -179,24 +184,24 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 Ride-Hailing-AI/
 ├── backend/
 │   ├── app/
-│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, etc.)
+│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, trip_duration, etc.)
 │   │   ├── core/            # Security, JWT, hashing, RBAC middleware
 │   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
 │   │   ├── schemas/         # Pydantic validation schemas
-│   │   └── services/        # Business logic services (driver_service, etc.)
+│   │   └── services/        # Business logic services (driver_service, demand_prediction_service, etc.)
 │   ├── main.py              # FastAPI application entry point
 │   ├── seed.py              # Database seeder with demonstration data
 │   └── test_admin_drivers_rbac.py # RBAC and security test suite
 ├── frontend/
 │   ├── src/
 │   │   ├── auth/            # AuthContext, ProtectedRoute, role definitions
-│   │   ├── components/      # Shared layout, AppShell, Header, Sidebar
+│   │   ├── components/      # Shared layout, AppShell, Header, Sidebar, LocationRoutePickerModal
 │   │   ├── hooks/           # React Query hooks (useRideApi)
 │   │   ├── layouts/         # MainLayout shell
 │   │   ├── navigation/      # Admin and Driver sidebar navigation configs
 │   │   ├── pages/           # Admin and Driver page components
 │   │   ├── routes/          # Centralized route definitions
-│   │   ├── services/        # Axios API client
+│   │   ├── services/        # Axios API client & reverse geocoding service
 │   │   └── theme/           # Velour color palette & MUI theme
 │   └── package.json
 ├── docker-compose.yml

@@ -58,8 +58,9 @@ export const DriverDashboard: React.FC = () => {
               Good evening, {perfRes?.name || 'Alex Morgan'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-              High demand near <strong style={{ color: VELOUR_TOKENS.accentTeal }}>Midtown Manhattan (+42%)</strong>. Optimal positioning active.
+              System operational. Student A XGBoost V3 Trip Duration model connected for dynamic map predictions.
             </Typography>
+
           </Box>
 
           <Button
@@ -311,8 +312,9 @@ export const DriverDashboard: React.FC = () => {
                 />
               </Box>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-                High demand expected near <strong style={{ color: '#FFF' }}>Midtown Manhattan</strong> between 6 PM and 8 PM. Positioning near JFK Airport could increase your earnings by 42%.
+                XGBoost V3 model active for real-time ETA predictions. Pick pickup and drop-off points directly on the interactive map.
               </Typography>
+
             </Box>
           </Box>
 

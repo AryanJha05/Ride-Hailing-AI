@@ -4,24 +4,16 @@ import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import SpeedIcon from '@mui/icons-material/Speed';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import { VELOUR_TOKENS } from '../../theme/palette';
 
 interface EarningsChartProps {
   data?: { day: string; earnings: number; trips?: number }[];
 }
 
-const DEFAULT_WEEKLY_DATA = [
-  { day: 'Mon', earnings: 210 },
-  { day: 'Tue', earnings: 265 },
-  { day: 'Wed', earnings: 230 },
-  { day: 'Thu', earnings: 290 },
-  { day: 'Fri', earnings: 360 },
-  { day: 'Sat', earnings: 420 },
-  { day: 'Sun', earnings: 270 },
-];
-
 export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
-  const chartData = data && data.length > 0 ? data : DEFAULT_WEEKLY_DATA;
+  const hasData = data && data.length > 0;
+  const chartData = hasData ? data : [];
   const totalEarnings = chartData.reduce((acc, curr) => acc + (curr.earnings || 0), 0);
 
   return (
@@ -41,37 +33,69 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
             <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11, fontWeight: 700 }}>
               Weekly Earnings Overview
             </Typography>
-            <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: 26, mt: 0.5 }}>
-              ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
-              <span style={{ color: VELOUR_TOKENS.accentTeal, fontSize: 14, fontWeight: 600 }}>↑ 24.6%</span>
-            </Typography>
+            {hasData ? (
+              <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: 26, mt: 0.5 }}>
+                ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </Typography>
+            ) : (
+              <Typography variant="h6" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, fontSize: 18, mt: 0.5 }}>
+                No Earnings History
+              </Typography>
+            )}
           </Box>
         </Box>
 
-        <Box sx={{ width: '100%', height: 180, mb: 2 }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
-              <defs>
-                <linearGradient id="earningsGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor={VELOUR_TOKENS.accentPrimary} stopOpacity={0.4} />
-                  <stop offset="95%" stopColor={VELOUR_TOKENS.accentPrimary} stopOpacity={0.0} />
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="day" stroke={VELOUR_TOKENS.textSecondary} fontSize={11} tickLine={false} axisLine={false} />
-              <YAxis stroke={VELOUR_TOKENS.textSecondary} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: VELOUR_TOKENS.bgSurface2,
-                  borderColor: VELOUR_TOKENS.borderSubtle,
-                  borderRadius: 8,
-                  color: '#FFF',
-                }}
-                formatter={(val: number) => [`$${val.toLocaleString('en-US')}`, 'Earnings']}
-              />
-              <Area type="monotone" dataKey="earnings" stroke={VELOUR_TOKENS.accentPrimary} strokeWidth={2.5} fillOpacity={1} fill="url(#earningsGrad)" />
-            </AreaChart>
-          </ResponsiveContainer>
-        </Box>
+        {hasData ? (
+          <Box sx={{ width: '100%', height: 180, mb: 2 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="earningsGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={VELOUR_TOKENS.accentPrimary} stopOpacity={0.4} />
+                    <stop offset="95%" stopColor={VELOUR_TOKENS.accentPrimary} stopOpacity={0.0} />
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="day" stroke={VELOUR_TOKENS.textSecondary} fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis stroke={VELOUR_TOKENS.textSecondary} fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}`} />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderColor: VELOUR_TOKENS.borderSubtle,
+                    borderRadius: 8,
+                    color: '#FFF',
+                  }}
+                  formatter={(val: number) => [`$${val.toLocaleString('en-US')}`, 'Earnings']}
+                />
+                <Area type="monotone" dataKey="earnings" stroke={VELOUR_TOKENS.accentPrimary} strokeWidth={2.5} fillOpacity={1} fill="url(#earningsGrad)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              width: '100%',
+              height: 180,
+              mb: 2,
+              borderRadius: 2,
+              backgroundColor: VELOUR_TOKENS.bgSurface2,
+              border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textAlign: 'center',
+              p: 2,
+            }}
+          >
+            <ShowChartIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 32, mb: 1 }} />
+            <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13, fontWeight: 600 }}>
+              No earnings history data available
+            </Typography>
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, fontSize: 11, mt: 0.5 }}>
+              Complete shift trips to generate weekly performance analytics.
+            </Typography>
+          </Box>
+        )}
 
         {/* Contextual Sub-Metrics Summary Row */}
         <Grid container spacing={1.5} sx={{ mt: 'auto' }}>
@@ -82,7 +106,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
                 <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Online Time</Typography>
               </Box>
               <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
-                38h 45m
+                {hasData ? '38h 45m' : '0h 0m'}
               </Typography>
             </Box>
           </Grid>
@@ -94,7 +118,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
                 <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Avg / Hr</Typography>
               </Box>
               <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
-                $42/hr
+                {hasData ? '$42/hr' : '$0/hr'}
               </Typography>
             </Box>
           </Grid>
@@ -106,7 +130,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
                 <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Tips</Typography>
               </Box>
               <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
-                $185
+                {hasData ? '$185' : '$0'}
               </Typography>
             </Box>
           </Grid>
@@ -115,4 +139,3 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
     </Card>
   );
 };
-

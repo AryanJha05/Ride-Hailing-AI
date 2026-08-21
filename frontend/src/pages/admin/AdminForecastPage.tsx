@@ -20,6 +20,8 @@ import { ForecastChart } from '../../components/analytics/ForecastChart';
 export const AdminForecastPage: React.FC = () => {
   const [selectedZone, setSelectedZone] = useState('Midtown Manhattan');
   const { data: forecastRes } = useForecast(selectedZone);
+  const forecastData = forecastRes?.data || [];
+  const hasData = forecastData.length > 0;
 
   return (
     <PageShell title="Demand Forecast Analytics">
@@ -35,7 +37,7 @@ export const AdminForecastPage: React.FC = () => {
                     Spatial-Temporal ML Demand Forecasting Engine
                   </Typography>
                   <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                    Historical baseline demand trend vs real-time zone telemetry.
+                    24-hour time-series forecasting model telemetry and zone trends.
                   </Typography>
                 </Box>
               </Box>
@@ -67,11 +69,11 @@ export const AdminForecastPage: React.FC = () => {
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
               <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600, fontSize: 13 }}>
-                24-Hour Demand Baseline Curve ({selectedZone})
+                24-Hour Demand Forecast Curve ({selectedZone})
               </Typography>
-              <Chip icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />} label="Historical Trend (Student C Model Pending)" size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }} />
+              <Chip icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />} label="Student C Model Pending Integration" size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }} />
             </Box>
-            <ForecastChart data={forecastRes?.data || []} />
+            <ForecastChart data={forecastData} />
           </Card>
         </Grid>
 
@@ -87,8 +89,8 @@ export const AdminForecastPage: React.FC = () => {
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
                     PEAK DEMAND HORIZON
                   </Typography>
-                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal, mt: 0.5 }}>
-                    18:00 - 19:30 EST
+                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, mt: 0.5, fontSize: 15 }}>
+                    {hasData ? '18:00 - 19:30 EST' : 'N/A (Model Not Connected)'}
                   </Typography>
                 </Box>
 

@@ -3,6 +3,7 @@ import { Card, CardContent, Typography, Box, Button, Chip } from '@mui/material'
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import MapIcon from '@mui/icons-material/Map';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { useNavigate } from 'react-router-dom';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { ROUTES } from '../../routes/routes';
@@ -14,13 +15,8 @@ interface DemandSurgeRadarProps {
 
 export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => {
   const navigate = useNavigate();
-
-  const displayZones = zones.length > 0 ? zones.slice(0, 4) : [
-    { zone_name: 'Midtown Manhattan', surge_multiplier: 1.65, demand_percentage: '+42%', trend: 'up' },
-    { zone_name: 'JFK Airport (JFK)', surge_multiplier: 1.8, demand_percentage: '+65%', trend: 'up' },
-    { zone_name: 'Financial District', surge_multiplier: 1.4, demand_percentage: '+28%', trend: 'up' },
-    { zone_name: 'Williamsburg', surge_multiplier: 1.5, demand_percentage: '+35%', trend: 'up' },
-  ];
+  const hasZones = zones && zones.length > 0;
+  const displayZones = hasZones ? zones.slice(0, 4) : [];
 
   return (
     <Card
@@ -53,7 +49,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
           </Button>
         </Box>
 
-        {/* Leaflet Inset Simulated Preview Box */}
+        {/* Leaflet Inset Preview Box */}
         <Box
           onClick={() => navigate(ROUTES.USER.LIVE_MAP)}
           sx={{
@@ -80,47 +76,73 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
           </Box>
         </Box>
 
-        {/* Surge Zone Items List */}
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 'auto' }}>
-          {displayZones.map((zone, idx) => (
-            <Box
-              key={idx}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justify: 'space-between',
-                p: 1.2,
-                borderRadius: 2,
-                backgroundColor: VELOUR_TOKENS.bgSurface2,
-                border: `1px solid ${idx === 0 ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <LocationOnIcon sx={{ color: idx === 0 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 18 }} />
-                <Box>
-                  <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
-                    {zone.zone_name}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
-                    {zone.demand_percentage || '+42%'} demand surge
-                  </Typography>
-                </Box>
-              </Box>
-
-              <Chip
-                label={`${zone.surge_multiplier || 1.4}x Surge`}
-                size="small"
+        {/* Surge Zone Items List or Honest Empty State */}
+        {hasZones ? (
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 'auto' }}>
+            {displayZones.map((zone, idx) => (
+              <Box
+                key={idx}
                 sx={{
-                  backgroundColor: idx === 0 ? 'rgba(0, 217, 192, 0.15)' : 'rgba(255, 255, 255, 0.05)',
-                  color: idx === 0 ? VELOUR_TOKENS.accentTeal : '#FFF',
-                  fontWeight: 700,
-                  fontSize: 11,
-                  height: 22,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justify: 'space-between',
+                  p: 1.2,
+                  borderRadius: 2,
+                  backgroundColor: VELOUR_TOKENS.bgSurface2,
+                  border: `1px solid ${idx === 0 ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
                 }}
-              />
-            </Box>
-          ))}
-        </Box>
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <LocationOnIcon sx={{ color: idx === 0 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 18 }} />
+                  <Box>
+                    <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
+                      {zone.zone_name}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
+                      {zone.demand_percentage || 'Normal'} demand surge
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Chip
+                  label={`${zone.surge_multiplier || 1.0}x Surge`}
+                  size="small"
+                  sx={{
+                    backgroundColor: idx === 0 ? 'rgba(0, 217, 192, 0.15)' : 'rgba(255, 255, 255, 0.05)',
+                    color: idx === 0 ? VELOUR_TOKENS.accentTeal : '#FFF',
+                    fontWeight: 700,
+                    fontSize: 11,
+                    height: 22,
+                  }}
+                />
+              </Box>
+            ))}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              backgroundColor: VELOUR_TOKENS.bgSurface2,
+              border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justify: 'center',
+              textAlign: 'center',
+              mt: 'auto',
+              minHeight: 100,
+            }}
+          >
+            <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 24, mb: 0.5 }} />
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700, fontSize: 11 }}>
+              MODEL NOT CONNECTED
+            </Typography>
+            <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11.5, mt: 0.3 }}>
+              Demand Zone Classification model (Student B) pending pipeline integration.
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

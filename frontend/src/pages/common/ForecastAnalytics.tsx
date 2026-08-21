@@ -8,6 +8,8 @@ import { ForecastChart } from '../../components/analytics/ForecastChart';
 export const ForecastAnalytics: React.FC = () => {
   const [selectedZone, setSelectedZone] = useState('Midtown Manhattan');
   const { data: forecastRes } = useForecast(selectedZone);
+  const forecastData = forecastRes?.data || [];
+  const hasData = forecastData.length > 0;
 
   return (
     <PageShell title="Demand Forecast Analytics">
@@ -44,7 +46,7 @@ export const ForecastAnalytics: React.FC = () => {
 
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8}>
-            <ForecastChart data={forecastRes?.data || []} />
+            <ForecastChart data={forecastData} />
           </Grid>
           <Grid item xs={12} lg={4}>
             <Card sx={{ height: '100%', backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
@@ -57,8 +59,8 @@ export const ForecastAnalytics: React.FC = () => {
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
                       Peak Demand Hour
                     </Typography>
-                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal }}>
-                      18:00 - 19:00 EST
+                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 15 }}>
+                      {hasData ? '18:00 - 19:00 EST' : 'N/A (Model Not Connected)'}
                     </Typography>
                   </Box>
                   <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
@@ -69,7 +71,7 @@ export const ForecastAnalytics: React.FC = () => {
                       Pending Student C Integration
                     </Typography>
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                      (Currently rendering historical baseline trend)
+                      (LSTM Time-Series forecasting model pending deployment)
                     </Typography>
                   </Box>
 
@@ -77,8 +79,8 @@ export const ForecastAnalytics: React.FC = () => {
                     <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
                       Recommended Shift Action
                     </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.accentLavender, mt: 0.5 }}>
-                      Stage units in Midtown Manhattan prior to 17:30 peak onset.
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, mt: 0.5 }}>
+                      {hasData ? 'Stage units in Midtown Manhattan prior to 17:30 peak onset.' : 'Automated staging recommendations unavailable until Student C model integration.'}
                     </Typography>
                   </Box>
                 </Box>
