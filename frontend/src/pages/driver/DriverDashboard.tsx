@@ -27,10 +27,12 @@ import { EarningsChart } from '../../components/dashboard/EarningsChart';
 import { DemandSurgeRadar } from '../../components/dashboard/DemandSurgeRadar';
 import { TripDurationPredictorCard } from '../../components/dashboard/TripDurationPredictorCard';
 import { useDemandZones, useDriverPerformance } from '../../hooks/useRideApi';
+import { useAuth } from '../../auth/AuthContext';
 import { VELOUR_TOKENS } from '../../theme/palette';
 
 export const DriverDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { data: zones } = useDemandZones();
   const { data: perfRes } = useDriverPerformance();
   const [isOnline, setIsOnline] = useState(true);
@@ -43,8 +45,8 @@ export const DriverDashboard: React.FC = () => {
           sx={{
             p: { xs: 2.5, md: 3 },
             mb: 3,
-            borderRadius: 3,
-            backgroundColor: VELOUR_TOKENS.bgSurface1,
+            borderRadius: '16px',
+            background: `linear-gradient(135deg, ${VELOUR_TOKENS.bgSurface1} 0%, rgba(20, 20, 32, 0.95) 100%)`,
             border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
             display: 'flex',
             justify: 'space-between',
@@ -55,7 +57,7 @@ export const DriverDashboard: React.FC = () => {
         >
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 20, md: 22 }, mb: 0.5 }}>
-              Good evening, {perfRes?.name || 'Alex Morgan'} 👋
+              Good evening, {perfRes?.name || user?.name || 'Driver'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
               System operational. Student A XGBoost V3 Trip Duration model connected for dynamic map predictions.

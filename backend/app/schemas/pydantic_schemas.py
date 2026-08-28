@@ -6,11 +6,26 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class DriverProfileSchema(BaseModel):
+    id: str
+    driver_id: Optional[str] = None
+    phone: Optional[str] = None
+    license_number: Optional[str] = None
+    status: str = "Active"
+    rating: float = 5.0
+    total_trips: int = 0
+    total_earnings: float = 0.0
+    vehicle_make: Optional[str] = None
+    vehicle_model: Optional[str] = None
+    vehicle_plate: Optional[str] = None
+    created_at: Optional[str] = None
+
 class UserResponse(BaseModel):
     id: str
     name: str
     email: str
     role: str
+    driver_profile: Optional[DriverProfileSchema] = None
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -23,12 +38,18 @@ class DriverCreateRequest(BaseModel):
     phone: Optional[str] = None
     driver_id: Optional[str] = None
     license_number: Optional[str] = None
+    vehicle_make: Optional[str] = None
+    vehicle_model: Optional[str] = None
+    vehicle_plate: Optional[str] = None
     status: Optional[str] = "Active"
     password: Optional[str] = None
 
 class DriverUpdateRequest(BaseModel):
     phone: Optional[str] = None
     license_number: Optional[str] = None
+    vehicle_make: Optional[str] = None
+    vehicle_model: Optional[str] = None
+    vehicle_plate: Optional[str] = None
     status: Optional[str] = None
     is_active: Optional[bool] = None
 
@@ -40,6 +61,9 @@ class DriverResponseSchema(BaseModel):
     email: str
     phone: Optional[str] = None
     license_number: Optional[str] = None
+    vehicle_make: Optional[str] = None
+    vehicle_model: Optional[str] = None
+    vehicle_plate: Optional[str] = None
     status: str
     rating: float
     total_trips: int

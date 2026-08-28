@@ -74,8 +74,12 @@ export const AdminDriversPage: React.FC = () => {
     name: '',
     email: '',
     phone: '',
+    password: '',
     driver_id: '',
     license_number: '',
+    vehicle_make: '',
+    vehicle_model: '',
+    vehicle_plate: '',
     status: 'Active',
   });
   const [createError, setCreateError] = useState<string | null>(null);
@@ -85,6 +89,9 @@ export const AdminDriversPage: React.FC = () => {
   const [editForm, setEditForm] = useState({
     phone: '',
     license_number: '',
+    vehicle_make: '',
+    vehicle_model: '',
+    vehicle_plate: '',
     status: 'Active',
   });
 
@@ -109,6 +116,9 @@ export const AdminDriversPage: React.FC = () => {
       setEditForm({
         phone: selectedDriver.phone || '',
         license_number: selectedDriver.license_number || '',
+        vehicle_make: selectedDriver.vehicle_make || '',
+        vehicle_model: selectedDriver.vehicle_model || '',
+        vehicle_plate: selectedDriver.vehicle_plate || '',
         status: selectedDriver.status || 'Active',
       });
     }
@@ -134,18 +144,35 @@ export const AdminDriversPage: React.FC = () => {
     e.preventDefault();
     setCreateError(null);
 
-    if (!addForm.name.trim() || !addForm.email.trim()) {
-      setCreateError('Full Name and Email are required.');
+    const nameClean = addForm.name.trim();
+    const emailClean = addForm.email.trim();
+
+    if (!nameClean) {
+      setCreateError('Full Name is required.');
+      return;
+    }
+
+    if (!emailClean || !emailClean.includes('@')) {
+      setCreateError('Please enter a valid email address.');
+      return;
+    }
+
+    if (addForm.password && addForm.password.length < 6) {
+      setCreateError('Temporary Password must be at least 6 characters.');
       return;
     }
 
     createDriverMutation.mutate(
       {
-        name: addForm.name.trim(),
-        email: addForm.email.trim(),
+        name: nameClean,
+        email: emailClean,
         phone: addForm.phone.trim() || undefined,
+        password: addForm.password.trim() || undefined,
         driver_id: addForm.driver_id.trim() || undefined,
         license_number: addForm.license_number.trim() || undefined,
+        vehicle_make: addForm.vehicle_make.trim() || undefined,
+        vehicle_model: addForm.vehicle_model.trim() || undefined,
+        vehicle_plate: addForm.vehicle_plate.trim() || undefined,
         status: addForm.status,
       },
       {
@@ -153,15 +180,19 @@ export const AdminDriversPage: React.FC = () => {
           setIsAddModalOpen(false);
           setCreatedCredentials({
             email: newDriver.email,
-            temp_password: newDriver.temp_password || 'driver123',
+            temp_password: newDriver.temp_password || addForm.password || 'driver123',
           });
           setIsSuccessModalOpen(true);
           setAddForm({
             name: '',
             email: '',
             phone: '',
+            password: '',
             driver_id: '',
             license_number: '',
+            vehicle_make: '',
+            vehicle_model: '',
+            vehicle_plate: '',
             status: 'Active',
           });
           refetch();
@@ -577,6 +608,27 @@ export const AdminDriversPage: React.FC = () => {
 
               <Grid item xs={12} sm={6}>
                 <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  TEMPORARY PASSWORD
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  type="password"
+                  placeholder="Defaults to: driver123"
+                  value={addForm.password}
+                  onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
                   DRIVER ID (OPTIONAL)
                 </Typography>
                 <TextField
@@ -605,6 +657,66 @@ export const AdminDriversPage: React.FC = () => {
                   placeholder="NYC-TLC-99412"
                   value={addForm.license_number}
                   onChange={(e) => setAddForm({ ...addForm, license_number: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE MAKE
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. Toyota"
+                  value={addForm.vehicle_make}
+                  onChange={(e) => setAddForm({ ...addForm, vehicle_make: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE MODEL
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. Camry"
+                  value={addForm.vehicle_model}
+                  onChange={(e) => setAddForm({ ...addForm, vehicle_model: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE NUMBER / PLATE
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. NYC-TLC-884"
+                  value={addForm.vehicle_plate}
+                  onChange={(e) => setAddForm({ ...addForm, vehicle_plate: e.target.value })}
                   sx={{
                     mt: 0.5,
                     backgroundColor: VELOUR_TOKENS.bgSurface2,
@@ -786,16 +898,31 @@ export const AdminDriversPage: React.FC = () => {
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>PHONE</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF' }}>{selectedDriver.phone}</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF' }}>{selectedDriver.phone || 'N/A'}</Typography>
               </Grid>
 
               <Grid item xs={6}>
                 <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>LICENSE NUMBER</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF' }}>{selectedDriver.license_number}</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF' }}>{selectedDriver.license_number || 'N/A'}</Typography>
               </Grid>
               <Grid item xs={6}>
                 <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>STATUS</Typography>
                 <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.accentTeal }}>{selectedDriver.status}</Typography>
+              </Grid>
+
+              <Grid item xs={6}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>VEHICLE MAKE / MODEL</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF' }}>
+                  {selectedDriver.vehicle_make || selectedDriver.vehicle_model
+                    ? `${selectedDriver.vehicle_make || ''} ${selectedDriver.vehicle_model || ''}`.trim()
+                    : 'Not Assigned'}
+                </Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>VEHICLE PLATE</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.accentLavender }}>
+                  {selectedDriver.vehicle_plate || 'N/A'}
+                </Typography>
               </Grid>
 
               <Grid item xs={4}>
@@ -874,6 +1001,66 @@ export const AdminDriversPage: React.FC = () => {
                   size="small"
                   value={editForm.license_number}
                   onChange={(e) => setEditForm({ ...editForm, license_number: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Box>
+
+              <Box>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE MAKE
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. Toyota"
+                  value={editForm.vehicle_make}
+                  onChange={(e) => setEditForm({ ...editForm, vehicle_make: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Box>
+
+              <Box>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE MODEL
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. Camry"
+                  value={editForm.vehicle_model}
+                  onChange={(e) => setEditForm({ ...editForm, vehicle_model: e.target.value })}
+                  sx={{
+                    mt: 0.5,
+                    backgroundColor: VELOUR_TOKENS.bgSurface2,
+                    borderRadius: 1,
+                    '& input': { color: '#FFF' },
+                    '& .MuiOutlinedInput-notchedOutline': { borderColor: VELOUR_TOKENS.borderSubtle },
+                  }}
+                />
+              </Box>
+
+              <Box>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600 }}>
+                  VEHICLE PLATE
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="e.g. NYC-TLC-884"
+                  value={editForm.vehicle_plate}
+                  onChange={(e) => setEditForm({ ...editForm, vehicle_plate: e.target.value })}
                   sx={{
                     mt: 0.5,
                     backgroundColor: VELOUR_TOKENS.bgSurface2,

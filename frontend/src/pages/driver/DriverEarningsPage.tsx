@@ -11,8 +11,10 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { useDriverPerformance } from '../../hooks/useRideApi';
+import { useAuth } from '../../auth/AuthContext';
 
 export const DriverEarningsPage: React.FC = () => {
+  const { user } = useAuth();
   const { data: driver } = useDriverPerformance('driver-001');
 
   const shiftEarnings = driver?.projected_shift_earnings || 0;
@@ -62,10 +64,10 @@ export const DriverEarningsPage: React.FC = () => {
 
             <Box sx={{ p: 2.5, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, my: 2 }}>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 1 }}>
-                Logged-in Driver: <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>{driver?.name || 'Alex Morgan'}</Box>
+                Logged-in Driver: <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>{driver?.name || user?.name || 'Driver Account'}</Box>
               </Typography>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                Account Email: <Box component="span" sx={{ color: VELOUR_TOKENS.accentLavender }}>{driver?.email || 'alex.morgan@rideai.nyc'}</Box>
+                Account Email: <Box component="span" sx={{ color: VELOUR_TOKENS.accentLavender }}>{driver?.email || user?.email || 'driver@rideai.nyc'}</Box>
               </Typography>
             </Box>
 

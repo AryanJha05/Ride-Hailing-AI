@@ -24,19 +24,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Function to map AuthUser response to UserProfile with UI defaults
-  const mapUserToProfile = (authUser: { id: string; name: string; email: string; role: string }): UserProfile => {
+  // Function to map AuthUser response to UserProfile with dynamic backend details
+  const mapUserToProfile = (authUser: any): UserProfile => {
     const userRole = authUser.role as UserRole;
     const baseDemo = DEMO_USERS[userRole] || DEMO_USERS[UserRole.DRIVER];
+    const dp = authUser.driver_profile;
+
+    let vehicleStr = baseDemo.vehicle;
+    if (dp && (dp.vehicle_make || dp.vehicle_model || dp.vehicle_plate)) {
+      vehicleStr = `${dp.vehicle_make || 'Toyota'} ${dp.vehicle_model || 'Camry'} (${dp.vehicle_plate || 'NYC-TLC'})`;
+    }
+
     return {
       id: authUser.id,
       name: authUser.name,
       email: authUser.email,
       role: userRole,
       avatar: baseDemo.avatar,
-      badge: baseDemo.badge,
-      vehicle: baseDemo.vehicle,
-      rating: baseDemo.rating,
+      badge: userRole === UserRole.ADMIN ? 'Fleet Ops Director' : (dp?.status === 'Active' ? 'Gold Driver' : 'Standard Driver'),
+      vehicle: vehicleStr,
+      rating: dp?.rating !== undefined ? dp.rating : (userRole === UserRole.ADMIN ? 5.0 : 5.0),
+      phone: dp?.phone || undefined,
+      license_number: dp?.license_number || undefined,
+      driver_id: dp?.driver_id || undefined,
+      status: dp?.status || 'Active',
+      total_trips: dp?.total_trips !== undefined ? dp.total_trips : 0,
+      total_earnings: dp?.total_earnings !== undefined ? dp.total_earnings : 0.0,
+      vehicle_make: dp?.vehicle_make || undefined,
+      vehicle_model: dp?.vehicle_model || undefined,
+      vehicle_plate: dp?.vehicle_plate || undefined,
     };
   };
 

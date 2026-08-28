@@ -22,7 +22,7 @@ export const PerformanceMetricsCard: React.FC<PerformanceMetricsCardProps> = ({ 
                 ACCEPTANCE RATE
               </Typography>
               <Typography className="mono-num" variant="h5" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal, mt: 0.5 }}>
-                {driver?.acceptance_rate || 97.0}%
+                {driver?.acceptance_rate !== undefined ? `${driver.acceptance_rate}%` : '100.0%'}
               </Typography>
             </Box>
           </Grid>
@@ -32,7 +32,7 @@ export const PerformanceMetricsCard: React.FC<PerformanceMetricsCardProps> = ({ 
                 CANCELLATION RATE
               </Typography>
               <Typography className="mono-num" variant="h5" sx={{ fontWeight: 700, color: '#FFF', mt: 0.5 }}>
-                {driver?.cancellation_rate || 2.0}%
+                {driver?.cancellation_rate !== undefined ? `${driver.cancellation_rate}%` : '0.0%'}
               </Typography>
             </Box>
           </Grid>
@@ -42,7 +42,7 @@ export const PerformanceMetricsCard: React.FC<PerformanceMetricsCardProps> = ({ 
                 TOTAL EARNINGS
               </Typography>
               <Typography className="mono-num" variant="h5" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentTeal, mt: 0.5 }}>
-                ${driver?.total_earnings?.toLocaleString('en-US') || '7,480.00'}
+                ${driver?.total_earnings !== undefined ? driver.total_earnings.toLocaleString('en-US', { minimumFractionDigits: 2 }) : '0.00'}
               </Typography>
             </Box>
           </Grid>

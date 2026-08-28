@@ -39,6 +39,9 @@ class Driver(Base):
     total_earnings = Column(Float, default=0.0)
     acceptance_rate = Column(Float, default=98.0)
     cancellation_rate = Column(Float, default=1.2)
+    vehicle_make = Column(String(60), nullable=True, default="Toyota")
+    vehicle_model = Column(String(60), nullable=True, default="Camry Hybrid")
+    vehicle_plate = Column(String(30), nullable=True, default="NYC-TLC-7782")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     # Relationships

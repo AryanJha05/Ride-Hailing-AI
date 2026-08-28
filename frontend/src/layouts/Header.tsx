@@ -353,7 +353,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
                 lineHeight: 1.1,
               }}
             >
-              {user?.name || (isAdminRole ? 'Ride AI Administrator' : 'Alex Morgan')}
+              {user?.name || (isAdminRole ? 'Ride AI Administrator' : 'Driver Account')}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Typography
@@ -365,9 +365,9 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
                   lineHeight: 1,
                 }}
               >
-                {isAdminRole ? (user?.badge || 'Fleet Ops Director') : (user?.badge || 'Gold Driver')}
+                {isAdminRole ? (user?.badge || 'Fleet Ops Director') : (user?.badge || 'Active Driver')}
               </Typography>
-              {!isAdminRole && user?.rating && (
+              {!isAdminRole && (user?.rating !== undefined) && (
                 <Typography
                   variant="caption"
                   sx={{
@@ -421,7 +421,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
               SIGNED IN AS ({user?.role || (isAdminRole ? 'ADMIN' : 'DRIVER')})
             </Typography>
             <Typography variant="body2" sx={{ fontWeight: 700, color: VELOUR_TOKENS.textPrimary, fontSize: 13 }}>
-              {user?.email || (isAdminRole ? 'admin@rideai.com' : 'alex.morgan@rideai.com')}
+              {user?.email || (isAdminRole ? 'admin@rideai.nyc' : 'driver@rideai.nyc')}
             </Typography>
           </Box>
 

@@ -21,11 +21,11 @@ def get_driver_performance(
     name = db_driver.name if db_driver else current_user.name
     email = db_driver.email if db_driver else current_user.email
     d_id = db_driver.driver_id if db_driver else driver_id
-    rating = db_driver.rating if db_driver and db_driver.rating else 4.92
-    total_trips = db_driver.total_trips if db_driver and db_driver.total_trips else 1284
-    total_earnings = db_driver.total_earnings if db_driver and db_driver.total_earnings else 7480.00
-    acceptance_rate = db_driver.acceptance_rate if db_driver and db_driver.acceptance_rate else 97.0
-    cancellation_rate = db_driver.cancellation_rate if db_driver and db_driver.cancellation_rate else 2.0
+    rating = db_driver.rating if (db_driver and db_driver.rating is not None) else 5.0
+    total_trips = db_driver.total_trips if (db_driver and db_driver.total_trips is not None) else 0
+    total_earnings = db_driver.total_earnings if (db_driver and db_driver.total_earnings is not None) else 0.0
+    acceptance_rate = db_driver.acceptance_rate if (db_driver and db_driver.acceptance_rate is not None) else 100.0
+    cancellation_rate = db_driver.cancellation_rate if (db_driver and db_driver.cancellation_rate is not None) else 0.0
 
     return {
         "driver_id": d_id,
@@ -36,9 +36,9 @@ def get_driver_performance(
         "total_earnings": total_earnings,
         "acceptance_rate": acceptance_rate,
         "cancellation_rate": cancellation_rate,
-        "projected_shift_earnings": round(total_earnings * 0.038, 2) if total_earnings else 285.00,
-        "ai_bonus": 45.00,
-        "est_next_hour_trips": "4-6",
+        "projected_shift_earnings": round(total_earnings * 0.038, 2) if total_earnings > 0 else 0.00,
+        "ai_bonus": 45.00 if total_trips > 0 else 0.00,
+        "est_next_hour_trips": "4-6" if total_trips > 0 else "0-2",
         "performance_history": [
             {"day": "Mon", "trips": 18, "earnings": 210.0},
             {"day": "Tue", "trips": 22, "earnings": 265.0},

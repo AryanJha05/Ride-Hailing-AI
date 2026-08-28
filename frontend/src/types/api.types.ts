@@ -3,11 +3,27 @@ export interface Location {
   lng: number;
 }
 
+export interface DriverProfile {
+  id: string;
+  driver_id?: string;
+  phone?: string;
+  license_number?: string;
+  status: string;
+  rating: number;
+  total_trips: number;
+  total_earnings: number;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
+  created_at?: string;
+}
+
 export interface AuthUser {
   id: string;
   name: string;
   email: string;
   role: 'DRIVER' | 'ADMIN';
+  driver_profile?: DriverProfile | null;
 }
 
 export interface LoginResponse {
@@ -123,6 +139,9 @@ export interface DriverRecord {
   email: string;
   phone: string;
   license_number: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
   status: 'Active' | 'Offline' | 'Inactive' | string;
   rating: number;
   total_trips: number;
@@ -137,6 +156,9 @@ export interface CreateDriverPayload {
   phone?: string;
   driver_id?: string;
   license_number?: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
   status?: string;
   password?: string;
 }
@@ -144,6 +166,9 @@ export interface CreateDriverPayload {
 export interface UpdateDriverPayload {
   phone?: string;
   license_number?: string;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
   status?: string;
   is_active?: boolean;
 }

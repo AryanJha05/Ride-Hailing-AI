@@ -18,6 +18,15 @@ export interface UserProfile {
   rating?: number;
   badge?: string;
   vehicle?: string;
+  phone?: string;
+  license_number?: string;
+  driver_id?: string;
+  status?: string;
+  total_trips?: number;
+  total_earnings?: number;
+  vehicle_make?: string;
+  vehicle_model?: string;
+  vehicle_plate?: string;
 }
 
 export const DEMO_USERS: Record<UserRole, UserProfile> = {
