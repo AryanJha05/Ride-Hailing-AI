@@ -83,6 +83,14 @@ class ForecastResponse(BaseModel):
     zone_name: str
     horizon_hours: int
     data: List[ForecastPoint]
+    status: Optional[str] = "MODEL_NOT_CONNECTED"
+
+class ModelStatusResponse(BaseModel):
+    status: str
+    model_name: str
+    connected: bool
+    artifact_path: Optional[str] = None
+    message: str
 
 class DemandZoneResponse(BaseModel):
     id: str

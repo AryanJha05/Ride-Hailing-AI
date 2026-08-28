@@ -7,19 +7,26 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { DemandZone } from '../../types/api.types';
 
-// Custom Leaflet DivIcon for Driver Location Pin
+// Custom Leaflet DivIcon for Driver GPS Location Pin
 const driverIcon = L.divIcon({
-  className: 'custom-driver-pin',
+  className: 'custom-driver-gps-pin',
   html: `<div style="
-    width: 16px;
-    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background-color: #ffffff;
-    border: 3px solid ${VELOUR_TOKENS.accentTeal};
-    box-shadow: 0 0 0 6px rgba(0, 217, 192, 0.4), 0 0 20px ${VELOUR_TOKENS.accentTeal};
-  "></div>`,
-  iconSize: [16, 16],
-  iconAnchor: [8, 8],
+    background-color: #1A1D24;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  ">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2 19 21 12 17 5 21 12 2"></polygon>
+    </svg>
+  </div>`,
+  iconSize: [28, 28],
+  iconAnchor: [14, 14],
 });
 
 interface DemandMapProps {
@@ -52,11 +59,13 @@ export const DemandMap: React.FC<DemandMapProps> = ({
           maxZoom={19}
         />
 
-        {/* Primary Driver Location Pin */}
+        {/* Primary Driver GPS Location Marker */}
         <Marker position={center} icon={driverIcon}>
           <Popup>
-            <div style={{ color: '#111', fontFamily: 'sans-serif' }}>
-              <strong>Your Driver Unit (Active)</strong>
+            <div style={{ color: '#111', fontFamily: 'sans-serif', padding: 2 }}>
+              <strong style={{ fontSize: 13 }}>Driver GPS Unit</strong>
+              <br />
+              <span style={{ fontSize: 11, color: '#555' }}>Current Vehicle Position (Base Map)</span>
             </div>
           </Popup>
         </Marker>
@@ -122,49 +131,33 @@ export const DemandMap: React.FC<DemandMapProps> = ({
           })}
       </MapContainer>
 
-      {/* Honest Empty State Overlay Banner when Student B Model is Not Connected */}
+      {/* Centered Top Status Pill overlay when Student B Model is Not Connected */}
       {!hasZones && (
         <Card
           sx={{
             position: 'absolute',
-            top: 20,
-            left: 20,
-            right: 20,
+            top: 24,
+            left: '50%',
+            transform: 'translateX(-50%)',
             zIndex: 1000,
-            p: 2,
-            backgroundColor: 'rgba(18, 16, 25, 0.92)',
-            backdropFilter: 'blur(12px)',
-            border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
-            borderRadius: 3,
+            px: 3,
+            py: 1.2,
+            backgroundColor: 'rgba(18, 16, 25, 0.94)',
+            backdropFilter: 'blur(16px)',
+            border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+            borderRadius: 999,
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
             display: 'flex',
             alignItems: 'center',
-            gap: 2,
+            gap: 1.5,
+            whiteSpace: 'nowrap',
           }}
         >
-          <Box
-            sx={{
-              width: 42,
-              height: 42,
-              borderRadius: '50%',
-              backgroundColor: 'rgba(234, 179, 8, 0.12)',
-              border: `1px solid rgba(234, 179, 8, 0.3)`,
-              display: 'flex',
-              alignItems: 'center',
-              justify: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 22 }} />
-          </Box>
-          <Box>
-            <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700, fontSize: 13 }}>
-              DEMAND INTELLIGENCE UNAVAILABLE
-            </Typography>
-            <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12 }}>
-              Student B spatial demand-zone ML model is pending pipeline integration. Base navigation map active.
-            </Typography>
-          </Box>
+          <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 18 }} />
+          <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
+            Base Navigation Map Active &bull;{' '}
+            <span style={{ color: VELOUR_TOKENS.accentGold }}>Demand Zone Model (Student B) Not Connected</span>
+          </Typography>
         </Card>
       )}
     </Box>

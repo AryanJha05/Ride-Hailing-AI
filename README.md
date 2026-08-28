@@ -1,6 +1,6 @@
 # Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Student A's real XGBoost V3 Trip Duration prediction active) with an AI positioning assistant framework, while empowering fleet admins with full transactional account control and operational metrics.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (Student A's real XGBoost V3 Trip Duration prediction active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering fleet admins with full transactional account control and real-time operational metrics.
 
 The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
 
@@ -10,11 +10,12 @@ The user interface follows the **Velour** design system built with React and Mat
 
 - **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React-Leaflet, React Query, Vite
 - **Backend**: FastAPI, Python 3.10+, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
-- **AI / ML Layer**: 
-  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Active**) — accepts exact numerical float coordinates via dynamic Leaflet route picker
-  - **Student B**: Demand Zone Clustering Service (Pending Integration — honest empty states rendered)
-  - **Student C**: 24h Hourly Demand Forecasting Service (Pending Integration — honest empty states rendered)
-  - **Student D**: AI Driver Assistant Framework (LLM reasoning microservice planned for future phase)
+- **LLM Reasoning Microservice**: FastAPI + Ollama Gemma2 (`:8001`) with cross-service context aggregation and offline fallback mechanisms.
+- **AI / ML Layer & Adapter Architecture**: 
+  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Active**) — accepts exact numerical float coordinates via dynamic Leaflet route picker using 44 spatial features.
+  - **Student B**: Demand Zone Clustering Service (Modular Adapter Architecture — drop `.pkl`/`.json` into `backend/app/models/ml/student_b/` for instant activation; honest empty base map rendered when disconnected).
+  - **Student C**: 24h Hourly Demand Forecasting Service (Modular Adapter Architecture — drop `.pkl`/`.pt` into `backend/app/models/ml/student_c/` for instant activation; honest empty chart state rendered when disconnected).
+  - **Student D**: AI Driver Assistant Framework (Integrated with Ollama Gemma2 microservice on `:8001`).
 - **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC operational data)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
@@ -22,102 +23,65 @@ The user interface follows the **Velour** design system built with React and Mat
 
 ## 🚀 How to Run Locally on Your PC
 
-Follow these steps after cloning the repository.
+### 🐳 Recommended: One-Command Docker Execution
 
-### Prerequisites
-
-Ensure you have the following installed on your machine:
-- **Node.js** (v18+ recommended) & `npm`
-- **Python** (v3.10+ recommended) & `pip`
-
----
-
-### Step 1: Clone the Repository & Navigate
+Run the entire application stack (Frontend + Backend + LLM Service) with a single command from the project root:
 
 ```bash
-git clone https://github.com/AryanJha05/Ride-Hailing-AI.git
-cd Ride-Hailing-AI
+docker compose up --build
 ```
 
----
-
-### Step 2: Set Up and Start the Backend
-
-1. Create a Python virtual environment and activate it:
-
-   ```bash
-   # On Linux/macOS
-   python3 -m venv backend/venv
-   source backend/venv/bin/activate
-
-   # On Windows (PowerShell)
-   python -m venv backend\venv
-   .\backend\venv\Scripts\Activate.ps1
-   ```
-
-2. Install backend dependencies:
-
-   ```bash
-   pip install -r backend/requirements.txt
-   ```
-
-3. Seed the Database with initial demonstration data (Admin & Driver accounts, NYC demand zones):
-
-   ```bash
-   python backend/seed.py
-   ```
-
-4. Start the FastAPI server:
-
-   ```bash
-   python backend/main.py
-   ```
-
-   The backend will start at **`http://localhost:8000`**.
-   - API Documentation (Swagger UI): `http://localhost:8000/docs`
-
----
-
-### Step 3: Set Up and Start the Frontend
-
-Open a new terminal window/tab:
-
-1. Navigate to the `frontend` directory:
-
-   ```bash
-   cd frontend
-   ```
-
-2. Install npm dependencies:
-
-   ```bash
-   npm install
-   ```
-
-3. Start the Vite development server:
-
-   ```bash
-   npm run dev
-   ```
-
-   The application will open at **`http://localhost:3000`**.
-
----
-
-## 🐳 Alternative: Running with Docker Compose
-
-If you have Docker installed, you can start the entire stack (Backend + Frontend) with a single command:
-
-```bash
-docker compose up --build -d
-```
-
-- Frontend UI: `http://localhost:3000`
-- Backend API: `http://localhost:8000`
+- **Frontend UI**: `http://localhost:3000`
+- **Backend API**: `http://localhost:8000`
+- **LLM Microservice**: `http://localhost:8001`
+- **API Documentation (Swagger)**: `http://localhost:8000/docs`
 
 To stop the Docker stack:
 ```bash
 docker compose down
+```
+
+---
+
+### Manual Step-by-Step Setup
+
+If you prefer to run services manually without Docker:
+
+#### Prerequisites
+- **Node.js** (v18+ recommended) & `npm`
+- **Python** (v3.10+ recommended) & `pip`
+
+#### Step 1: Set Up and Start the Backend
+
+1. Create a Python virtual environment and activate it:
+   ```bash
+   python3 -m venv backend/venv
+   source backend/venv/bin/activate
+   ```
+
+2. Install dependencies and seed demonstration data:
+   ```bash
+   pip install -r backend/requirements.txt
+   python backend/seed.py
+   ```
+
+3. Start the FastAPI server:
+   ```bash
+   python backend/main.py
+   ```
+
+#### Step 2: Set Up and Start the LLM Service
+Open a new terminal window:
+```bash
+python llm-service/main.py
+```
+
+#### Step 3: Set Up and Start the Frontend
+Open a new terminal window:
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
 ---
@@ -144,8 +108,8 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 | Page | URL | Description |
 | :--- | :--- | :--- |
 | **Driver Dashboard** | `/driver/dashboard` | Main driver hub with bento grid metrics, quick actions & positioning advice |
-| **Live Demand Map** | `/driver/demand` | Spatial Leaflet map with active NYC demand zones & surge multipliers |
-| **AI Assistant** | `/driver/assistant` | Interactive AI command chat with real-time ML positioning advice |
+| **Live Demand Map** | `/driver/demand` | Spatial Leaflet base map with active GPS vehicle pin & status-aware demand overlays |
+| **AI Assistant** | `/driver/assistant` | Interactive AI command chat powered by Ollama Gemma2 LLM reasoning microservice |
 | **Earnings** | `/driver/earnings` | Detailed earnings analytics, shift performance & AI bonus breakdowns |
 | **Trips** | `/driver/trips` | NYC trip log table with fares, ratings, and route details |
 | **Forecast Analytics** | `/driver/analytics` | Hourly predictive demand charts and zone comparisons |
@@ -160,7 +124,7 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 | **Driver Management** | `/admin/drivers` | Enterprise driver directory, real-time search, status filter, transactional account creation, and detail views |
 | **Live Demand** | `/admin/demand` | Spatial surge map across NYC demand zones |
 | **Demand Forecast** | `/admin/forecast` | Time-series demand forecasting by borough and zone |
-| **Model Health** | `/admin/models` | ML latency monitoring, throughput, and model drift metrics |
+| **Model Health** | `/admin/models` | Dynamic ML latency monitoring, model connection telemetry, and drift metrics |
 | **AI Recommendations** | `/admin/recommendations` | System-wide automated dispatch & surge optimization rules |
 | **Alerts & System Status**| `/admin/alerts`, `/admin/system` | Real-time anomaly notifications & microservice health checks |
 | **Users & Roles** | `/admin/users` | RBAC account directory and permission management |
@@ -171,10 +135,10 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 
 - ✅ **Unified Route Map Picker & Reverse Geocoding**: Interactive 2-click Leaflet map selection (1st click = 🟢 Pickup, 2nd click = 🟣 Drop-off, connecting route polyline, auto-fitting bounds). Live reverse-geocoding displays human-readable place names (`Midtown Manhattan, New York, NY`) while sending exact numerical float coordinates (`origin_lat`, `origin_lng`, `dest_lat`, `dest_lng`) to XGBoost V3.
 - ✅ **Real XGBoost V3 Integration**: Student A's ML model produces live trip duration predictions through the FastAPI backend (`POST /api/driver/trip-duration`).
-- ✅ **Honest Data Integrity Policy**: All obsolete prototype-era mock graph arrays and dummy fallback zones have been purged. Un-integrated microservices display transparent "Model Pending Integration" states.
-- ✅ **Admin Driver Management**: Full transactional driver account creation (`POST /api/admin/drivers`), linking a `User` account (`role=DRIVER`) with a `Driver` profile, temporary password modal prompt, detail viewer, and active/inactive status toggling.
-- ✅ **JWT Authentication & RBAC Protection**: Secure login via `/api/auth/login`, bcrypt password hashing, and route protection for `DRIVER` and `ADMIN` roles.
-- ✅ **Automated RBAC Test Suite**: Backend test suite (`test_admin_drivers_rbac.py`) validating role isolation and unauthorized access prevention.
+- ✅ **Plug-and-Play Model Adapters**: Student B & Student C models utilize a file-system adapter pattern (`backend/app/models/ml/`). Placing final model files into their respective directories automatically updates model status from `MODEL_NOT_CONNECTED` to `OPERATIONAL` platform-wide without code changes.
+- ✅ **Strict UI & Data Integrity**: When models are pending, zero fake surge circles or dummy curves are rendered. The base navigation map displays a distinct dark slate GPS vehicle pin and status pill indicator.
+- ✅ **Ollama Gemma2 LLM Integration**: AI Assistant service connects to local/Dockerized Ollama Gemma2 for real-time dispatch advice, with fallback handling when offline.
+- ✅ **Admin Driver Management & RBAC**: Full transactional driver account creation (`POST /api/admin/drivers`), linking `User` (`role=DRIVER`) with `Driver` profiles, temporary password modal prompt, detail viewer, active/inactive status toggling, and automated RBAC security test suite (`test_admin_drivers_rbac.py`).
 
 ---
 
@@ -184,14 +148,19 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 Ride-Hailing-AI/
 ├── backend/
 │   ├── app/
-│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, trip_duration, etc.)
+│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, trip_duration, demand_zones)
 │   │   ├── core/            # Security, JWT, hashing, RBAC middleware
-│   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
+│   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone) & ML Adapters
+│   │   │   └── ml/          # Plug-and-play Student B & Student C model directories
 │   │   ├── schemas/         # Pydantic validation schemas
 │   │   └── services/        # Business logic services (driver_service, demand_prediction_service, etc.)
 │   ├── main.py              # FastAPI application entry point
 │   ├── seed.py              # Database seeder with demonstration data
-│   └── test_admin_drivers_rbac.py # RBAC and security test suite
+│   ├── test_admin_drivers_rbac.py # RBAC and security test suite
+│   └── run_tests.py         # Automated unit test suite runner
+├── llm-service/             # Ollama Gemma2 LLM reasoning microservice (:8001)
+│   ├── main.py
+│   └── Dockerfile
 ├── frontend/
 │   ├── src/
 │   │   ├── auth/            # AuthContext, ProtectedRoute, role definitions
@@ -215,6 +184,6 @@ Ride-Hailing-AI/
 | Member | Responsibility |
 |---------|----------------|
 | **Student A** | Trip Duration Prediction (XGBoost V3 Active) |
-| **Student B** | Demand Zone Detection (Pending Integration) |
-| **Student C** | Demand Forecasting (Pending Integration) |
-| **Student D** | AI Driver Assistant, Full Stack Integration (LLM Reasoning Microservice Planned for Future Phase) |
+| **Student B** | Demand Zone Detection (Adapter Architecture Ready for Artifact Drop-In) |
+| **Student C** | Demand Forecasting (Adapter Architecture Ready for Artifact Drop-In) |
+| **Student D** | AI Driver Assistant, Full Stack Integration & Enterprise Operations Platform |

@@ -46,12 +46,14 @@ def run_tests():
     print(f"[PASS] TEST 1: Admin GET /api/admin/drivers returned 200 (Count: {len(drivers_list)})")
 
     # TEST 2: Admin JWT -> POST /api/admin/drivers -> 201 Created
-    new_driver_email = "test.newdriver@rideai.nyc"
+    import time
+    new_driver_email = f"test.newdriver_{int(time.time())}@rideai.nyc"
+    driver_id = f"NYC-DRV-{int(time.time()) % 10000}"
     res_t2 = client.post("/api/admin/drivers", headers=admin_headers, json={
         "name": "Test Driver Account",
         "email": new_driver_email,
         "phone": "+1 (555) 999-8888",
-        "driver_id": "NYC-DRV-999",
+        "driver_id": driver_id,
         "license_number": "NYC-TLC-99999",
         "status": "Active",
         "password": "newdriver123"
@@ -59,7 +61,7 @@ def run_tests():
     assert res_t2.status_code == 201, f"Test 2 failed: {res_t2.text}"
     created_driver = res_t2.json()
     assert created_driver["email"] == new_driver_email
-    assert created_driver["driver_id"] == "NYC-DRV-999"
+    assert created_driver["driver_id"] == driver_id
     print(f"[PASS] TEST 2: Admin POST /api/admin/drivers returned 201 Created ({new_driver_email})")
 
     # TEST 3: Driver JWT -> GET /api/admin/drivers -> 403 Forbidden

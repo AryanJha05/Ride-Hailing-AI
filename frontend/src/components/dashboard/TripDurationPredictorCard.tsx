@@ -18,11 +18,13 @@ import NavigationIcon from '@mui/icons-material/Navigation';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MapIcon from '@mui/icons-material/Map';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import PlaceIcon from '@mui/icons-material/Place';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { useTripDurationMutation } from '../../hooks/useRideApi';
 import { TripDurationResponse } from '../../types/api.types';
 import { LocationRoutePickerModal } from '../map/LocationRoutePickerModal';
-import { LocationGeocodeResult } from '../../services/geocodingService';
+import { MapLocationPickerModal } from '../map/MapLocationPickerModal';
+import { LocationGeocodeResult, reverseGeocode } from '../../services/geocodingService';
 
 export const TripDurationPredictorCard: React.FC = () => {
   // Independent Location State containing coordinates + reverse-geocoded place names
@@ -40,8 +42,9 @@ export const TripDurationPredictorCard: React.FC = () => {
   });
   const [passengerCount, setPassengerCount] = useState<number>(1);
 
-  // Map Modal State
-  const [modalOpen, setModalOpen] = useState<boolean>(false);
+  // Map Modal States
+  const [routeModalOpen, setRouteModalOpen] = useState<boolean>(false);
+  const [singlePickerMode, setSinglePickerMode] = useState<'pickup' | 'dropoff' | null>(null);
 
   // Mutation and API Result / Error state
   const [result, setResult] = useState<TripDurationResponse | null>(null);
@@ -52,6 +55,16 @@ export const TripDurationPredictorCard: React.FC = () => {
   const handleConfirmRoute = (pickup: LocationGeocodeResult, dropoff: LocationGeocodeResult) => {
     setPickupLocation(pickup);
     setDropoffLocation(dropoff);
+  };
+
+  const handleSingleLocationConfirm = async (lat: number, lng: number) => {
+    const geo = await reverseGeocode(lat, lng);
+    if (singlePickerMode === 'pickup') {
+      setPickupLocation(geo);
+    } else if (singlePickerMode === 'dropoff') {
+      setDropoffLocation(geo);
+    }
+    setSinglePickerMode(null);
   };
 
   const handlePredict = () => {
@@ -115,7 +128,7 @@ export const TripDurationPredictorCard: React.FC = () => {
         </Box>
 
         <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12, mb: 2 }}>
-          Dynamic route selection with live reverse-geocoding powered by 44 spatial XGBoost ML features.
+          Interactive map location selection with live reverse-geocoding powered by 44 spatial XGBoost ML features.
         </Typography>
 
         {/* Pickup Location Card */}
@@ -128,9 +141,28 @@ export const TripDurationPredictorCard: React.FC = () => {
             mb: 1.5,
           }}
         >
-          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700, letterSpacing: '0.05em', display: 'block', mb: 0.8 }}>
-            PICKUP LOCATION
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8 }}>
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700, letterSpacing: '0.05em' }}>
+              PICKUP LOCATION
+            </Typography>
+            <Button
+              size="small"
+              onClick={() => setSinglePickerMode('pickup')}
+              startIcon={<PlaceIcon sx={{ fontSize: 14 }} />}
+              sx={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: VELOUR_TOKENS.accentTeal,
+                textTransform: 'none',
+                p: '2px 8px',
+                borderRadius: 1.5,
+                backgroundColor: 'rgba(0, 217, 192, 0.08)',
+                '&:hover': { backgroundColor: 'rgba(0, 217, 192, 0.18)' },
+              }}
+            >
+              Select on Map
+            </Button>
+          </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2 }}>
             <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20, mt: 0.2 }} />
@@ -158,9 +190,28 @@ export const TripDurationPredictorCard: React.FC = () => {
             mb: 1.8,
           }}
         >
-          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentLavender, fontWeight: 700, letterSpacing: '0.05em', display: 'block', mb: 0.8 }}>
-            DROP-OFF LOCATION
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8 }}>
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentLavender, fontWeight: 700, letterSpacing: '0.05em' }}>
+              DROP-OFF LOCATION
+            </Typography>
+            <Button
+              size="small"
+              onClick={() => setSinglePickerMode('dropoff')}
+              startIcon={<PlaceIcon sx={{ fontSize: 14 }} />}
+              sx={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: VELOUR_TOKENS.accentLavender,
+                textTransform: 'none',
+                p: '2px 8px',
+                borderRadius: 1.5,
+                backgroundColor: 'rgba(168, 85, 247, 0.08)',
+                '&:hover': { backgroundColor: 'rgba(168, 85, 247, 0.18)' },
+              }}
+            >
+              Select on Map
+            </Button>
+          </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2 }}>
             <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 20, mt: 0.2 }} />
@@ -178,11 +229,11 @@ export const TripDurationPredictorCard: React.FC = () => {
           </Box>
         </Box>
 
-        {/* Single Unified Route Selection Trigger Button */}
+        {/* Unified Route Selection Trigger Button */}
         <Button
           fullWidth
           variant="outlined"
-          onClick={() => setModalOpen(true)}
+          onClick={() => setRouteModalOpen(true)}
           startIcon={<MapIcon />}
           sx={{
             borderColor: 'rgba(0, 217, 192, 0.4)',
@@ -200,7 +251,7 @@ export const TripDurationPredictorCard: React.FC = () => {
             },
           }}
         >
-          Select Route on Map
+          Select Full Route on Map
         </Button>
 
         {/* Passenger Count Selection */}
@@ -338,7 +389,7 @@ export const TripDurationPredictorCard: React.FC = () => {
               TRIP DURATION PREDICTOR
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12 }}>
-              Click "Select Route on Map" to pick pickup and drop-off points for real XGBoost V3 ETA predictions.
+              Click "Select on Map" to pick pickup or drop-off points for real XGBoost V3 ETA predictions.
             </Typography>
           </Box>
         )}
@@ -346,12 +397,26 @@ export const TripDurationPredictorCard: React.FC = () => {
 
       {/* Unified Interactive Route Map Picker Modal */}
       <LocationRoutePickerModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
+        open={routeModalOpen}
+        onClose={() => setRouteModalOpen(false)}
         initialPickup={pickupLocation}
         initialDropoff={dropoffLocation}
         onConfirm={handleConfirmRoute}
       />
+
+      {/* Single Location Map Picker Modal */}
+      {singlePickerMode && (
+        <MapLocationPickerModal
+          open={Boolean(singlePickerMode)}
+          onClose={() => setSinglePickerMode(null)}
+          title={`Select ${singlePickerMode === 'pickup' ? 'Pickup' : 'Drop-off'} Location on Map`}
+          markerType={singlePickerMode}
+          mode={singlePickerMode}
+          initialLat={singlePickerMode === 'pickup' ? pickupLocation.lat : dropoffLocation.lat}
+          initialLng={singlePickerMode === 'pickup' ? pickupLocation.lng : dropoffLocation.lng}
+          onConfirm={handleSingleLocationConfirm}
+        />
+      )}
     </Card>
   );
 };

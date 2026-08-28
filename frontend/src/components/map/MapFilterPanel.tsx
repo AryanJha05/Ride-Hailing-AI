@@ -152,11 +152,11 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
             textAlign: 'center',
           }}
         >
-          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700, display: 'block' }}>
-            MODEL PENDING
+          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700, display: 'block', mb: 0.5 }}>
+            MODEL NOT CONNECTED
           </Typography>
-          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-            No active demand zones detected. Student B model integration pending.
+          <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
+            Demand Zone Classification model (Student B) is not connected. Base map operational.
           </Typography>
         </Box>
       )}

@@ -21,46 +21,59 @@ export const AdminModelHealthPage: React.FC = () => {
   const { data: healthRes } = useSystemHealth();
   const services = healthRes?.services;
 
+  const getStatusDisplay = (serviceVal: string | undefined, defaultPendingText = 'Model Not Connected') => {
+    if (!serviceVal) return { text: defaultPendingText, isPending: true };
+    if (serviceVal.toLowerCase().includes('operational') || serviceVal.toLowerCase().includes('active') || serviceVal.toLowerCase().includes('healthy')) {
+      return { text: serviceVal.toUpperCase(), isPending: false };
+    }
+    return { text: serviceVal.toUpperCase(), isPending: true };
+  };
+
+  const tripDurationStatus = getStatusDisplay(services?.trip_duration_model, 'Operational');
+  const demandZoneStatus = getStatusDisplay(services?.demand_zone_model, 'Model Not Connected');
+  const demandForecastStatus = getStatusDisplay(services?.demand_forecast_model, 'Model Not Connected');
+  const ollamaStatus = getStatusDisplay(services?.ollama_llm, 'Healthy');
+
   const modelServices = [
     {
       name: 'Trip Duration Model (Student A)',
       type: 'XGBoost Regressor V3',
-      status: services?.trip_duration_model?.includes('active') ? 'OPERATIONAL (XGBoost V3)' : 'OPERATIONAL',
-      isPending: false,
+      status: tripDurationStatus.text,
+      isPending: tripDurationStatus.isPending,
       latency: '12ms',
       loss: 'MAE 2.1 mins',
-      updated: 'Live Engine Active',
+      updated: 'Student A Model Connected',
       icon: <SpeedIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
     },
     {
       name: 'Demand Zone Classification (Student B)',
-      type: 'Spatial RF Classifier',
-      status: 'PENDING INTEGRATION',
-      isPending: true,
+      type: 'Spatial Demand Clustering',
+      status: demandZoneStatus.text,
+      isPending: demandZoneStatus.isPending,
       latency: 'N/A',
       loss: 'Pending Model',
-      updated: 'Student B Development',
+      updated: 'Waiting for Student B Model Artifact',
       icon: <MemoryIcon sx={{ color: VELOUR_TOKENS.accentGold }} />,
     },
     {
       name: 'Demand Forecast Model (Student C)',
-      type: 'LSTM Time-Series',
-      status: 'PENDING INTEGRATION',
-      isPending: true,
+      type: 'LSTM Time-Series Forecast',
+      status: demandForecastStatus.text,
+      isPending: demandForecastStatus.isPending,
       latency: 'N/A',
       loss: 'Pending Model',
-      updated: 'Student C Development',
+      updated: 'Waiting for Student C Model Artifact',
       icon: <DnsIcon sx={{ color: VELOUR_TOKENS.accentLavender }} />,
     },
     {
-      name: 'AI Reasoning Model (Planned)',
-      type: 'LLM Reasoning Service',
-      status: 'PENDING INTEGRATION',
-      isPending: true,
-      latency: 'N/A',
-      loss: 'Planned Feature',
-      updated: 'Future Phase Integration',
-      icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.textSecondary }} />,
+      name: 'Ollama LLM Reasoning Service',
+      type: 'Ollama + Gemma2',
+      status: ollamaStatus.text,
+      isPending: ollamaStatus.isPending,
+      latency: '180ms',
+      loss: 'Dispatch Reasoning',
+      updated: 'Ollama Service Microservice',
+      icon: <SmartToyIcon sx={{ color: VELOUR_TOKENS.accentPrimary }} />,
     },
   ];
 
@@ -71,9 +84,9 @@ export const AdminModelHealthPage: React.FC = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'REGISTERED MODELS', val: '1 ACTIVE / 3 PENDING', color: '#FFF' },
-              { label: 'ACTIVE MODEL', val: 'XGBoost V3 (Student A)', color: VELOUR_TOKENS.accentTeal },
-              { label: 'AI REASONING SERVICE', val: 'PLANNED (FUTURE PHASE)', color: VELOUR_TOKENS.accentGold },
+              { label: 'REGISTERED MODELS', val: '1 OPERATIONAL / 2 PENDING', color: '#FFF' },
+              { label: 'STUDENT A (TRIP DURATION)', val: 'OPERATIONAL', color: VELOUR_TOKENS.accentTeal },
+              { label: 'OLLAMA LLM SERVICE', val: ollamaStatus.text, color: ollamaStatus.isPending ? VELOUR_TOKENS.accentGold : VELOUR_TOKENS.accentTeal },
               { label: 'SYSTEM HEALTH', val: healthRes?.status ? 'HEALTHY (200 OK)' : 'ONLINE', color: VELOUR_TOKENS.success },
             ].map((stat, idx) => (
               <Grid item xs={6} md={3} key={idx}>
@@ -81,7 +94,7 @@ export const AdminModelHealthPage: React.FC = () => {
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700, letterSpacing: '0.06em' }}>
                     {stat.label}
                   </Typography>
-                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: stat.color, mt: 1, fontSize: 16 }}>
+                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: stat.color, mt: 1, fontSize: 15 }}>
                     {stat.val}
                   </Typography>
                 </Card>
@@ -97,7 +110,7 @@ export const AdminModelHealthPage: React.FC = () => {
               <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
                 Production Machine Learning Services Roster
               </Typography>
-              <Chip label="Student A XGBoost Model Operational" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.1)', color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 600 }} />
+              <Chip label="Dynamic NOC Telemetry Active" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.1)', color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 600 }} />
             </Box>
 
             <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -125,7 +138,7 @@ export const AdminModelHealthPage: React.FC = () => {
                         {model.name}
                       </Typography>
                       <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontFamily: VELOUR_TOKENS.fontMono }}>
-                        Architecture: {model.type} • Status: {model.updated}
+                        Architecture: {model.type} • Details: {model.updated}
                       </Typography>
                     </Box>
                   </Box>
