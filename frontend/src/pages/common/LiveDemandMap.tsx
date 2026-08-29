@@ -16,11 +16,22 @@ export const LiveDemandMap: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.7549, lng: -73.9840 });
 
-  const { data: zones } = useDemandZones(selectedHour);
+  const { data: zones, isLoading, isError } = useDemandZones(selectedHour);
 
-  const displayZones = (zones || []).filter((z) =>
-    !searchQuery ? true : z.zone_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const displayZones = (zones || []).filter((z) => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    const name = z.zone_name.toLowerCase();
+    if (name.includes(q)) return true;
+    if (q.includes('jfk') && name.includes('jfk')) return true;
+    if (q.includes('williamsburg') && name.includes('williamsburg')) return true;
+    if (q.includes('midtown') && name.includes('midtown')) return true;
+    if (q.includes('laguardia') && name.includes('laguardia')) return true;
+    if (q.includes('brooklyn') && name.includes('brooklyn')) return true;
+    return false;
+  });
+
+  const isFilteredEmpty = Boolean(searchQuery && (zones || []).length > 0 && displayZones.length === 0);
 
   const handleSelectLocation = (loc: LocationOption) => {
     setMapCenter({ lat: loc.lat, lng: loc.lng });
@@ -35,7 +46,14 @@ export const LiveDemandMap: React.FC = () => {
     <PageShell title="Live Demand Map" hideHeader={true}>
       <Box sx={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#060709' }}>
         {/* Leaflet Dark Map Base Layer with Interactive Heatmaps */}
-        <DemandMap zones={displayZones} filter={filter} driverLocation={mapCenter} />
+        <DemandMap
+          zones={displayZones}
+          filter={filter}
+          driverLocation={mapCenter}
+          isLoading={isLoading}
+          isError={isError}
+          isFilteredEmpty={isFilteredEmpty}
+        />
 
         {/* Top Right Interactive Search Bar */}
         <MapSearchBar
