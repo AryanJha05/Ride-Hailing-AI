@@ -1,11 +1,18 @@
 import os
 import httpx
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 from app.core.logger import logger
 from app.services.demand_prediction_service import get_demand_zone_status, detect_demand_zones
 from app.services.forecast_service import get_forecast_status, get_forecast_full_payload
 
-LLM_SERVICE_URL = os.getenv("LLM_SERVICE_URL", "http://localhost:8001").rstrip("/")
+PRIMARY_LLM_URL = os.getenv("LLM_SERVICE_URL", "http://host.docker.internal:8001").rstrip("/")
+CANDIDATE_LLM_URLS = [
+    PRIMARY_LLM_URL,
+    "http://host.docker.internal:8001",
+    "http://172.17.0.1:8001",
+    "http://llm-service:8001",
+    "http://localhost:8001"
+]
 
 def build_llm_context_contract(
     driver_lat: float = 40.7549,
@@ -49,40 +56,41 @@ def build_llm_context_contract(
 async def request_driver_advice(
     query: str,
     driver_lat: float = 40.7549,
-    driver_lng: float = -73.9840
+    driver_lng: float = -73.9840,
+    history: Optional[List[Dict[str, str]]] = None
 ) -> Dict[str, Any]:
     """
-    Calls the LLM service /generate endpoint passing the query and full context contract.
-    Handles service availability gracefully without crashing backend.
+    Calls the LLM service /generate endpoint passing query, conversation history, and context contract.
+    Handles service availability gracefully without returning static fake responses.
     """
     context_contract = build_llm_context_contract(driver_lat=driver_lat, driver_lng=driver_lng, driver_query=query)
 
     payload = {
         "query": query,
-        "context": context_contract
+        "context": context_contract,
+        "history": history or []
     }
 
-    try:
-        async with httpx.AsyncClient(timeout=6.0) as client:
-            resp = await client.post(f"{LLM_SERVICE_URL}/generate", json=payload)
-            if resp.status_code == 200:
-                return resp.json()
-            else:
-                logger.warning(f"LLM service returned HTTP status {resp.status_code}")
-    except Exception as e:
-        logger.warning(f"Unable to connect to LLM service at {LLM_SERVICE_URL}: {str(e)}")
+    async with httpx.AsyncClient(timeout=50.0) as client:
+        for url in CANDIDATE_LLM_URLS:
+            try:
+                resp = await client.post(f"{url}/generate", json=payload)
+                if resp.status_code == 200:
+                    return resp.json()
+            except Exception as e:
+                logger.warning(f"Failed reaching LLM service at {url}: {str(e)}")
 
-    # Fallback response if LLM service is offline
+    # Fallback response ONLY when microservice is completely unreachable
     return {
-        "recommendation": "Platform System Advice",
-        "reason": "Student A (XGBoost V3), Student B (HDBSCAN Spatial Demand), and Student C (PyTorch LSTM Forecast) models are active.",
-        "suggested_area": "Midtown Manhattan",
-        "confidence": 0.88,
+        "recommendation": "Service Status Notice",
+        "reason": "AI Copilot service is temporarily offline. Please verify backend service connection and try again.",
+        "suggested_area": "",
+        "confidence": 0.0,
         "reasoning_chips": [
-            {"label": "Student A (Trip Duration)", "value": "Operational (XGBoost V3)"},
-            {"label": "Student B (Demand Zones)", "value": "Operational (HDBSCAN)"},
-            {"label": "Student C (Forecast)", "value": "Operational (PyTorch LSTM)"}
+            {"label": "Student A (Trip Duration)", "value": "Operational"},
+            {"label": "Student B (Demand Zones)", "value": "Operational"},
+            {"label": "Student C (Forecast)", "value": "Operational"}
         ],
+        "has_card": False,
         "status": "llm_service_offline"
     }
-

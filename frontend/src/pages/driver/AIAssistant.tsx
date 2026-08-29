@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Paper, Typography, IconButton, Avatar, Tooltip, Divider, Button } from '@mui/material';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import DeleteSweepOutlinedIcon from '@mui/icons-material/DeleteSweepOutlined';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
@@ -52,31 +51,44 @@ export const AIAssistant: React.FC = () => {
     setMessages((prev) => [...prev, userMsg]);
     setInputQuery('');
 
+    // Extract recent history format
+    const historyPayload = messages
+      .filter((m) => m.id !== 'm-init')
+      .slice(-6)
+      .map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        text: m.text,
+      }));
+
     adviceMutation.mutate(
-      { query },
+      { query, history: historyPayload },
       {
-        onSuccess: (data) => {
-          const suggestedArea = data.suggested_area || 'Midtown Manhattan Core';
-          const narrativeText = data.reason || `Positioning guidance generated for ${suggestedArea}.`;
+        onSuccess: (data: any) => {
+          const suggestedArea = data.suggested_area || '';
+          const narrativeText = data.reason || 'I am ready to assist with your shift.';
+          const shouldShowCard = Boolean(data.has_card && suggestedArea);
 
           const aiMsg: ChatMessage = {
             id: `ai-${Date.now()}`,
             sender: 'ai',
             text: narrativeText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            card: {
-              category: data.recommendation || 'AI DISPATCH RECOMMENDATION',
-              suggestedArea: suggestedArea,
-              insight: `Live spatial demand in ${suggestedArea} is currently above shift averages.`,
-              recommendation: `Target ${suggestedArea} for maximum trip volume and minimal idle time.`,
-              confidence: data.confidence ? Math.round(data.confidence * 100) : 94,
-              actionText: 'View on Live Map',
-            },
-            statusTag: 'Live intelligence • Connected',
+            card: shouldShowCard
+              ? {
+                  category: data.recommendation || 'POSITIONING GUIDANCE',
+                  suggestedArea: suggestedArea,
+                  insight: `Live spatial demand in ${suggestedArea} is currently elevated.`,
+                  recommendation: `Target ${suggestedArea} for higher trip volume and shorter idle times.`,
+                  confidence: data.confidence ? Math.round(data.confidence * 100) : 95,
+                  actionText: 'View on Live Map',
+                }
+              : undefined,
+            statusTag: data.status === 'service_offline' ? 'Service status offline' : 'Live intelligence • Connected',
+            isError: data.status === 'service_offline',
           };
           setMessages((prev) => [...prev, aiMsg]);
         },
-        onError: (err: any) => {
+        onError: () => {
           const errorMsg: ChatMessage = {
             id: `ai-err-${Date.now()}`,
             sender: 'ai',
@@ -99,7 +111,7 @@ export const AIAssistant: React.FC = () => {
           backgroundColor: VELOUR_TOKENS.bgBase,
           display: 'flex',
           alignItems: 'center',
-          justify: 'center',
+          justifyContent: 'center',
           p: { xs: 1.5, sm: 2, md: 3 },
         }}
       >
@@ -125,7 +137,7 @@ export const AIAssistant: React.FC = () => {
               backgroundColor: 'rgba(20, 20, 32, 0.95)',
               display: 'flex',
               alignItems: 'center',
-              justify: 'space-between',
+              justifyContent: 'space-between',
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>

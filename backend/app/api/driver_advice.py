@@ -19,5 +19,5 @@ async def get_driver_advice(
     lat = req.location.lat if req.location else 40.7549
     lng = req.location.lng if req.location else -73.9840
 
-    result = await request_driver_advice(query=query, driver_lat=lat, driver_lng=lng)
+    result = await request_driver_advice(query=query, driver_lat=lat, driver_lng=lng, history=req.history)
     return result

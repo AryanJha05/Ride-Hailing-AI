@@ -50,6 +50,7 @@ export interface DriverAdviceRequest {
   weather?: string;
   time_of_day?: string;
   query?: string;
+  history?: Array<{ role: string; text: string }>;
 }
 
 export interface DriverAdviceResponse {
@@ -60,6 +61,8 @@ export interface DriverAdviceResponse {
   reasoning_chips: DataChip[];
   estimated_travel_time?: string;
   surge_multiplier?: number;
+  has_card?: boolean;
+  status?: string;
 }
 
 export interface ForecastPoint {
@@ -202,4 +205,3 @@ export interface TripDurationResponse {
   model: string;
   status: string;
 }
-

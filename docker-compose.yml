@@ -10,9 +10,11 @@ services:
     environment:
       - PORT=8000
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./ride_ai.db}
-      - LLM_SERVICE_URL=http://llm-service:8001
+      - LLM_SERVICE_URL=http://host.docker.internal:8001
     volumes:
       - ./backend/ride_ai.db:/app/ride_ai.db
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     depends_on:
       - llm-service
     networks:
@@ -33,22 +35,17 @@ services:
     networks:
       - ride-ai-network
 
-  # 3. LLM Service Container (FastAPI + Ollama Gemma2 Integration)
+  # 3. LLM Service Container (FastAPI + Ollama llama3.2:1b Integration)
   llm-service:
     build:
       context: ./llm-service
       dockerfile: Dockerfile
     container_name: ride-ai-llm-service
-    ports:
-      - "${LLM_SERVICE_PORT:-8001}:8001"
+    network_mode: "host"
     environment:
       - PORT=8001
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2}
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    networks:
-      - ride-ai-network
+      - OLLAMA_BASE_URL=http://localhost:11434
+      - OLLAMA_MODEL=llama3.2:1b
 
 networks:
   ride-ai-network:

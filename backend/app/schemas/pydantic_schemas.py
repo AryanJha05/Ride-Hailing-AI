@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, EmailStr
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 from datetime import datetime
 
 class LoginRequest(BaseModel):
@@ -84,6 +84,7 @@ class DriverAdviceRequest(BaseModel):
     weather: Optional[str] = "Clear"
     time_of_day: Optional[str] = "18:00"
     query: Optional[str] = None
+    history: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
 
 class DataChip(BaseModel):
     label: str
@@ -97,6 +98,8 @@ class DriverAdviceResponse(BaseModel):
     reasoning_chips: List[DataChip] = []
     estimated_travel_time: Optional[str] = "14m 30s"
     surge_multiplier: Optional[float] = 1.4
+    has_card: Optional[bool] = False
+    status: Optional[str] = "success"
 
 class ForecastPoint(BaseModel):
     hour: str
