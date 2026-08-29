@@ -6,7 +6,7 @@ from app.core.logger import logger
 from app.services.trip_duration_feature_service import feature_builder
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFAULT_MODEL_PATH = os.path.join(BASE_DIR, "models", "trip_duration", "xgboost_trip_duration_v3.json")
+DEFAULT_MODEL_PATH = os.path.join(BASE_DIR, "models", "student_a", "xgboost_trip_duration_v3.json")
 
 class TripDurationModelService:
     def __init__(self, model_path: str = DEFAULT_MODEL_PATH):

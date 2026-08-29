@@ -20,7 +20,7 @@ async def get_system_health():
     student_a_status = "Operational (Student A - XGBoost V3)" if trip_duration_model_service.model is not None else "Error"
 
     # Student B Demand Zone status
-    student_b_status = "Operational (Student B)" if student_b_adapter.is_connected() else "Model Not Connected"
+    student_b_status = "Operational (Student B - HDBSCAN)" if student_b_adapter.is_connected() else "Model Not Connected"
 
     # Student C Demand Forecast status
     student_c_status = "Operational (Student C)" if student_c_adapter.is_connected() else "Model Not Connected"

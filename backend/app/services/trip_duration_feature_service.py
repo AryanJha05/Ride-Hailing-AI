@@ -7,7 +7,7 @@ from datetime import datetime
 from app.core.logger import logger
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DEFAULT_FEATURE_COLS_PATH = os.path.join(BASE_DIR, "models", "trip_duration", "v3_feature_columns.json")
+DEFAULT_FEATURE_COLS_PATH = os.path.join(BASE_DIR, "models", "student_a", "v3_feature_columns.json")
 
 # Default weather values derived from training dataset medians
 DEFAULT_WEATHER = {
