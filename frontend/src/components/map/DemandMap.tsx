@@ -1,11 +1,20 @@
 import React from 'react';
-import { MapContainer, TileLayer, CircleMarker, Marker, Popup, Circle } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Box, Typography, Card } from '@mui/material';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { DemandZone } from '../../types/api.types';
+
+// MapRecenter Helper Component
+const MapRecenter: React.FC<{ center: [number, number]; zoom?: number }> = ({ center, zoom = 13 }) => {
+  const map = useMap();
+  React.useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
+};
 
 // Custom Leaflet DivIcon for Driver GPS Location Pin
 const driverIcon = L.divIcon({
@@ -52,6 +61,7 @@ export const DemandMap: React.FC<DemandMapProps> = ({
         style={{ width: '100%', height: '100%', backgroundColor: '#060709' }}
         zoomControl={false}
       >
+        <MapRecenter center={center} />
         {/* CartoDB Dark Base Layer */}
         <TileLayer
           attribution='&copy; <a href="https://carto.com/">CARTO</a>'
