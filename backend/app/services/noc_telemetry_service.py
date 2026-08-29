@@ -1,6 +1,6 @@
 import os
 import httpx
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, List
 from app.services.student_b_adapter import student_b_adapter
 from app.services.student_c_adapter import student_c_adapter
@@ -26,7 +26,7 @@ async def get_noc_model_health_telemetry() -> Dict[str, Any]:
     demand_forecast_active = student_c_adapter.is_connected()
     ollama_active = await check_ollama_status()
 
-    active_count = sum([trip_duration_active, demand_zone_active, demand_forecast_active])
+    active_count = sum([1 for flag in [trip_duration_active, demand_zone_active, demand_forecast_active] if flag])
     total_count = 3
 
     system_status = "HEALTHY"
@@ -35,10 +35,10 @@ async def get_noc_model_health_telemetry() -> Dict[str, Any]:
     if active_count == 0:
         system_status = "CRITICAL"
 
-    now_iso = datetime.utcnow().isoformat() + "Z"
+    now_iso = datetime.now(timezone.utc).isoformat()
 
     # Services Roster
-    services = [
+    services: List[Dict[str, Any]] = [
         {
             "id": "trip_duration",
             "name": "Trip Duration Intelligence",
@@ -134,9 +134,10 @@ async def get_noc_model_health_telemetry() -> Dict[str, Any]:
     ]
 
     # Calculate system KPIs
-    total_rpm = sum(s["requests_per_min"] for s in services)
-    avg_latency = round(sum(s["inference_latency_ms"] for s in services if s["inference_latency_ms"] > 0) / max(1, sum(1 for s in services if s["inference_latency_ms"] > 0)), 1)
-    avg_error = round(sum(s["error_rate_pct"] for s in services) / len(services), 2)
+    total_rpm = sum(int(s["requests_per_min"]) for s in services)
+    latencies = [float(s["inference_latency_ms"]) for s in services if float(s["inference_latency_ms"]) > 0]
+    avg_latency = round(sum(latencies) / max(1, len(latencies)), 1)
+    avg_error = round(sum(float(s["error_rate_pct"]) for s in services) / len(services), 2)
 
     # 24-point Telemetry History for charts
     base_time = datetime.now()
@@ -146,7 +147,7 @@ async def get_noc_model_health_telemetry() -> Dict[str, Any]:
         time_str = t.strftime("%H:%M")
         # generate stable curves
         lat = round(12.0 + (i % 5) * 1.2 + (0.5 if i % 2 == 0 else -0.3), 1)
-        reqs = int(240 + (i % 7) * 15 + (10 if i > 12 else -5))
+        reqs = 240 + (i % 7) * 15 + (10 if i > 12 else -5)
         err = round(0.02 + (0.03 if i % 6 == 0 else 0.01), 2)
         telemetry_history.append({
             "time": time_str,
@@ -154,6 +155,7 @@ async def get_noc_model_health_telemetry() -> Dict[str, Any]:
             "request_volume": reqs,
             "error_rate_pct": err
         })
+
 
     # Incidents
     active_incidents = []
