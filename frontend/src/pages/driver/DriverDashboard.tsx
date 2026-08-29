@@ -11,7 +11,6 @@ import {
   LinearProgress,
   Paper,
 } from '@mui/material';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -35,7 +34,6 @@ export const DriverDashboard: React.FC = () => {
   const { user } = useAuth();
   const { data: zones } = useDemandZones();
   const { data: perfRes } = useDriverPerformance();
-  const [isOnline, setIsOnline] = useState(true);
 
   return (
     <PageShell title="Dashboard">
@@ -68,36 +66,14 @@ export const DriverDashboard: React.FC = () => {
             boxSizing: 'border-box',
           }}
         >
-          <Box sx={{ flex: '1 1 280px', minWidth: 0 }}>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 18, sm: 20, md: 22 }, mb: 0.5 }}>
-              Good evening, {perfRes?.name || user?.name || 'Driver'} 👋
+              Good evening, {perfRes?.name || user?.name || 'Alex Morgan'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
               System operational. Student A XGBoost V3 Trip Duration model connected for dynamic map predictions.
             </Typography>
           </Box>
-
-          <Button
-            variant={isOnline ? 'outlined' : 'contained'}
-            onClick={() => setIsOnline(!isOnline)}
-            endIcon={<PlayArrowIcon />}
-            sx={{
-              backgroundColor: isOnline ? 'transparent' : VELOUR_TOKENS.accentTeal,
-              borderColor: isOnline ? VELOUR_TOKENS.accentTeal : 'transparent',
-              color: isOnline ? VELOUR_TOKENS.accentTeal : '#000',
-              fontWeight: 700,
-              fontSize: 13,
-              px: 2.5,
-              py: 1,
-              borderRadius: 2,
-              flexShrink: 0,
-              '&:hover': {
-                backgroundColor: isOnline ? 'rgba(0, 217, 192, 0.1)' : VELOUR_TOKENS.accentTeal,
-              },
-            }}
-          >
-            {isOnline ? 'Online' : 'Go Online'}
-          </Button>
         </Box>
 
         {/* Row 1 — 4 KPI Metric Cards with Mini Visualizers */}

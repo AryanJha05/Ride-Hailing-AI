@@ -44,7 +44,6 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
   const location = useLocation();
   const { user, role, logout } = useAuth();
   const isAdminRole = role === UserRole.ADMIN;
-  const [isOnline, setIsOnline] = useState<boolean>(true);
   const [timeStr, setTimeStr] = useState<string>('');
   const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
   const [notifAnchor, setNotifAnchor] = useState<null | HTMLElement>(null);
@@ -99,7 +98,6 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
       time: '2 mins ago',
       icon: <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 18 }} />,
     },
-
     {
       id: 2,
       title: isAdminRole ? 'Weekly Fleet Revenue' : 'Weekly Payout Processed',
@@ -131,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
         maxHeight: HEADER_HEIGHT,
         display: 'flex',
         alignItems: 'center',
-        justify: 'space-between',
+        justifyContent: 'space-between',
         px: { xs: 1.5, sm: 2, md: 3 },
         borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         backgroundColor: VELOUR_TOKENS.bgSurface1,
@@ -144,7 +142,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
         minWidth: 0,
       }}
     >
-      {/* Left: Mobile Drawer Trigger & Page Title */}
+      {/* LEFT: Application Identity, Page Title & Network Badge */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, height: '100%', minWidth: 0, overflow: 'hidden' }}>
         <IconButton
           color="inherit"
@@ -155,6 +153,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             display: { md: 'none' },
             color: VELOUR_TOKENS.textPrimary,
             p: 0.8,
+            flexShrink: 0,
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.05)' },
           }}
         >
@@ -180,16 +179,16 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           {displayTitle}
         </Typography>
 
-        {/* Fleet Network Badge */}
+        {/* Network Badge */}
         <Chip
-          label="NYC METRO NETWORK"
+          label={isAdminRole ? 'NOC CONTROL CENTER' : 'NYC METRO NETWORK'}
           size="small"
           sx={{
-            display: { xs: 'none', md: 'inline-flex' },
+            display: { xs: 'none', sm: 'inline-flex' },
             alignItems: 'center',
-            backgroundColor: 'rgba(0, 217, 192, 0.08)',
-            color: VELOUR_TOKENS.accentTeal,
-            border: `1px solid rgba(0, 217, 192, 0.2)`,
+            backgroundColor: isAdminRole ? 'rgba(124, 58, 237, 0.08)' : 'rgba(0, 217, 192, 0.08)',
+            color: isAdminRole ? VELOUR_TOKENS.accentLavender : VELOUR_TOKENS.accentTeal,
+            border: `1px solid ${isAdminRole ? 'rgba(124, 58, 237, 0.25)' : 'rgba(0, 217, 192, 0.25)'}`,
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: '0.04em',
@@ -199,43 +198,34 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
         />
       </Box>
 
-      {/* Right: Telemetry Status, Notifications & Dynamic Profile Badge */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.8, sm: 1.2 }, height: '100%', flexShrink: 0 }}>
-        {/* Dynamic Online Staging Status Toggle */}
+      {/* RIGHT: Telemetry Status, Notifications, Driver Profile & Clock */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 }, height: '100%', flexShrink: 0 }}>
+        {/* System Telemetry Active Status Chip */}
         <Chip
           icon={
             <FiberManualRecordIcon
               sx={{
-                fontSize: '10px !important',
-                color: isOnline ? `${VELOUR_TOKENS.accentTeal} !important` : '#8E8C9A !important',
+                fontSize: '9px !important',
+                color: `${VELOUR_TOKENS.accentTeal} !important`,
               }}
             />
           }
-          label={
-            isAdminRole
-              ? isOnline ? 'NOC ACTIVE' : 'NOC MONITORING'
-              : isOnline ? 'ONLINE' : 'OFFLINE'
-          }
-          onClick={() => setIsOnline(!isOnline)}
+          label={isAdminRole ? 'NOC ACTIVE' : 'ONLINE'}
           size="small"
           sx={{
-            backgroundColor: isOnline ? 'rgba(0, 217, 192, 0.1)' : 'rgba(255, 255, 255, 0.04)',
-            color: isOnline ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary,
-            border: `1px solid ${isOnline ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
+            backgroundColor: 'rgba(0, 217, 192, 0.08)',
+            color: VELOUR_TOKENS.accentTeal,
+            border: '1px solid rgba(0, 217, 192, 0.25)',
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: '0.04em',
-            cursor: 'pointer',
-            height: 28,
+            height: 26,
             px: 0.5,
-            transition: 'all 0.2s ease',
-            '&:hover': {
-              backgroundColor: isOnline ? 'rgba(0, 217, 192, 0.18)' : 'rgba(255, 255, 255, 0.08)',
-            },
+            flexShrink: 0,
           }}
         />
 
-        {/* Notifications Popover Trigger */}
+        {/* Notifications Trigger */}
         <IconButton
           onClick={(e) => setNotifAnchor(e.currentTarget)}
           sx={{
@@ -244,11 +234,12 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             backgroundColor: 'rgba(255, 255, 255, 0.02)',
             borderRadius: '8px',
             p: 0,
-            width: 36,
-            height: 36,
+            width: 34,
+            height: 34,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            flexShrink: 0,
             '&:hover': {
               color: VELOUR_TOKENS.textPrimary,
               backgroundColor: 'rgba(255, 255, 255, 0.06)',
@@ -267,7 +258,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           </Badge>
         </IconButton>
 
-        {/* Notifications Dropdown Panel */}
+        {/* Notifications Popover Dropdown */}
         <Popover
           open={Boolean(notifAnchor)}
           anchorEl={notifAnchor}
@@ -322,7 +313,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           </List>
         </Popover>
 
-        {/* Profile Pill & Dropdown Trigger */}
+        {/* Profile Pill Trigger */}
         <Box
           onClick={(e) => setProfileAnchor(e.currentTarget)}
           sx={{
@@ -331,12 +322,13 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             gap: 1,
             px: 1.2,
             py: 0.5,
-            height: 40,
+            height: 36,
             boxSizing: 'border-box',
-            borderRadius: '10px',
+            borderRadius: '9px',
             border: `1px solid ${isAdminRole ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
             backgroundColor: isAdminRole ? 'rgba(0, 217, 192, 0.04)' : 'rgba(255, 255, 255, 0.02)',
             cursor: 'pointer',
+            flexShrink: 0,
             transition: 'all 0.2s ease',
             '&:hover': {
               backgroundColor: isAdminRole ? 'rgba(0, 217, 192, 0.08)' : 'rgba(255, 255, 255, 0.06)',
@@ -347,8 +339,8 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             src={user?.avatar}
             alt={user?.name || 'User'}
             sx={{
-              width: 30,
-              height: 30,
+              width: 26,
+              height: 26,
               border: `1.5px solid ${isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentPrimary}`,
             }}
           />
@@ -356,27 +348,27 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             <Typography
               variant="subtitle2"
               sx={{
-                fontSize: 12.5,
+                fontSize: 12,
                 fontWeight: 700,
                 color: VELOUR_TOKENS.textPrimary,
                 lineHeight: 1.1,
               }}
             >
-              {user?.name || (isAdminRole ? 'Ride AI Administrator' : 'Driver Account')}
+              {user?.name || (isAdminRole ? 'Ride AI Administrator' : 'Alex Morgan')}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <Typography
                 variant="caption"
                 sx={{
-                  fontSize: 10,
+                  fontSize: 9.5,
                   color: isAdminRole ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold,
                   fontWeight: 600,
                   lineHeight: 1,
                 }}
               >
-                {isAdminRole ? (user?.badge || 'Fleet Ops Director') : (user?.badge || 'Active Driver')}
+                {isAdminRole ? (user?.badge || 'Fleet Director') : (user?.badge || 'Active Driver')}
               </Typography>
-              {!isAdminRole && (user?.rating !== undefined) && (
+              {!isAdminRole && (
                 <Typography
                   variant="caption"
                   sx={{
@@ -386,7 +378,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
                     lineHeight: 1,
                   }}
                 >
-                  • ★ {user.rating}
+                  • ★ {user?.rating ?? 4.92}
                 </Typography>
               )}
             </Box>
@@ -394,7 +386,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           <KeyboardArrowDownIcon sx={{ fontSize: 16, color: VELOUR_TOKENS.textSecondary }} />
         </Box>
 
-        {/* Profile Menu Dropdown */}
+        {/* Profile Dropdown Menu */}
         <Menu
           anchorEl={profileAnchor}
           open={Boolean(profileAnchor)}
@@ -486,22 +478,23 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           </MenuItem>
         </Menu>
 
-        {/* Live Clock (EST) */}
+        {/* Live Monospace Clock (EST) */}
         <Box
           sx={{
             display: { xs: 'none', lg: 'flex' },
             alignItems: 'center',
-            height: 34,
+            height: 32,
             px: 1.2,
             borderRadius: '6px',
             backgroundColor: 'rgba(255, 255, 255, 0.04)',
             border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+            flexShrink: 0,
           }}
         >
           <Typography
             className="mono-num"
             sx={{
-              fontSize: 12.5,
+              fontSize: 12,
               fontWeight: 600,
               color: VELOUR_TOKENS.textSecondary,
               fontFamily: VELOUR_TOKENS.fontMono,
