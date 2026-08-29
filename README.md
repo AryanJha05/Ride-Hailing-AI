@@ -1,6 +1,6 @@
-# Ride AI — Demand Forecasting & Enterprise Driver Management Platform
+# Ride AI — Demand Forecasting & Enterprise Mobility Intelligence Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**Student A's XGBoost V3 Trip Duration model**, **Student B's spatial HDBSCAN Demand Zone model**, and **Student C's PyTorch LSTM Demand Forecasting model** active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering drivers and fleet admins with full real-time operational metrics and dynamic state binding.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**XGBoost V3 Trip Duration Engine**, **Spatial HDBSCAN Demand Clustering Engine**, and **PyTorch LSTM Demand Forecasting Engine**) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering drivers and fleet admins with full real-time operational metrics and dynamic state binding.
 
 The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, multi-layer demand/driver/event maps, bento grid dashboards, production copilot AI chat, and an integrated RBAC navigation shell.
 
@@ -12,11 +12,11 @@ The user interface follows the **Velour** design system built with React and Mat
 - **Backend**: FastAPI, Python 3.10+, PyTorch 2.0+, XGBoost, Scikit-learn, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
 - **LLM Reasoning Microservice**: FastAPI + Ollama Gemma2 (`:8001`) with cross-service context aggregation and offline fallback mechanisms.
 - **AI / ML Layer & Adapter Architecture**: 
-  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Operational**) — processes 44 spatial features via dynamic Leaflet route picker and returns accurate ETA predictions (`POST /api/driver/trip-duration`).
-  - **Student B**: Demand Zone Detection Service (**HDBSCAN Model Operational**) — parses serialized `demand_zones_model_optimized.pkl` and `zones.json` to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (`GET /api/demand-zones`).
-  - **Student C**: 24h Hourly Demand Forecasting Service (**PyTorch LSTM Operational**) — utilizes 2-layer PyTorch LSTM neural network and `scaler.pkl` to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves across NYC zones (`GET /api/forecast`).
-  - **Student D**: AI Driver Assistant Framework — production conversation copilot integrated with Ollama Gemma2 microservice (`:8001`).
-- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with authenticated user state and zero-state handling for new drivers)
+  - **Trip Duration Intelligence (XGBoost V3)**: Processes 44 spatial features via dynamic Leaflet route picker and returns accurate ETA predictions (`POST /api/driver/trip-duration`).
+  - **Demand Clustering Engine (HDBSCAN Model)**: Parses spatial clusters and zone data to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (`GET /api/demand-zones`).
+  - **Demand Forecasting Engine (PyTorch LSTM)**: Utilizes a 2-layer PyTorch LSTM neural network and spatial scalers to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves (`GET /api/forecast`).
+  - **AI Driver Copilot Framework**: Production conversation copilot integrated with Ollama Gemma2 microservice (`:8001`) for real-time positioning and positioning strategy advice.
+- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with authenticated user state, auto-seeding lifespan triggers, and profile update synchronization)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
 ---
@@ -88,10 +88,10 @@ npm run dev
 
 ## 🔑 Demo Access Credentials
 
-| Role | Email | Password | Allowed Section |
-| :--- | :--- | :--- | :--- |
-| **Admin** | `admin@rideai.nyc` | `admin123` | `/admin/*` (Full Administrative & Fleet Control) |
-| **Driver** | `alex.morgan@rideai.nyc` | `driver123` | `/driver/*` (Driver Operational Dashboard & AI Assistant) |
+| Role | Name | Email | Password | Allowed Section |
+| :--- | :--- | :--- | :--- | :--- |
+| **Admin** | Suraj Panigrahi | `suraj.admin@rideai.demo` | `admin123` | `/admin/*` (Full Administrative & Fleet Control) |
+| **Driver** | Aryan Jha | `aryan.driver@rideai.demo` | `driver123` | `/driver/*` (Driver Operational Dashboard & AI Assistant) |
 
 ---
 
@@ -102,7 +102,7 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 ### Authentication & Public Routes
 | Page | URL | Description |
 | :--- | :--- | :--- |
-| **Login Page** | `/login` | Enterprise 50/50 split authentication page with quick demo login buttons |
+| **Login Page** | `/login` | Enterprise split authentication page with quick demo login buttons |
 
 ### Driver Portal (`/driver/*`)
 | Page | URL | Description |
@@ -114,7 +114,7 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 | **Trips** | `/driver/trips` | NYC trip log table with fares, ratings, and route details |
 | **Forecast Analytics** | `/driver/analytics` | Hourly predictive demand charts and zone comparisons |
 | **Driver Profile** | `/driver/profile` | Driver rating, vehicle assignment, and operational stats |
-| **Settings & Support** | `/driver/settings`, `/driver/support` | Preferences, vehicle config, and NYC driver support center |
+| **Settings & Support** | `/driver/settings`, `/driver/support` | Preferences, vehicle config, profile edits, and operational support center |
 
 ### Admin Operations Portal (`/admin/*`)
 | Page | URL | Description |
@@ -134,10 +134,10 @@ Ride AI uses a unified application shell with role-protected route namespaces:
 ## ⚡ Key Platform Features
 
 - ✅ **Unified Route Map Picker & Reverse Geocoding**: Interactive 2-click Leaflet map selection (1st click = 🟢 Pickup, 2nd click = 🟣 Drop-off, connecting route polyline, auto-fitting bounds). Live reverse-geocoding displays human-readable place names (`Midtown Manhattan, New York, NY`) while sending exact numerical float coordinates (`origin_lat`, `origin_lng`, `dest_lat`, `dest_lng`) to XGBoost V3.
-- ✅ **Real XGBoost V3 Integration**: Student A's ML model produces live trip duration predictions through the FastAPI backend (`POST /api/driver/trip-duration`).
-- ✅ **Real Student B HDBSCAN Model Integration**: Student B's ML model produces live spatial cluster demand zone predictions (`GET /api/demand-zones`), returning real center coordinates, dynamic surge multipliers, trend indicators, and driver-to-zone spatial recommendations.
-- ✅ **Plug-and-Play Model Adapters**: Machine learning models follow a clean modular architecture under `backend/models/` (`student_a/`, `student_b/`, `student_c/`).
-- ✅ **Strict UI & Data Integrity**: When models are pending, zero fake surge circles or dummy curves are rendered. The base navigation map displays an honest status indicator.
+- ✅ **Real XGBoost V3 Integration**: ML model produces live trip duration predictions through the FastAPI backend (`POST /api/driver/trip-duration`).
+- ✅ **Real HDBSCAN Demand Zone Integration**: ML model produces live spatial cluster demand zone predictions (`GET /api/demand-zones`), returning real center coordinates, dynamic surge multipliers, trend indicators, and driver-to-zone spatial recommendations.
+- ✅ **Real PyTorch LSTM Demand Forecasts**: Time-series demand forecasting engine provides 24-hour demand curves and peak volume predictions (`GET /api/forecast`).
+- ✅ **Profile & Credential Synchronization**: Seamless profile updates (`PUT /api/auth/profile`) and password changes (`PUT /api/auth/password`) synchronized between React state and SQLite/PostgreSQL ORM models.
 - ✅ **Ollama Gemma2 LLM Integration**: AI Assistant service connects to local/Dockerized Ollama Gemma2 for real-time dispatch advice, with fallback handling when offline.
 - ✅ **Admin Driver Management & RBAC**: Full transactional driver account creation (`POST /api/admin/drivers`), linking `User` (`role=DRIVER`) with `Driver` profiles, temporary password modal prompt, detail viewer, active/inactive status toggling, and automated RBAC security test suite (`test_admin_drivers_rbac.py`).
 
@@ -153,11 +153,11 @@ Ride-Hailing-AI/
 │   │   ├── core/            # Security, JWT, hashing, RBAC middleware
 │   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
 │   │   ├── schemas/         # Pydantic validation schemas
-│   │   └── services/        # Business logic & model adapters (student_b_adapter, student_c_adapter, trip_duration_service, etc.)
+│   │   └── services/        # Business logic & model adapters
 │   ├── models/              # Consolidated Machine Learning Model Storage
-│   │   ├── student_a/       # Student A XGBoost V3 Trip Duration Model & Notebook
-│   │   ├── student_b/       # Student B HDBSCAN Spatial Demand Zone Model (.pkl, metadata, zones.json)
-│   │   └── student_c/       # Student C PyTorch LSTM Demand Forecasting Model (model.pth.zip, scaler.pkl, inference.py)
+│   │   ├── student_a/       # Trip Duration Model (XGBoost V3) & Feature Columns
+│   │   ├── student_b/       # HDBSCAN Spatial Demand Zone Model (.pkl, metadata, zones.json)
+│   │   └── student_c/       # PyTorch LSTM Demand Forecasting Model (.pth, scaler.pkl)
 │   ├── main.py              # FastAPI application entry point
 │   ├── seed.py              # Database seeder with demonstration data
 │   ├── test_admin_drivers_rbac.py # RBAC and security test suite
