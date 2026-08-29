@@ -25,30 +25,41 @@ export const KpiCard: React.FC<KpiCardProps> = ({
   variant = 'sparkline',
 }) => {
   return (
-    <Card sx={{ height: '100%', backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3 }}>
-      <CardContent sx={{ p: 2.2, '&:last-child': { pb: 2.2 } }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {icon && <Box sx={{ color: accentColor, display: 'flex' }}>{icon}</Box>}
-            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, letterSpacing: '0.06em', fontWeight: 700, fontSize: 11 }}>
+    <Card
+      sx={{
+        height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
+        backgroundColor: VELOUR_TOKENS.bgSurface1,
+        borderColor: VELOUR_TOKENS.borderSubtle,
+        borderRadius: 3,
+      }}
+    >
+      <CardContent sx={{ p: { xs: 1.8, sm: 2, md: 2.2 }, '&:last-child': { pb: { xs: 1.8, sm: 2, md: 2.2 } }, minWidth: 0, boxSizing: 'border-box' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, minWidth: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+            {icon && <Box sx={{ color: accentColor, display: 'flex', flexShrink: 0 }}>{icon}</Box>}
+            <Typography variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, letterSpacing: '0.06em', fontWeight: 700, fontSize: 11 }}>
               {title}
             </Typography>
           </Box>
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          <Box>
-            <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: 26, lineHeight: 1.1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 1, minWidth: 0 }}>
+          <Box sx={{ minWidth: 0, overflow: 'hidden' }}>
+            <Typography className="mono-num" variant="h4" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 20, sm: 22, md: 24 }, lineHeight: 1.1 }}>
               {value}
             </Typography>
 
             <Typography
               className="mono-num"
               variant="caption"
+              noWrap
               sx={{
                 color: isPositive ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentPrimary,
                 fontWeight: 600,
-                fontSize: 11.5,
+                fontSize: 11,
                 mt: 0.5,
                 display: 'block',
               }}
@@ -58,7 +69,7 @@ export const KpiCard: React.FC<KpiCardProps> = ({
           </Box>
 
           {/* Mini Visualizer Graphics */}
-          <Box sx={{ pb: 0.5 }}>
+          <Box sx={{ pb: 0.5, flexShrink: 0 }}>
             {variant === 'sparkline' && (
               <svg width="68" height="28" viewBox="0 0 68 28">
                 <path

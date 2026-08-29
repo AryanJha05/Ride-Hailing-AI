@@ -131,18 +131,21 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
         maxHeight: HEADER_HEIGHT,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        px: { xs: 2, md: 3 },
+        justify: 'space-between',
+        px: { xs: 1.5, sm: 2, md: 3 },
         borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         backgroundColor: VELOUR_TOKENS.bgSurface1,
         position: 'sticky',
         top: 0,
         zIndex: (theme) => theme.zIndex.drawer + 1,
         boxSizing: 'border-box',
+        width: '100%',
+        maxWidth: '100%',
+        minWidth: 0,
       }}
     >
       {/* Left: Mobile Drawer Trigger & Page Title */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, height: '100%' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, height: '100%', minWidth: 0, overflow: 'hidden' }}>
         <IconButton
           color="inherit"
           aria-label="open drawer"
@@ -151,22 +154,27 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           sx={{
             display: { md: 'none' },
             color: VELOUR_TOKENS.textPrimary,
+            p: 0.8,
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.05)' },
           }}
         >
-          <MenuIcon />
+          <MenuIcon fontSize="small" />
         </IconButton>
 
         <Typography
           variant="h6"
+          noWrap
           sx={{
-            fontSize: { xs: 16, sm: 18 },
+            fontSize: { xs: 14, sm: 16, md: 18 },
             fontWeight: 700,
             color: VELOUR_TOKENS.textPrimary,
             letterSpacing: '-0.01em',
             lineHeight: 1,
-            display: 'flex',
-            alignItems: 'center',
+            display: 'block',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            minWidth: 0,
           }}
         >
           {displayTitle}
@@ -177,7 +185,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           label="NYC METRO NETWORK"
           size="small"
           sx={{
-            display: { xs: 'none', sm: 'inline-flex' },
+            display: { xs: 'none', md: 'inline-flex' },
             alignItems: 'center',
             backgroundColor: 'rgba(0, 217, 192, 0.08)',
             color: VELOUR_TOKENS.accentTeal,
@@ -186,12 +194,13 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             fontWeight: 700,
             letterSpacing: '0.04em',
             height: 24,
+            flexShrink: 0,
           }}
         />
       </Box>
 
       {/* Right: Telemetry Status, Notifications & Dynamic Profile Badge */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 1.5 }, height: '100%' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0.8, sm: 1.2 }, height: '100%', flexShrink: 0 }}>
         {/* Dynamic Online Staging Status Toggle */}
         <Chip
           icon={
@@ -205,7 +214,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           label={
             isAdminRole
               ? isOnline ? 'NOC ACTIVE' : 'NOC MONITORING'
-              : isOnline ? 'ONLINE (STAGING)' : 'OFFLINE'
+              : isOnline ? 'ONLINE' : 'OFFLINE'
           }
           onClick={() => setIsOnline(!isOnline)}
           size="small"
@@ -213,11 +222,11 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             backgroundColor: isOnline ? 'rgba(0, 217, 192, 0.1)' : 'rgba(255, 255, 255, 0.04)',
             color: isOnline ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary,
             border: `1px solid ${isOnline ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
-            fontSize: 10.5,
+            fontSize: 10,
             fontWeight: 700,
             letterSpacing: '0.04em',
             cursor: 'pointer',
-            height: 30,
+            height: 28,
             px: 0.5,
             transition: 'all 0.2s ease',
             '&:hover': {

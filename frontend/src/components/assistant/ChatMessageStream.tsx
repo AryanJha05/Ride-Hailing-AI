@@ -31,12 +31,16 @@ interface ChatMessageStreamProps {
   messages: ChatMessage[];
   isLoading?: boolean;
   onNavigateToMap?: () => void;
+  onRetry?: () => void;
+  onSelectQuery?: (query: string) => void;
 }
 
 export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
   messages,
   isLoading = false,
   onNavigateToMap,
+  onRetry,
+  onSelectQuery,
 }) => {
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
@@ -48,22 +52,43 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
     <Box
       sx={{
         p: { xs: 2, md: 3 },
-        flexGrow: 1,
-        maxHeight: { xs: 450, md: 540 },
-        minHeight: { xs: 340, md: 400 },
+        flex: 1,
+        minHeight: 0,
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        gap: 2.5,
         backgroundColor: VELOUR_TOKENS.bgBase,
         scrollBehavior: 'smooth',
+        '&::-webkit-scrollbar': {
+          width: '6px',
+        },
+        '&::-webkit-scrollbar-track': {
+          background: 'transparent',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          background: 'rgba(255, 255, 255, 0.15)',
+          borderRadius: '3px',
+        },
+        '&::-webkit-scrollbar-thumb:hover': {
+          background: 'rgba(255, 255, 255, 0.3)',
+        },
       }}
     >
+      <Box
+        sx={{
+          maxWidth: 960,
+          mx: 'auto',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2.5,
+        }}
+      >
       {/* Shift Context Badge */}
       <Box sx={{ textAlign: 'center', my: 0.5 }}>
         <Chip
           icon={<CheckCircleOutlineIcon sx={{ fontSize: '13px !important', color: `${VELOUR_TOKENS.accentTeal} !important` }} />}
-          label="LIVE DRIVER COPILOT • REAL-TIME INTELLIGENCE CONNECTED"
+          label="LIVE DRIVER COPILOT • REAL-TIME INTELLIGENCE ACTIVE"
           size="small"
           sx={{
             backgroundColor: 'rgba(0, 217, 192, 0.08)',
@@ -116,9 +141,11 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
             <Box sx={{ display: 'flex', gap: 1.5, maxWidth: { xs: '100%', md: '90%' }, alignItems: 'flex-start' }}>
               <Avatar
                 sx={{
-                  background: `linear-gradient(135deg, rgba(0, 217, 192, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)`,
-                  color: VELOUR_TOKENS.accentTeal,
-                  border: `1px solid rgba(0, 217, 192, 0.4)`,
+                  background: msg.isError
+                    ? 'rgba(239, 68, 68, 0.2)'
+                    : `linear-gradient(135deg, rgba(0, 217, 192, 0.2) 0%, rgba(124, 58, 237, 0.2) 100%)`,
+                  color: msg.isError ? '#EF4444' : VELOUR_TOKENS.accentTeal,
+                  border: `1px solid ${msg.isError ? 'rgba(239, 68, 68, 0.4)' : 'rgba(0, 217, 192, 0.4)'}`,
                   width: 36,
                   height: 36,
                   mt: 0.2,
@@ -140,11 +167,36 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
                   }}
                 >
                   {msg.isError && (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, color: '#EF4444' }}>
-                      <ErrorOutlineIcon fontSize="small" />
-                      <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 13 }}>
-                        Service Communication Notice
-                      </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1, color: '#EF4444' }}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <ErrorOutlineIcon fontSize="small" />
+                        <Typography variant="subtitle2" sx={{ fontWeight: 700, fontSize: 13 }}>
+                          AI Copilot unavailable
+                        </Typography>
+                      </Box>
+                      {onRetry && (
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          onClick={onRetry}
+                          sx={{
+                            borderColor: 'rgba(239, 68, 68, 0.4)',
+                            color: '#EF4444',
+                            fontSize: 11,
+                            fontWeight: 700,
+                            py: 0.2,
+                            px: 1,
+                            borderRadius: 1.5,
+                            textTransform: 'none',
+                            '&:hover': {
+                              backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                              borderColor: '#EF4444',
+                            },
+                          }}
+                        >
+                          Retry
+                        </Button>
+                      )}
                     </Box>
                   )}
 
@@ -230,7 +282,30 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
                       </Box>
 
                       {/* Action Bar */}
-                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', pt: 0.5 }}>
+                      <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, pt: 0.5 }}>
+                        {onSelectQuery && (
+                          <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={() => onSelectQuery("Why is this area recommended?")}
+                            sx={{
+                              borderColor: VELOUR_TOKENS.borderSubtle,
+                              color: VELOUR_TOKENS.textSecondary,
+                              fontWeight: 600,
+                              fontSize: 12,
+                              px: 1.5,
+                              py: 0.6,
+                              borderRadius: 2,
+                              textTransform: 'none',
+                              '&:hover': {
+                                borderColor: VELOUR_TOKENS.accentLavender,
+                                color: '#FFF',
+                              },
+                            }}
+                          >
+                            Explain Why
+                          </Button>
+                        )}
                         <Button
                           variant="contained"
                           size="small"
@@ -242,7 +317,7 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
                             fontWeight: 700,
                             fontSize: 12,
                             px: 2,
-                            py: 0.8,
+                            py: 0.6,
                             borderRadius: 2,
                             textTransform: 'none',
                             boxShadow: '0 4px 12px rgba(124, 58, 237, 0.3)',
@@ -259,8 +334,8 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
 
                   {/* Subtle Status Footer */}
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1.2, pt: 0.8, borderTop: `1px solid rgba(255,255,255,0.05)` }}>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'flex', alignItems: 'center', gap: 0.6 }}>
-                      <span style={{ color: VELOUR_TOKENS.accentTeal }}>●</span> {msg.statusTag || 'Live intelligence connected'}
+                    <Typography variant="caption" sx={{ color: msg.isError ? '#FCA5A5' : VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'flex', alignItems: 'center', gap: 0.6 }}>
+                      <span style={{ color: msg.isError ? '#EF4444' : VELOUR_TOKENS.accentTeal }}>●</span> {msg.statusTag || (msg.isError ? 'Service status offline' : 'Live intelligence connected')}
                     </Typography>
                     {msg.timestamp && (
                       <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
@@ -302,13 +377,14 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
           >
             <CircularProgress size={16} sx={{ color: VELOUR_TOKENS.accentTeal }} />
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12.5, fontWeight: 500 }}>
-              Analyzing live fleet telemetry & spatial demand...
+              Ride AI is analyzing your current shift...
             </Typography>
           </Paper>
         </Box>
       )}
 
       <div ref={bottomRef} />
+      </Box>
     </Box>
   );
 };

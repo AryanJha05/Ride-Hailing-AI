@@ -23,18 +23,21 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
         border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         borderRadius: 3,
         height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-          <Box>
+      <CardContent sx={{ p: { xs: 1.8, sm: 2.2, md: 2.5 }, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2, minWidth: 0 }}>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11, fontWeight: 700 }}>
               Weekly Earnings Overview
             </Typography>
             {hasData ? (
-              <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: 26, mt: 0.5 }}>
+              <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 22, sm: 24, md: 26 }, mt: 0.5 }}>
                 ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </Typography>
             ) : (
@@ -46,7 +49,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
         </Box>
 
         {hasData ? (
-          <Box sx={{ width: '100%', height: 180, mb: 2 }}>
+          <Box sx={{ width: '100%', height: 180, mb: 2, minWidth: 0, overflow: 'hidden' }}>
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                 <defs>
@@ -76,6 +79,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
               width: '100%',
               height: 180,
               mb: 2,
+              minWidth: 0,
               borderRadius: 2,
               backgroundColor: VELOUR_TOKENS.bgSurface2,
               border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
@@ -85,6 +89,7 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
               justifyContent: 'center',
               textAlign: 'center',
               p: 2,
+              boxSizing: 'border-box',
             }}
           >
             <ShowChartIcon sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 32, mb: 1 }} />
@@ -98,38 +103,38 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
         )}
 
         {/* Contextual Sub-Metrics Summary Row */}
-        <Grid container spacing={1.5} sx={{ mt: 'auto' }}>
-          <Grid item xs={4}>
-            <Box sx={{ p: 1.2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: VELOUR_TOKENS.textSecondary, mb: 0.3 }}>
-                <AccessTimeIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentTeal }} />
-                <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Online Time</Typography>
+        <Grid container spacing={1.5} sx={{ mt: 'auto', minWidth: 0, width: '100%' }}>
+          <Grid item xs={4} sx={{ minWidth: 0 }}>
+            <Box sx={{ p: 1, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, minWidth: 0 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: VELOUR_TOKENS.textSecondary, mb: 0.3, minWidth: 0 }}>
+                <AccessTimeIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentTeal, flexShrink: 0 }} />
+                <Typography variant="caption" noWrap sx={{ fontSize: 10, fontWeight: 600 }}>Online Time</Typography>
               </Box>
-              <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
+              <Typography className="mono-num" variant="body2" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 12.5 }}>
                 {hasData ? '38h 45m' : '0h 0m'}
               </Typography>
             </Box>
           </Grid>
 
-          <Grid item xs={4}>
-            <Box sx={{ p: 1.2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: VELOUR_TOKENS.textSecondary, mb: 0.3 }}>
-                <SpeedIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentGold }} />
-                <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Avg / Hr</Typography>
+          <Grid item xs={4} sx={{ minWidth: 0 }}>
+            <Box sx={{ p: 1, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, minWidth: 0 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: VELOUR_TOKENS.textSecondary, mb: 0.3, minWidth: 0 }}>
+                <SpeedIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentGold, flexShrink: 0 }} />
+                <Typography variant="caption" noWrap sx={{ fontSize: 10, fontWeight: 600 }}>Avg / Hr</Typography>
               </Box>
-              <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
+              <Typography className="mono-num" variant="body2" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 12.5 }}>
                 {hasData ? '$42/hr' : '$0/hr'}
               </Typography>
             </Box>
           </Grid>
 
-          <Grid item xs={4}>
-            <Box sx={{ p: 1.2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}` }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: VELOUR_TOKENS.textSecondary, mb: 0.3 }}>
-                <VolunteerActivismIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentLavender }} />
-                <Typography variant="caption" sx={{ fontSize: 10, fontWeight: 600 }}>Tips</Typography>
+          <Grid item xs={4} sx={{ minWidth: 0 }}>
+            <Box sx={{ p: 1, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, minWidth: 0 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.6, color: VELOUR_TOKENS.textSecondary, mb: 0.3, minWidth: 0 }}>
+                <VolunteerActivismIcon sx={{ fontSize: 13, color: VELOUR_TOKENS.accentLavender, flexShrink: 0 }} />
+                <Typography variant="caption" noWrap sx={{ fontSize: 10, fontWeight: 600 }}>Tips</Typography>
               </Box>
-              <Typography className="mono-num" variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
+              <Typography className="mono-num" variant="body2" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 12.5 }}>
                 {hasData ? '$185' : '$0'}
               </Typography>
             </Box>

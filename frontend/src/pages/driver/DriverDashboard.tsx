@@ -39,30 +39,42 @@ export const DriverDashboard: React.FC = () => {
 
   return (
     <PageShell title="Dashboard">
-      <Container maxWidth="xl" sx={{ py: 2.5, px: { xs: 2, md: 3 } }}>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '100%',
+          minWidth: 0,
+          boxSizing: 'border-box',
+          py: { xs: 2, sm: 2.5, md: 3 },
+          px: { xs: 1.5, sm: 2, md: 3 },
+        }}
+      >
         {/* Contextual Welcome Hero Banner */}
         <Box
           sx={{
-            p: { xs: 2.5, md: 3 },
+            p: { xs: 2, sm: 2.5, md: 3 },
             mb: 3,
             borderRadius: '16px',
             background: `linear-gradient(135deg, ${VELOUR_TOKENS.bgSurface1} 0%, rgba(20, 20, 32, 0.95) 100%)`,
             border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
             display: 'flex',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: 2,
+            width: '100%',
+            maxWidth: '100%',
+            minWidth: 0,
+            boxSizing: 'border-box',
           }}
         >
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 20, md: 22 }, mb: 0.5 }}>
+          <Box sx={{ flex: '1 1 280px', minWidth: 0 }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 18, sm: 20, md: 22 }, mb: 0.5 }}>
               Good evening, {perfRes?.name || user?.name || 'Driver'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
               System operational. Student A XGBoost V3 Trip Duration model connected for dynamic map predictions.
             </Typography>
-
           </Box>
 
           <Button
@@ -78,6 +90,7 @@ export const DriverDashboard: React.FC = () => {
               px: 2.5,
               py: 1,
               borderRadius: 2,
+              flexShrink: 0,
               '&:hover': {
                 backgroundColor: isOnline ? 'rgba(0, 217, 192, 0.1)' : VELOUR_TOKENS.accentTeal,
               },
@@ -88,8 +101,8 @@ export const DriverDashboard: React.FC = () => {
         </Box>
 
         {/* Row 1 — 4 KPI Metric Cards with Mini Visualizers */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
-          <Grid item xs={12} sm={6} md={3}>
+        <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ mb: 3, width: '100%', minWidth: 0 }}>
+          <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
               title="TODAY'S EARNINGS"
               value={perfRes?.projected_shift_earnings !== undefined ? `$${perfRes.projected_shift_earnings.toFixed(2)}` : '$0.00'}
@@ -100,7 +113,7 @@ export const DriverDashboard: React.FC = () => {
               variant="sparkline"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
               title="ACCEPTANCE RATE"
               value={perfRes?.acceptance_rate !== undefined ? `${perfRes.acceptance_rate}%` : '100%'}
@@ -111,7 +124,7 @@ export const DriverDashboard: React.FC = () => {
               variant="bars"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
               title="DRIVER RATING"
               value={perfRes?.rating !== undefined ? `${perfRes.rating}` : '5.0'}
@@ -122,7 +135,7 @@ export const DriverDashboard: React.FC = () => {
               variant="stars"
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
               title="TOTAL TRIPS"
               value={perfRes?.total_trips !== undefined ? perfRes.total_trips.toLocaleString() : '0'}
@@ -136,31 +149,31 @@ export const DriverDashboard: React.FC = () => {
         </Grid>
 
         {/* Row 2 — Bento Grid Core Layout */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
+        <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ mb: 3, width: '100%', minWidth: 0 }}>
           {/* Earnings Overview Area Chart */}
-          <Grid item xs={12} lg={7}>
+          <Grid item xs={12} lg={7} sx={{ minWidth: 0 }}>
             <EarningsChart data={perfRes?.performance_history} />
           </Grid>
 
           {/* Demand Radar with Leaflet Inset */}
-          <Grid item xs={12} lg={5}>
+          <Grid item xs={12} lg={5} sx={{ minWidth: 0 }}>
             <DemandSurgeRadar zones={zones || []} />
           </Grid>
         </Grid>
 
         {/* Row 3 — ML Intelligence & Goal Metrics */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
+        <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ mb: 3, width: '100%', minWidth: 0 }}>
           {/* XGBoost V3 Trip Duration Predictor */}
-          <Grid item xs={12} md={6} lg={6}>
+          <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
             <TripDurationPredictorCard />
           </Grid>
 
           {/* Today's Goal & Upcoming Peak Hours Stacked Cards */}
-          <Grid item xs={12} md={6} lg={6}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, height: '100%' }}>
+          <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: { xs: 2, md: 2.5 }, height: '100%', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
               {/* Today's Goal Card */}
-              <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3 }}>
-                <CardContent sx={{ p: 2.2 }}>
+              <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3, width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                <CardContent sx={{ p: { xs: 1.8, sm: 2.2 } }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#FFF' }}>
                       Today's Goal
@@ -184,9 +197,9 @@ export const DriverDashboard: React.FC = () => {
 
                     return (
                       <>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5, minWidth: 0 }}>
                           {/* SVG Circular Progress Ring */}
-                          <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                          <Box sx={{ position: 'relative', display: 'inline-flex', flexShrink: 0 }}>
                             <svg width="60" height="60" viewBox="0 0 60 60">
                               <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
                               <circle
@@ -208,7 +221,7 @@ export const DriverDashboard: React.FC = () => {
                             </Box>
                           </Box>
 
-                          <Box>
+                          <Box sx={{ minWidth: 0 }}>
                             <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
                               ${currentEarn.toFixed(0)} <span style={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>/ ${goalEarn}</span>
                             </Typography>
@@ -239,26 +252,26 @@ export const DriverDashboard: React.FC = () => {
               </Card>
 
               {/* Upcoming Peak Hours Schedule Card */}
-              <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3, flexGrow: 1 }}>
-                <CardContent sx={{ p: 2.2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+              <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, borderRadius: 3, flexGrow: 1, width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                <CardContent sx={{ p: { xs: 1.8, sm: 2.2 }, display: 'flex', flexDirection: 'column', height: '100%' }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#FFF', mb: 1.5 }}>
                     Upcoming Peak Hours
                   </Typography>
 
-                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.2, mb: 1.5 }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.2, mb: 1.5, minWidth: 0 }}>
                     {[
                       { time: '11:00 AM - 1:00 PM', level: 'High Demand', color: VELOUR_TOKENS.accentTeal },
                       { time: '5:00 PM - 7:00 PM', level: 'Very High Demand', color: VELOUR_TOKENS.accentGold },
                       { time: '9:00 PM - 11:00 PM', level: 'High Demand', color: VELOUR_TOKENS.accentTeal },
                     ].map((item, idx) => (
-                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1, borderRadius: 1.5, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <AccessTimeIcon sx={{ fontSize: 14, color: item.color }} />
-                          <Typography className="mono-num" variant="caption" sx={{ color: '#FFF', fontWeight: 600, fontSize: 11.5 }}>
+                      <Box key={idx} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 1, borderRadius: 1.5, backgroundColor: VELOUR_TOKENS.bgSurface2, minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+                          <AccessTimeIcon sx={{ fontSize: 14, color: item.color, flexShrink: 0 }} />
+                          <Typography className="mono-num" variant="caption" sx={{ color: '#FFF', fontWeight: 600, fontSize: 11.5, minWidth: 0 }}>
                             {item.time}
                           </Typography>
                         </Box>
-                        <Chip label={item.level} size="small" sx={{ backgroundColor: 'transparent', color: item.color, fontSize: 10, fontWeight: 700, height: 20 }} />
+                        <Chip label={item.level} size="small" sx={{ backgroundColor: 'transparent', color: item.color, fontSize: 10, fontWeight: 700, height: 20, flexShrink: 0 }} />
                       </Box>
                     ))}
                   </Box>
@@ -278,10 +291,10 @@ export const DriverDashboard: React.FC = () => {
           </Grid>
         </Grid>
 
-        {/* Row 3 — Persistent AI Insight Bottom Panel */}
+        {/* Row 4 — Persistent AI Insight Bottom Panel */}
         <Paper
           sx={{
-            p: 2,
+            p: { xs: 1.8, sm: 2 },
             borderRadius: 3,
             backgroundColor: VELOUR_TOKENS.bgSurface1,
             borderColor: 'rgba(124, 58, 237, 0.3)',
@@ -289,13 +302,17 @@ export const DriverDashboard: React.FC = () => {
             borderStyle: 'solid',
             display: 'flex',
             alignItems: 'center',
-            justify: 'space-between',
+            justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: 2,
+            width: '100%',
+            maxWidth: '100%',
+            minWidth: 0,
+            boxSizing: 'border-box',
             boxShadow: '0 4px 20px rgba(124, 58, 237, 0.15)',
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: '1 1 280px', minWidth: 0 }}>
             <Box
               sx={{
                 width: 38,
@@ -304,14 +321,15 @@ export const DriverDashboard: React.FC = () => {
                 backgroundColor: VELOUR_TOKENS.accentPrimaryDim,
                 display: 'flex',
                 alignItems: 'center',
-                justify: 'center',
+                justifyContent: 'center',
                 color: VELOUR_TOKENS.accentPrimary,
+                flexShrink: 0,
               }}
             >
               <SmartToyIcon />
             </Box>
 
-            <Box>
+            <Box sx={{ minWidth: 0 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13.5 }}>
                   AI Assistant
@@ -331,7 +349,6 @@ export const DriverDashboard: React.FC = () => {
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
                 XGBoost V3 model active for real-time ETA predictions. Pick pickup and drop-off points directly on the interactive map.
               </Typography>
-
             </Box>
           </Box>
 
@@ -347,13 +364,14 @@ export const DriverDashboard: React.FC = () => {
               px: 2.5,
               py: 0.9,
               borderRadius: 2.5,
+              flexShrink: 0,
               '&:hover': { backgroundColor: VELOUR_TOKENS.accentPrimary },
             }}
           >
             Ask AI Assistant
           </Button>
         </Paper>
-      </Container>
+      </Box>
     </PageShell>
   );
 };

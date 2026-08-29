@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { Sidebar, DRAWER_WIDTH } from './Sidebar';
+import { Sidebar, DRAWER_WIDTH, HEADER_HEIGHT } from './Sidebar';
 import { Header } from './Header';
 import { VELOUR_TOKENS } from '../theme/palette';
 
@@ -23,7 +23,17 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', backgroundColor: VELOUR_TOKENS.bgBase }}>
+    <Box
+      sx={{
+        display: 'flex',
+        minHeight: '100vh',
+        width: '100%',
+        maxWidth: '100vw',
+        backgroundColor: VELOUR_TOKENS.bgBase,
+        boxSizing: 'border-box',
+        overflowX: 'hidden',
+      }}
+    >
       {/* Shared Application Sidebar Navigation */}
       <Sidebar
         mobileOpen={mobileOpen}
@@ -37,7 +47,12 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           display: 'flex',
           flexDirection: 'column',
           minWidth: 0,
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          width: { xs: '100%', md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          maxWidth: { xs: '100%', md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          height: '100vh',
+          maxHeight: '100vh',
+          overflow: 'hidden',
+          boxSizing: 'border-box',
         }}
       >
         {!hideHeader && (
@@ -47,7 +62,22 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           />
         )}
 
-        <Box component="main" sx={{ flexGrow: 1, p: hideHeader ? 0 : { xs: 2, sm: 3 }, overflowX: 'hidden' }}>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            width: '100%',
+            maxWidth: '100%',
+            minWidth: 0,
+            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            display: 'flex',
+            flexDirection: 'column',
+            p: hideHeader ? 0 : { xs: 1.5, sm: 2, md: 2.5 },
+            boxSizing: 'border-box',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
           {children ? children : <Outlet />}
         </Box>
       </Box>

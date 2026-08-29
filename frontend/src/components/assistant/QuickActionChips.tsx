@@ -14,11 +14,12 @@ interface QuickActionChipsProps {
 
 export const QuickActionChips: React.FC<QuickActionChipsProps> = ({ onSelectQuery, disabled = false }) => {
   const suggestions = [
-    { label: 'Where should I go for high demand?', icon: <ExploreOutlinedIcon sx={{ fontSize: '14px !important' }} /> },
-    { label: 'Best surge area right now', icon: <TrendingUpIcon sx={{ fontSize: '14px !important' }} /> },
-    { label: 'Check airport demand status', icon: <FlightTakeoffIcon sx={{ fontSize: '14px !important' }} /> },
-    { label: "Today's shift earnings summary", icon: <AttachMoneyIcon sx={{ fontSize: '14px !important' }} /> },
-    { label: 'Give me positioning advice', icon: <AutoAwesomeIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: 'Where should I position?', icon: <ExploreOutlinedIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: "What's the next demand peak?", icon: <TrendingUpIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: 'Analyze my current zone', icon: <AutoAwesomeIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: 'Forecast the next 3 hours', icon: <FlightTakeoffIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: 'Estimate this trip', icon: <AttachMoneyIcon sx={{ fontSize: '14px !important' }} /> },
+    { label: "Explain today's demand", icon: <AutoAwesomeIcon sx={{ fontSize: '14px !important' }} /> },
   ];
 
   return (

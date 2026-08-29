@@ -25,17 +25,20 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
         border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
         borderRadius: 3,
         height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.8 }}>
-          <Box>
+      <CardContent sx={{ p: { xs: 1.8, sm: 2.2, md: 2.5 }, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.8, minWidth: 0 }}>
+          <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11, fontWeight: 700 }}>
               Live Demand Radar
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
+            <Typography variant="h6" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
               NYC Surge Zones
             </Typography>
           </Box>
@@ -43,7 +46,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
             size="small"
             onClick={() => navigate(ROUTES.USER.LIVE_MAP)}
             endIcon={<ArrowForwardIcon fontSize="small" />}
-            sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 12, fontWeight: 700, textTransform: 'none' }}
+            sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 12, fontWeight: 700, textTransform: 'none', flexShrink: 0 }}
           >
             View Map
           </Button>
@@ -64,11 +67,13 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
             background: `radial-gradient(circle at 40% 50%, rgba(124, 58, 237, 0.25) 0%, rgba(0, 217, 192, 0.15) 45%, #121019 100%)`,
             display: 'flex',
             alignItems: 'center',
-            justify: 'center',
+            justifyContent: 'center',
+            minWidth: 0,
+            boxSizing: 'border-box',
             '&:hover': { borderColor: VELOUR_TOKENS.accentTeal },
           }}
         >
-          <Box sx={{ textAlign: 'center', zIndex: 2 }}>
+          <Box sx={{ textAlign: 'center', zIndex: 2, p: 1, minWidth: 0 }}>
             <MapIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 28, mb: 0.3 }} />
             <Typography variant="caption" sx={{ color: '#FFF', fontWeight: 600, display: 'block', fontSize: 11 }}>
               Click to Open Full Interactive Map
@@ -78,27 +83,28 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
 
         {/* Surge Zone Items List or Honest Empty State */}
         {hasZones ? (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 'auto' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mt: 'auto', minWidth: 0 }}>
             {displayZones.map((zone, idx) => (
               <Box
                 key={idx}
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  justify: 'space-between',
+                  justifyContent: 'space-between',
                   p: 1.2,
                   borderRadius: 2,
                   backgroundColor: VELOUR_TOKENS.bgSurface2,
                   border: `1px solid ${idx === 0 ? 'rgba(0, 217, 192, 0.3)' : VELOUR_TOKENS.borderSubtle}`,
+                  minWidth: 0,
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <LocationOnIcon sx={{ color: idx === 0 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 18 }} />
-                  <Box>
-                    <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+                  <LocationOnIcon sx={{ color: idx === 0 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 18, flexShrink: 0 }} />
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography variant="body2" noWrap sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
                       {zone.zone_name}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
+                    <Typography variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, display: 'block' }}>
                       {zone.demand_percentage || 'Normal'} demand surge
                     </Typography>
                   </Box>
@@ -113,6 +119,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
                     fontWeight: 700,
                     fontSize: 11,
                     height: 22,
+                    flexShrink: 0,
                   }}
                 />
               </Box>
@@ -128,10 +135,12 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justify: 'center',
+              justifyContent: 'center',
               textAlign: 'center',
               mt: 'auto',
               minHeight: 100,
+              minWidth: 0,
+              boxSizing: 'border-box',
             }}
           >
             <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 24, mb: 0.5 }} />

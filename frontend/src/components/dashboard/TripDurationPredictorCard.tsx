@@ -101,16 +101,19 @@ export const TripDurationPredictorCard: React.FC = () => {
         borderColor: VELOUR_TOKENS.borderSubtle,
         borderRadius: 3,
         height: '100%',
+        width: '100%',
+        minWidth: 0,
+        boxSizing: 'border-box',
         display: 'flex',
         flexDirection: 'column',
       }}
     >
-      <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <CardContent sx={{ p: { xs: 1.8, sm: 2.2, md: 2.5 }, display: 'flex', flexDirection: 'column', height: '100%', minWidth: 0, boxSizing: 'border-box' }}>
         {/* Card Header */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TimerIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20 }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#FFF' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, minWidth: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+            <TimerIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20, flexShrink: 0 }} />
+            <Typography variant="subtitle1" noWrap sx={{ fontWeight: 700, fontSize: 14, color: '#FFF' }}>
               TRIP DURATION PREDICTOR
             </Typography>
           </Box>
@@ -123,6 +126,7 @@ export const TripDurationPredictorCard: React.FC = () => {
               fontWeight: 700,
               fontSize: 10,
               height: 20,
+              flexShrink: 0,
             }}
           />
         </Box>
@@ -139,9 +143,11 @@ export const TripDurationPredictorCard: React.FC = () => {
             backgroundColor: VELOUR_TOKENS.bgSurface2,
             border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
             mb: 1.5,
+            minWidth: 0,
+            boxSizing: 'border-box',
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8, minWidth: 0 }}>
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700, letterSpacing: '0.05em' }}>
               PICKUP LOCATION
             </Typography>
@@ -157,6 +163,7 @@ export const TripDurationPredictorCard: React.FC = () => {
                 p: '2px 8px',
                 borderRadius: 1.5,
                 backgroundColor: 'rgba(0, 217, 192, 0.08)',
+                flexShrink: 0,
                 '&:hover': { backgroundColor: 'rgba(0, 217, 192, 0.18)' },
               }}
             >
@@ -164,16 +171,16 @@ export const TripDurationPredictorCard: React.FC = () => {
             </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2 }}>
-            <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20, mt: 0.2 }} />
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2, minWidth: 0 }}>
+            <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 20, mt: 0.2, flexShrink: 0 }} />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body2" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
                 📍 {pickupLocation.name}
               </Typography>
-              <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
+              <Typography variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
                 {pickupLocation.subtitle}
               </Typography>
-              <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, opacity: 0.7 }}>
+              <Typography className="mono-num" variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, opacity: 0.7, display: 'block' }}>
                 {pickupLocation.lat.toFixed(5)}, {pickupLocation.lng.toFixed(5)}
               </Typography>
             </Box>
@@ -188,9 +195,11 @@ export const TripDurationPredictorCard: React.FC = () => {
             backgroundColor: VELOUR_TOKENS.bgSurface2,
             border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
             mb: 1.8,
+            minWidth: 0,
+            boxSizing: 'border-box',
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.8, minWidth: 0 }}>
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentLavender, fontWeight: 700, letterSpacing: '0.05em' }}>
               DROP-OFF LOCATION
             </Typography>
@@ -206,6 +215,7 @@ export const TripDurationPredictorCard: React.FC = () => {
                 p: '2px 8px',
                 borderRadius: 1.5,
                 backgroundColor: 'rgba(168, 85, 247, 0.08)',
+                flexShrink: 0,
                 '&:hover': { backgroundColor: 'rgba(168, 85, 247, 0.18)' },
               }}
             >
@@ -213,16 +223,16 @@ export const TripDurationPredictorCard: React.FC = () => {
             </Button>
           </Box>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2 }}>
-            <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 20, mt: 0.2 }} />
-            <Box>
-              <Typography variant="body2" sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.2, minWidth: 0 }}>
+            <LocationOnIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 20, mt: 0.2, flexShrink: 0 }} />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body2" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 13 }}>
                 📍 {dropoffLocation.name}
               </Typography>
-              <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
+              <Typography variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
                 {dropoffLocation.subtitle}
               </Typography>
-              <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, opacity: 0.7 }}>
+              <Typography className="mono-num" variant="caption" noWrap sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, opacity: 0.7, display: 'block' }}>
                 {dropoffLocation.lat.toFixed(5)}, {dropoffLocation.lng.toFixed(5)}
               </Typography>
             </Box>
@@ -310,10 +320,12 @@ export const TripDurationPredictorCard: React.FC = () => {
               backgroundColor: 'rgba(239, 68, 68, 0.1)',
               border: `1px solid rgba(239, 68, 68, 0.4)`,
               mt: 'auto',
+              minWidth: 0,
+              boxSizing: 'border-box',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-              <ErrorOutlineIcon sx={{ color: '#EF4444', fontSize: 20 }} />
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5, minWidth: 0 }}>
+              <ErrorOutlineIcon sx={{ color: '#EF4444', fontSize: 20, flexShrink: 0 }} />
               <Typography variant="subtitle2" sx={{ fontWeight: 700, color: '#EF4444', fontSize: 13 }}>
                 Prediction unavailable
               </Typography>
@@ -330,9 +342,11 @@ export const TripDurationPredictorCard: React.FC = () => {
               backgroundColor: VELOUR_TOKENS.bgSurface2,
               border: `1px solid ${VELOUR_TOKENS.accentTeal}`,
               mt: 'auto',
+              minWidth: 0,
+              boxSizing: 'border-box',
             }}
           >
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1, minWidth: 0 }}>
               <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 700 }}>
                 ESTIMATED TRAVEL TIME
               </Typography>
@@ -345,7 +359,7 @@ export const TripDurationPredictorCard: React.FC = () => {
               {result.duration_min} <span style={{ fontSize: 16, fontWeight: 500, color: VELOUR_TOKENS.textSecondary }}>min</span>
             </Typography>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap', minWidth: 0 }}>
               <Chip
                 label={`Formatted: ${result.formatted_duration}`}
                 size="small"
@@ -379,10 +393,12 @@ export const TripDurationPredictorCard: React.FC = () => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justify: 'center',
+              justifyContent: 'center',
               textAlign: 'center',
               mt: 'auto',
               minHeight: 90,
+              minWidth: 0,
+              boxSizing: 'border-box',
             }}
           >
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 0.5 }}>

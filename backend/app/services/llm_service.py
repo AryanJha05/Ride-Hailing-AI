@@ -1,9 +1,11 @@
 import os
 import httpx
+from datetime import datetime
 from typing import Dict, Any, List, Optional
 from app.core.logger import logger
 from app.services.demand_prediction_service import get_demand_zone_status, detect_demand_zones
 from app.services.forecast_service import get_forecast_status, get_forecast_full_payload
+from app.services.trip_duration_service import trip_duration_model_service
 
 PRIMARY_LLM_URL = os.getenv("LLM_SERVICE_URL", "http://host.docker.internal:8001").rstrip("/")
 CANDIDATE_LLM_URLS = [
@@ -21,30 +23,136 @@ def build_llm_context_contract(
 ) -> Dict[str, Any]:
     """
     Constructs the standardized ML context contract payload for the LLM service.
-    Exposes actual statuses of Student A, Student B, and Student C models.
+    Exposes actual operational states and real model outputs from Student A, B, and C models.
     """
-    demand_status = get_demand_zone_status()
-    forecast_status = get_forecast_status()
+    query_lower = (driver_query or "").lower().strip()
 
-    demand_data = detect_demand_zones(driver_lat=driver_lat, driver_lng=driver_lng)
-    forecast_data = get_forecast_full_payload(zone_name="Midtown Manhattan")
+    # Fetch Student B spatial demand status and data
+    demand_status = get_demand_zone_status()
+    try:
+        demand_data = detect_demand_zones(driver_lat=driver_lat, driver_lng=driver_lng)
+        zones_list = demand_data.get("all_zones", [])
+    except Exception as e:
+        logger.warning(f"Error fetching demand zones for LLM context: {str(e)}")
+        zones_list = []
+
+    # Fetch Student C 24h forecast status and data
+    forecast_status = get_forecast_status()
+    try:
+        forecast_payload = get_forecast_full_payload(zone_name="Midtown Manhattan")
+        forecast_list = forecast_payload.get("data", [])
+    except Exception as e:
+        logger.warning(f"Error fetching forecast payload for LLM context: {str(e)}")
+        forecast_list = []
+
+    # Detect user intent from query
+    is_trip_duration_query = any(kw in query_lower for kw in [
+        "trip duration", "duration", "how long", "eta", "travel time", "jfk", "brooklyn",
+        "take time", "minutes", "trip time", "distance", "how long will"
+    ])
+    is_forecast_query = any(kw in query_lower for kw in [
+        "forecast", "next 3 hours", "next demand peak", "tonight", "outlook", "trend", "3 hours", "hourly"
+    ])
+    is_positioning_query = any(kw in query_lower for kw in [
+        "position", "where to go", "where should i", "hotspot", "best area", "surge area", "where position"
+    ])
+
+    intent = "GENERAL"
+    if is_trip_duration_query:
+        intent = "TRIP_DURATION"
+    elif is_positioning_query:
+        intent = "POSITIONING"
+    elif is_forecast_query:
+        intent = "FORECAST"
+    elif any(kw in query_lower for kw in ["demand", "surge", "why demand", "explain demand"]):
+        intent = "DEMAND"
+
+    # Evaluate Student A XGBoost model prediction if relevant or trip parameters mentioned
+    trip_prediction_ctx: Dict[str, Any] = {}
+    try:
+        # Determine origin/destination based on query context or standard NYC routes
+        if "jfk" in query_lower and "brooklyn" in query_lower:
+            orig_lat, orig_lng = 40.6413, -73.7781
+            dest_lat, dest_lng = 40.6925, -73.9904
+            orig_name, dest_name = "JFK International Airport", "Downtown Brooklyn"
+        elif "lga" in query_lower or "laguardia" in query_lower:
+            orig_lat, orig_lng = 40.7769, -73.8740
+            dest_lat, dest_lng = 40.7549, -73.9840
+            orig_name, dest_name = "LaGuardia Airport", "Midtown Manhattan"
+        else:
+            orig_lat, orig_lng = driver_lat, driver_lng
+            dest_lat, dest_lng = 40.6925, -73.9904
+            orig_name, dest_name = "Driver Current Location (Midtown)", "Downtown Brooklyn"
+
+        now_dt = datetime.now()
+        raw_input = {
+            "origin_lat": orig_lat,
+            "origin_lng": orig_lng,
+            "dest_lat": dest_lat,
+            "dest_lng": dest_lng,
+            "pickup_datetime": now_dt.strftime("%Y-%m-%d %H:%M:%S"),
+            "passenger_count": 1,
+            "vendor_id": 1
+        }
+        pred_res = trip_duration_model_service.predict(raw_input)
+
+        pickup_hour = now_dt.hour
+        is_rush = 1 if pickup_hour in [7, 8, 9, 16, 17, 18, 19] else 0
+        is_wknd = 1 if now_dt.weekday() >= 5 else 0
+
+        trip_prediction_ctx = {
+            "status": "OPERATIONAL",
+            "model": "Student A (XGBoost V3)",
+            "origin": orig_name,
+            "destination": dest_name,
+            "origin_coords": {"lat": orig_lat, "lng": orig_lng},
+            "dest_coords": {"lat": dest_lat, "lng": dest_lng},
+            "distance_km": pred_res.get("distance_km", 0.0),
+            "distance_miles": pred_res.get("distance_miles", 0.0),
+            "predicted_duration_minutes": pred_res.get("duration_min", 0.0),
+            "formatted_duration": pred_res.get("formatted_duration", "0m 00s"),
+            "predicted_seconds": pred_res.get("predicted_seconds", 0.0),
+            "pickup_time": now_dt.strftime("%H:%M"),
+            "day_of_week": now_dt.strftime("%A"),
+            "is_rush_hour": is_rush,
+            "is_weekend": is_wknd,
+            "weather": {
+                "temp": 55.0,
+                "conditions": "Clear",
+                "precip": 0.0
+            },
+            "features_contributing": [
+                f"Total Distance ({pred_res.get('distance_km')} km / {pred_res.get('distance_miles')} mi)",
+                f"Pickup time ({now_dt.strftime('%H:%M')}, {'Rush hour' if is_rush else 'Standard traffic'})",
+                f"Day of week ({now_dt.strftime('%A')})",
+                "Clear weather baseline"
+            ]
+        }
+    except Exception as ex:
+        logger.warning(f"Student A prediction unavailable for LLM context: {str(ex)}")
+        trip_prediction_ctx = {
+            "status": "UNAVAILABLE",
+            "model": "Student A (XGBoost V3)",
+            "message": f"Student A model unavailable: {str(ex)}"
+        }
 
     return {
+        "intent_detected": intent,
         "driver_location": {"lat": driver_lat, "lng": driver_lng},
         "trip_duration": {
             "model": "xgboost-v3",
-            "status": "OPERATIONAL",
-            "description": "Student A XGBoost V3 model connected and predicting trip ETAs"
+            "status": trip_prediction_ctx.get("status", "OPERATIONAL"),
+            "prediction_details": trip_prediction_ctx
         },
         "demand_zones": {
-            "status": demand_status["status"],
-            "model_name": demand_status["model_name"],
-            "data": demand_data.get("all_zones", [])
+            "status": demand_status.get("status", "OPERATIONAL"),
+            "model_name": demand_status.get("model_name", "Student B - HDBSCAN"),
+            "data": zones_list
         },
         "forecast": {
-            "status": forecast_status["status"],
-            "model_name": forecast_status["model_name"],
-            "data": forecast_data.get("data", [])
+            "status": forecast_status.get("status", "OPERATIONAL"),
+            "model_name": forecast_status.get("model_name", "Student C - PyTorch LSTM"),
+            "data": forecast_list
         },
         "driver_status": {
             "status": "Active",
@@ -94,3 +202,4 @@ async def request_driver_advice(
         "has_card": False,
         "status": "llm_service_offline"
     }
+
