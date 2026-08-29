@@ -13,7 +13,7 @@ import joblib
 import numpy as np
 import torch
 import torch.nn as nn
-from typing import Union, List
+from typing import Union, List, Sequence
 
 
 class DemandForecastingLSTM(nn.Module):
@@ -74,6 +74,7 @@ class DemandForecastPredictor:
                 model_path = zip_candidate
             else:
                 model_path = pth_candidate
+
         if scaler_path is None:
             scaler_path = os.path.join(current_dir, "scaler.pkl")
 
@@ -107,7 +108,7 @@ class DemandForecastPredictor:
 
     def predict(
         self,
-        past_24h_demand: Union[List[float], np.ndarray]
+        past_24h_demand: Union[Sequence[Union[int, float]], np.ndarray]
     ) -> List[float]:
         """
         Generate 3-hour demand forecast given past 24 hourly demand counts.
@@ -144,7 +145,7 @@ class DemandForecastPredictor:
 # Convenience functional interface
 _DEFAULT_PREDICTOR = None
 
-def get_forecast(past_24h_demand: Union[List[float], np.ndarray]) -> List[float]:
+def get_forecast(past_24h_demand: Union[Sequence[Union[int, float]], np.ndarray]) -> List[float]:
     """
     Convenience function for generating 3-hour demand predictions using cached predictor.
     """
