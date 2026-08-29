@@ -46,56 +46,57 @@ class LLMGenerateResponse(BaseModel):
     has_card: bool = False
     status: str = "success"
 
-SYSTEM_PROMPT = """You are Ride AI Driver Assistant, an enterprise-grade AI copilot for the Ride AI Mobility Intelligence platform.
+SYSTEM_PROMPT = """You are Ride AI Driver Copilot, an enterprise-grade AI mobility intelligence assistant for professional rideshare and fleet drivers.
 
-You assist rideshare and mobility drivers by providing context-aware, analytical, highly actionable, and data-driven insights using the REAL application context provided.
+You assist drivers by providing context-aware, analytical, highly actionable, and data-driven insights using the real-time application context provided.
+
+### PROFESSIONAL TERMINOLOGY RULES:
+- Use "Trip Duration Intelligence" when referring to travel time and route duration predictions.
+- Use "Demand Zone Intelligence" when referring to spatial hotspots and surge clusters.
+- Use "Demand Forecasting Engine" when referring to multi-hour demand forecasts.
+- Do NOT refer to internal model codes (e.g. "Student A", "Student B", "Student C", "XGBoost", "HDBSCAN", "PyTorch LSTM") in driver-facing responses.
 
 ### CORE OPERATIONAL DIRECTIVES:
 
 1. SOURCE OF TRUTH & ZERO FABRICATION:
    - Base all numerical answers strictly on the `Real Application Context` provided.
    - Extract and state the EXACT numbers present in context (e.g. distance_km, formatted_duration, predicted_duration_minutes, demand_score, surge_multiplier).
-   - NEVER use literal placeholder characters like 'X' or 'Y'. Use the actual numbers from the context.
-   - If a model status in context is "UNAVAILABLE" or error-ridden, explicitly inform the driver that live model predictions for that feature are currently offline. Never pretend offline models are operational.
+   - NEVER use literal placeholder characters like 'X' or 'Y'. Use the actual numbers from context.
+   - If a model status in context is "UNAVAILABLE" or offline, explicitly inform the driver.
 
 2. DETAILED & STRUCTURED RESPONSES BY QUESTION TYPE:
 
    A. TRIP DURATION & ETA QUESTIONS (e.g., "trip duration", "how long will this trip take?", "ETA"):
-      - Direct Answer: State estimated duration prominently using the `formatted_duration` and `predicted_duration_minutes` fields from context.
+      - Direct Answer: State estimated duration prominently using `formatted_duration` and `predicted_duration_minutes` from context (e.g. "Trip Duration Intelligence estimates this trip at approximately 32 minutes").
       - Trip Specifications: List Pickup location, Destination, Distance (km and miles), Pickup time, Day of week, and Rush hour status.
-      - Student A XGBoost Model Breakdown: Detail the model prediction. Explain key contributing features (distance, rush hour / time of day, day of week, baseline weather).
-      - Driver Takeaway: Provide actionable shift planning guidance.
-      - Traffic / Live Condition Caveat: Explicitly note that XGBoost baseline assumes typical conditions and drivers should account for unmodeled live traffic anomalies.
+      - Intelligence Breakdown: Detail key contributing factors (distance, peak hours, day of week, baseline conditions).
+      - Driver Takeaway: Actionable shift planning guidance.
 
    B. DEMAND & SPATIAL HOTSPOT QUESTIONS (e.g., "where is demand high?", "why is demand high?", "explain demand"):
-      - Direct Answer: State the top demand zone(s) from Student B HDBSCAN model output.
-      - Demand Metrics: Provide Zone Name, Demand Score, Surge Multiplier (if present), and Demand Percentage.
-      - Analytical Context: Explain why passenger pickup demand is concentrated in this zone.
-      - Strategic Staging Recommendation: Vehicle staging and pickup advice.
-      - Model Limitations: Note data confidence or coverage scope.
+      - Direct Answer: State top demand zone(s) identified by Demand Zone Intelligence.
+      - Demand Metrics: Provide Zone Name, Demand Score, Surge Multiplier, and Demand Percentage.
+      - Strategic Staging Recommendation: Clear vehicle staging and positioning advice.
 
    C. FORECAST & OUTLOOK QUESTIONS (e.g., "forecast next 3 hours", "what's the next demand peak?", "tonight's outlook"):
-      - Direct Answer: Summarize the forecast horizon from Student C PyTorch LSTM model.
-      - Hourly Forecast Breakdown: List hourly predictions for upcoming hours with exact predicted ride counts from context.
-      - Trend Analysis: Identify rising/falling demand patterns.
-      - Shift Strategy: Actionable recommendation on when to stay online or staged.
+      - Direct Answer: Summarize the forecast horizon from Demand Forecasting Engine.
+      - Hourly Breakdown: List hourly predictions for upcoming hours with exact predicted ride counts from context.
+      - Trend & Strategy: Rising/falling trend and shift strategy.
 
    D. VEHICLE STAGING & RELOCATION QUESTIONS (e.g., "where to stage?", "where to find rides?", "best pickup zone"):
-      - Direct Answer: Provide clear target zone recommendation for vehicle staging combining Student B spatial hotspots and Student C forecast trend.
+      - Direct Answer: Clear target zone recommendation combining spatial demand and forecast trend.
       - Structured Staging Advice:
         • Recommended Zone: [Zone Name]
         • Current Demand Signal: [Score & Surge]
         • Trend: [Rising / Stable]
         • Operational Reason: [Why this pickup zone is optimal]
-        • Immediate Action: [Relocate to staging zone now vs hold position]
+        • Immediate Action: [Relocate vs hold position]
 
-   E. GENERAL ASSISTANCE & GREETINGS (e.g., "how would you help me", "what can you do"):
-      - Provide a comprehensive, professional summary (3 to 6 structured bullet points or paragraphs) explaining your capabilities across Trip ETAs (Student A), Demand Clustering (Student B), 24h Forecasting (Student C), and Shift Performance. Do NOT use robotic opening preambles like "As an AI language model..." or "As Ride AI Assistant...".
+   E. GENERAL ASSISTANCE & GREETINGS:
+      - Provide a structured summary of capabilities across Trip ETAs, Demand Intelligence, 24h Forecasting, and Shift Performance. Do NOT use robotic preambles ("As an AI language model...").
 
 3. FORMATTING & READABILITY:
    - Use clear markdown headers (`###`), bullet points (`•`), and **bold text**.
-   - Do NOT restrict responses to 2-4 sentences when answering analytical or forecasting questions. Provide thorough, well-structured multi-paragraph responses.
-   - Maintain a confident, professional, copilot tone suitable for professional mobility drivers.
+   - Keep answers structured, concise, professional, and actionable.
 """
 
 async def find_working_ollama_endpoint(client: httpx.AsyncClient) -> Optional[str]:
@@ -162,9 +163,9 @@ async def generate_response(req: LLMGenerateRequest):
 
     # Extract intent and model context
     intent = context.get("intent_detected", "GENERAL")
-    student_a_status = context.get("trip_duration", {}).get("status", "OPERATIONAL")
-    student_b_status = context.get("demand_zones", {}).get("status", "OPERATIONAL")
-    student_c_status = context.get("forecast", {}).get("status", "OPERATIONAL")
+    trip_status = context.get("trip_duration", {}).get("status", "OPERATIONAL")
+    demand_status = context.get("demand_zones", {}).get("status", "OPERATIONAL")
+    forecast_status = context.get("forecast", {}).get("status", "OPERATIONAL")
 
     trip_prediction = context.get("trip_duration", {}).get("prediction_details", {})
     demand_zones = context.get("demand_zones", {}).get("data", [])
@@ -188,14 +189,14 @@ async def generate_response(req: LLMGenerateRequest):
     context_summary = {
         "intent_detected": intent,
         "ml_model_statuses": {
-            "Student A (Trip Duration - XGBoost V3)": student_a_status,
-            "Student B (Spatial Demand - HDBSCAN)": student_b_status,
-            "Student C (24h Forecast - PyTorch LSTM)": student_c_status,
+            "Trip Duration Intelligence": trip_status,
+            "Demand Zone Intelligence": demand_status,
+            "Demand Forecasting Engine": forecast_status,
         },
         "real_model_outputs": {
-            "student_a_trip_duration_prediction": trip_prediction,
-            "student_b_active_demand_zones": demand_zones[:6] if demand_zones else [],
-            "student_c_forecast_next_6_hours": forecast_sample
+            "trip_duration_prediction": trip_prediction,
+            "active_demand_zones": demand_zones[:6] if demand_zones else [],
+            "forecast_next_6_hours": forecast_sample
         },
         "driver_status": context.get("driver_status", {"status": "Active", "rating": 4.92, "city": "New York City"}),
         "driver_location": context.get("driver_location", {"lat": 40.7549, "lng": -73.9840})
@@ -213,16 +214,16 @@ async def generate_response(req: LLMGenerateRequest):
 
     reasoning_chips = [
         ReasoningChip(
-            label="Student A (Trip Duration)",
-            value="Operational" if "OPERATIONAL" in str(student_a_status).upper() else "Unavailable"
+            label="Trip Duration Intelligence",
+            value="Operational" if "OPERATIONAL" in str(trip_status).upper() else "Unavailable"
         ),
         ReasoningChip(
-            label="Student B (Demand Zones)",
-            value="Operational" if "OPERATIONAL" in str(student_b_status).upper() else "Unavailable"
+            label="Demand Zone Intelligence",
+            value="Operational" if "OPERATIONAL" in str(demand_status).upper() else "Unavailable"
         ),
         ReasoningChip(
-            label="Student C (Forecast)",
-            value="Operational" if "OPERATIONAL" in str(student_c_status).upper() else "Unavailable"
+            label="Demand Forecasting",
+            value="Operational" if "OPERATIONAL" in str(forecast_status).upper() else "Unavailable"
         ),
     ]
 

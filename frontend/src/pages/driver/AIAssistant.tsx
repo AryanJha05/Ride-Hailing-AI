@@ -148,7 +148,7 @@ export const AIAssistant: React.FC = () => {
             </Avatar>
             <Box>
               <Typography variant="subtitle1" sx={{ fontWeight: 800, fontSize: 16, color: '#FFF', lineHeight: 1.2 }}>
-                AI Driver Assistant
+                AI Driver Copilot
               </Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, mt: 0.2 }}>
                 <Box

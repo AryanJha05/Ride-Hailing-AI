@@ -100,7 +100,7 @@ export const AdminDashboard: React.FC = () => {
                   All Core Backend Microservices Operational
                 </Typography>
                 <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, maxWidth: 500, mt: 0.5 }}>
-                  Database telemetry and Student A XGBoost V3 Trip Duration model verified active.
+                  Database telemetry and Trip Duration Intelligence service verified active.
                 </Typography>
               </Box>
             </Card>
@@ -116,11 +116,11 @@ export const AdminDashboard: React.FC = () => {
               <List disablePadding sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, minWidth: 0 }}>
                 {[
                   { title: 'FastAPI Backend REST API', status: isHealthy ? 'ONLINE' : 'CHECKING', detail: `Gateway Latency ${health?.avg_model_latency_ms || '—'}ms`, icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.success }} /> },
-                  { title: 'XGBoost V3 Trip Duration Model', status: tripDurationStatus.includes('Operational') || tripDurationStatus === 'ACTIVE' ? 'ACTIVE' : tripDurationStatus, detail: `${health?.avg_model_latency_ms || '—'}ms avg latency`, icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> },
+                  { title: 'Trip Duration Intelligence', status: tripDurationStatus.includes('Operational') || tripDurationStatus === 'ACTIVE' ? 'ACTIVE' : tripDurationStatus, detail: `${health?.avg_model_latency_ms || '—'}ms avg latency`, icon: <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> },
                   {
-                    title: 'Demand Forecasting (Student C)',
+                    title: 'Demand Forecasting Engine',
                     status: (health?.services?.['demand_forecast_model'] || '').includes('Operational') ? 'ACTIVE' : (health?.services?.['demand_forecast_model'] || 'OFFLINE'),
-                    detail: health?.services?.['demand_forecast_model'] || 'PyTorch LSTM Status Pending',
+                    detail: health?.services?.['demand_forecast_model'] || 'Demand Forecasting Engine Pending',
                     icon: (health?.services?.['demand_forecast_model'] || '').includes('Operational') ? <CheckCircleOutlineIcon sx={{ color: VELOUR_TOKENS.accentTeal }} /> : <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold }} />
                   },
                 ].map((item, idx) => {

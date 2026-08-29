@@ -34,43 +34,43 @@ export const AdminModelHealthPage: React.FC = () => {
   };
 
   const tripDurationStatus = getStatusDisplay(services?.trip_duration_model, 'Operational');
-  const demandZoneStatus = getStatusDisplay(services?.demand_zone_model, 'Operational (Student B - HDBSCAN)');
-  const demandForecastStatus = getStatusDisplay(services?.demand_forecast_model, 'Operational (Student C - PyTorch LSTM)');
+  const demandZoneStatus = getStatusDisplay(services?.demand_zone_model, 'Operational (Demand Zone Intelligence)');
+  const demandForecastStatus = getStatusDisplay(services?.demand_forecast_model, 'Operational (Demand Forecasting Engine)');
   const ollamaStatus = getStatusDisplay(services?.ollama_llm, 'Healthy');
 
   const modelServices = [
     {
-      name: 'Trip Duration Model (Student A)',
+      name: 'Trip Duration Intelligence',
       type: 'XGBoost Regressor V3',
       status: tripDurationStatus.text,
       isPending: tripDurationStatus.isPending,
       latency: '12ms',
       loss: 'MAE 2.1 mins',
-      updated: 'Student A XGBoost Model Active',
+      updated: 'Spatial XGBoost Pipeline Active',
       icon: <SpeedIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
     },
     {
-      name: 'Demand Zone Classification (Student B)',
+      name: 'Demand Zone Intelligence',
       type: 'HDBSCAN Spatial Demand Clustering',
       status: demandZoneStatus.text,
       isPending: demandZoneStatus.isPending,
       latency: '14ms',
       loss: 'NYC HDBSCAN Clusters',
-      updated: 'Student B HDBSCAN Model Active',
+      updated: 'HDBSCAN Clustering Active',
       icon: <MemoryIcon sx={{ color: VELOUR_TOKENS.accentTeal }} />,
     },
     {
-      name: 'Demand Forecast Model (Student C)',
+      name: 'Demand Forecasting Engine',
       type: 'PyTorch 2-Layer LSTM',
       status: demandForecastStatus.text,
       isPending: demandForecastStatus.isPending,
       latency: '18ms',
       loss: '24h Time-Series Forecast',
-      updated: 'Student C PyTorch LSTM Model Active',
+      updated: 'PyTorch LSTM Forecast Active',
       icon: <DnsIcon sx={{ color: VELOUR_TOKENS.accentLavender }} />,
     },
     {
-      name: 'Ollama LLM Reasoning Service',
+      name: 'AI Mobility Copilot (Ollama LLM)',
       type: 'Ollama + Gemma2 / Llama3',
       status: ollamaStatus.text,
       isPending: ollamaStatus.isPending,
@@ -91,7 +91,7 @@ export const AdminModelHealthPage: React.FC = () => {
           <Grid container spacing={2}>
             {[
               { label: 'REGISTERED MODELS', val: `${activeCount} / 3 OPERATIONAL`, color: VELOUR_TOKENS.accentTeal },
-              { label: 'STUDENT A (TRIP DURATION)', val: 'OPERATIONAL', color: VELOUR_TOKENS.accentTeal },
+              { label: 'TRIP DURATION INTELLIGENCE', val: 'OPERATIONAL', color: VELOUR_TOKENS.accentTeal },
               { label: 'OLLAMA LLM SERVICE', val: ollamaStatus.text, color: ollamaStatus.isPending ? VELOUR_TOKENS.accentGold : VELOUR_TOKENS.accentTeal },
               { label: 'SYSTEM HEALTH', val: healthRes?.status ? 'HEALTHY (200 OK)' : 'ONLINE', color: VELOUR_TOKENS.success },
             ].map((stat, idx) => (

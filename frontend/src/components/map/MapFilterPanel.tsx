@@ -85,7 +85,7 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
         ))}
       </ToggleButtonGroup>
 
-      {/* Hourly Time Selection Control for Student B HDBSCAN Demand Model */}
+      {/* Hourly Time Selection Control for Demand Zone Intelligence */}
       <Box sx={{ mb: 2.5 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 0.5 }}>
           <Typography
@@ -97,7 +97,7 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
               fontSize: 11,
             }}
           >
-            DEMAND HOUR (STUDENT B)
+            DEMAND HOUR (ZONE INTELLIGENCE)
           </Typography>
           <Typography
             className="mono-num"
@@ -150,57 +150,77 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
 
       {filter === 'Demand' ? (
         zones.length > 0 ? (
-          <List disablePadding sx={{ mb: 3, maxHeight: 220, overflowY: 'auto' }}>
-            {zones.map((z) => (
-              <ListItem
-                key={z.id}
-                sx={{
-                  px: 0,
-                  py: 1,
-                  borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                  <Box
-                    sx={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: '50%',
-                      backgroundColor: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
-                    }}
-                  />
-                  <ListItemText
-                    primary={z.zone_name}
-                    primaryTypographyProps={{ fontSize: 13, fontWeight: 500, color: '#FFF' }}
-                  />
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Typography
-                    className="mono-num"
-                    variant="caption"
-                    sx={{
-                      color: z.surge_multiplier > 1.3 ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentLavender,
-                      fontWeight: 700,
-                      fontSize: 12,
-                      display: 'block',
-                    }}
-                  >
-                    {z.surge_multiplier > 1.5 ? 'Surge' : z.surge_multiplier > 1.2 ? 'High' : 'Med'}
-                  </Typography>
-                  <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                    {z.demand_percentage}
-                  </Typography>
-                </Box>
-              </ListItem>
-            ))}
+          <List disablePadding sx={{ mb: 2 }}>
+            {zones.map((z) => {
+              let zoneColor = VELOUR_TOKENS.accentTeal;
+              let labelText = 'Med';
+              if (z.surge_multiplier >= 1.6 || z.demand_score >= 85) {
+                zoneColor = '#EF4444'; // Red (Surge)
+                labelText = 'Surge';
+              } else if (z.surge_multiplier >= 1.35 || z.demand_score >= 70) {
+                zoneColor = '#F97316'; // Orange (High)
+                labelText = 'High';
+              } else if (z.surge_multiplier >= 1.18 || z.demand_score >= 55) {
+                zoneColor = '#FACC15'; // Yellow (Med)
+                labelText = 'Med';
+              } else {
+                zoneColor = '#00D9C0'; // Cyan/Blue (Low)
+                labelText = 'Low';
+              }
+
+              return (
+                <ListItem
+                  key={z.id}
+                  sx={{
+                    px: 0,
+                    py: 0.8,
+                    borderBottom: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.2, minWidth: 0 }}>
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        backgroundColor: zoneColor,
+                        boxShadow: `0 0 6px ${zoneColor}`,
+                        flexShrink: 0,
+                      }}
+                    />
+                    <ListItemText
+                      primary={z.zone_name}
+                      primaryTypographyProps={{ fontSize: 12.5, fontWeight: 600, color: '#FFF', noWrap: true }}
+                    />
+                  </Box>
+                  <Box sx={{ textAlign: 'right', flexShrink: 0, ml: 1 }}>
+                    <Typography
+                      className="mono-num"
+                      variant="caption"
+                      sx={{
+                        color: zoneColor,
+                        fontWeight: 700,
+                        fontSize: 11.5,
+                        display: 'block',
+                      }}
+                    >
+                      {labelText} ({z.surge_multiplier}x)
+                    </Typography>
+                    <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
+                      {z.demand_percentage}
+                    </Typography>
+                  </Box>
+                </ListItem>
+              );
+            })}
           </List>
         ) : (
           <Box
             sx={{
               p: 2,
-              mb: 3,
+              mb: 2,
               borderRadius: 2,
               backgroundColor: VELOUR_TOKENS.bgSurface2,
               border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
@@ -211,7 +231,7 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
               MODEL NOT CONNECTED
             </Typography>
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
-              Demand Zone Classification model (Student B) is not connected. Base map operational.
+              Demand Zone Intelligence model is not connected. Base map operational.
             </Typography>
           </Box>
         )
@@ -219,7 +239,7 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
         <Box
           sx={{
             p: 2,
-            mb: 3,
+            mb: 2,
             borderRadius: 2,
             backgroundColor: VELOUR_TOKENS.bgSurface2,
             border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
@@ -234,7 +254,7 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
         <Box
           sx={{
             p: 2,
-            mb: 3,
+            mb: 2,
             borderRadius: 2,
             backgroundColor: VELOUR_TOKENS.bgSurface2,
             border: `1px dashed ${VELOUR_TOKENS.borderSubtle}`,
@@ -247,18 +267,20 @@ export const MapFilterPanel: React.FC<MapFilterPanelProps> = ({
         </Box>
       )}
 
-      {/* Heatmap Bar */}
-      <Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', color: VELOUR_TOKENS.textSecondary, fontSize: 10, mb: 0.5 }}>
-          <span>Low</span>
-          <span>Demand Heatmap</span>
-          <span>High</span>
+      {/* Heatmap Semantic Legend Bar */}
+      <Box sx={{ mt: 1 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', color: VELOUR_TOKENS.textSecondary, fontSize: 10, mb: 0.5, fontWeight: 600 }}>
+          <span style={{ color: '#00D9C0' }}>LOW</span>
+          <span style={{ color: '#FACC15' }}>MED</span>
+          <span style={{ color: '#F97316' }}>HIGH</span>
+          <span style={{ color: '#EF4444' }}>SURGE</span>
         </Box>
         <Box
           sx={{
             height: 6,
             borderRadius: 3,
-            background: `linear-gradient(to right, ${VELOUR_TOKENS.borderSubtle}, ${VELOUR_TOKENS.accentTeal}, ${VELOUR_TOKENS.accentPrimary})`,
+            background: 'linear-gradient(to right, #00D9C0 0%, #FACC15 35%, #F97316 70%, #EF4444 100%)',
+            boxShadow: '0 0 10px rgba(0, 217, 192, 0.15)',
           }}
         />
       </Box>

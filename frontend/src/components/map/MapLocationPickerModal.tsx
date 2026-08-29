@@ -170,7 +170,7 @@ export const MapLocationPickerModal: React.FC<MapLocationPickerModalProps> = ({
       {/* Subtitle / Instruction */}
       <Box sx={{ px: 2.5, pt: 1.5, pb: 1, backgroundColor: VELOUR_TOKENS.bgSurface1 }}>
         <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12.5 }}>
-          Click anywhere on the interactive map below to place a location pin. Coordinates will be sent directly to the XGBoost V3 model.
+          Click anywhere on the interactive map below to place a location pin. Coordinates will be sent directly to Trip Duration Intelligence.
         </Typography>
       </Box>
 

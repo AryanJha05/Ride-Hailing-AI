@@ -91,11 +91,11 @@ class StudentCModelAdapter:
         
         operational = connected and self.predictor is not None
         return {
-            "status": "OPERATIONAL (Student C - PyTorch LSTM)" if operational else "MODEL_NOT_CONNECTED",
-            "model_name": "Student C — PyTorch LSTM Demand Forecasting",
+            "status": "OPERATIONAL (Demand Forecasting Engine)" if operational else "MODEL_NOT_CONNECTED",
+            "model_name": "Demand Forecasting Engine",
             "connected": operational,
             "artifact_path": self.model_dir if connected else None,
-            "message": "PyTorch LSTM model loaded & operational" if operational else (self._load_error or "Waiting for Student C trained model artifact")
+            "message": "Demand Forecasting Engine active" if operational else (self._load_error or "Waiting for demand forecasting model artifact")
         }
 
     def predict_forecast(self, zone_name: str = "Midtown Manhattan", horizon_hours: int = 24) -> Dict[str, Any]:

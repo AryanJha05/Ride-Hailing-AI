@@ -377,7 +377,7 @@ export const ChatMessageStream: React.FC<ChatMessageStreamProps> = ({
           >
             <CircularProgress size={16} sx={{ color: VELOUR_TOKENS.accentTeal }} />
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12.5, fontWeight: 500 }}>
-              Ride AI is analyzing your current shift...
+              Ride AI Copilot is evaluating live shift context...
             </Typography>
           </Paper>
         </Box>

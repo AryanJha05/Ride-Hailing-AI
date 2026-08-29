@@ -20,7 +20,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
             24-Hour Spatial Demand Forecast vs Baseline Curve
           </Typography>
           <Chip
-            label={hasData ? 'PyTorch LSTM Operational' : 'Student C Model Offline'}
+            label={hasData ? 'Forecasting Engine · Operational' : 'Demand Forecasting Engine Offline'}
             size="small"
             sx={{
               backgroundColor: hasData ? 'rgba(0, 217, 192, 0.12)' : 'rgba(234, 179, 8, 0.12)',
@@ -89,10 +89,10 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
           >
             <ShowChartIcon sx={{ fontSize: 44, color: VELOUR_TOKENS.accentGold, mb: 1.5, opacity: 0.8 }} />
             <Typography variant="subtitle1" sx={{ color: '#FFF', fontWeight: 700, mb: 0.5 }}>
-              Demand Forecasting Model Disconnected
+              Demand Forecasting Engine Disconnected
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13, maxWidth: 420 }}>
-              Student C's PyTorch LSTM forecasting model artifact is currently offline or unreachable.
+              Demand Forecasting Engine is currently offline or unreachable.
             </Typography>
           </Box>
         )}

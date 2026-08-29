@@ -148,7 +148,7 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
               MODEL NOT CONNECTED
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11.5, mt: 0.3 }}>
-              Demand Zone Classification model (Student B) pending pipeline integration.
+              Demand Zone Intelligence model pending backend connection.
             </Typography>
           </Box>
         )}

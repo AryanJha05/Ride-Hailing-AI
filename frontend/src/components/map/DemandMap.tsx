@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -7,12 +7,37 @@ import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { DemandZone } from '../../types/api.types';
 
-// MapRecenter Helper Component
-const MapRecenter: React.FC<{ center: [number, number]; zoom?: number }> = ({ center, zoom = 13 }) => {
+// MapCameraController: Handles EXPLICIT camera movements (e.g. search selection, reset location, zoom buttons)
+// Separates map data updates (hour slider changes) from map viewport state.
+const MapCameraController: React.FC<{
+  cameraTarget?: { lat: number; lng: number; zoom: number; timestamp: number } | null;
+  zoomDelta?: { action: 'in' | 'out'; timestamp: number } | null;
+}> = ({ cameraTarget, zoomDelta }) => {
   const map = useMap();
-  React.useEffect(() => {
-    map.setView(center, zoom);
-  }, [center, zoom, map]);
+  const prevTargetTs = useRef<number | null>(null);
+  const prevZoomTs = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (cameraTarget && cameraTarget.timestamp !== prevTargetTs.current) {
+      prevTargetTs.current = cameraTarget.timestamp;
+      map.flyTo([cameraTarget.lat, cameraTarget.lng], cameraTarget.zoom, {
+        animate: true,
+        duration: 1.2,
+      });
+    }
+  }, [cameraTarget, map]);
+
+  useEffect(() => {
+    if (zoomDelta && zoomDelta.timestamp !== prevZoomTs.current) {
+      prevZoomTs.current = zoomDelta.timestamp;
+      if (zoomDelta.action === 'in') {
+        map.zoomIn();
+      } else {
+        map.zoomOut();
+      }
+    }
+  }, [zoomDelta, map]);
+
   return null;
 };
 
@@ -38,10 +63,49 @@ const driverIcon = L.divIcon({
   iconAnchor: [14, 14],
 });
 
+// Semantic Heatmap Gradient Helper: Low (Cyan/Blue) -> Med (Yellow) -> High (Orange) -> Surge (Red)
+const getZoneHeatmapStyle = (demandScore: number, surgeMultiplier: number) => {
+  if (surgeMultiplier >= 1.6 || demandScore >= 85) {
+    return {
+      color: '#EF4444', // Red (Peak Surge)
+      label: 'Surge',
+      outerOpacity: 0.22,
+      midOpacity: 0.38,
+      coreOpacity: 0.65,
+    };
+  } else if (surgeMultiplier >= 1.35 || demandScore >= 70) {
+    return {
+      color: '#F97316', // Orange (High Demand)
+      label: 'High',
+      outerOpacity: 0.18,
+      midOpacity: 0.32,
+      coreOpacity: 0.55,
+    };
+  } else if (surgeMultiplier >= 1.18 || demandScore >= 55) {
+    return {
+      color: '#FACC15', // Yellow (Medium Demand)
+      label: 'Med',
+      outerOpacity: 0.15,
+      midOpacity: 0.28,
+      coreOpacity: 0.48,
+    };
+  } else {
+    return {
+      color: '#00D9C0', // Cyan/Blue (Low Demand)
+      label: 'Low',
+      outerOpacity: 0.12,
+      midOpacity: 0.22,
+      coreOpacity: 0.4,
+    };
+  }
+};
+
 interface DemandMapProps {
   zones?: DemandZone[];
   filter?: 'Demand' | 'Drivers' | 'Events';
   driverLocation?: { lat: number; lng: number };
+  cameraTarget?: { lat: number; lng: number; zoom: number; timestamp: number } | null;
+  zoomDelta?: { action: 'in' | 'out'; timestamp: number } | null;
   isLoading?: boolean;
   isError?: boolean;
   isFilteredEmpty?: boolean;
@@ -51,23 +115,26 @@ export const DemandMap: React.FC<DemandMapProps> = ({
   zones = [],
   filter = 'Demand',
   driverLocation = { lat: 40.7549, lng: -73.9840 },
+  cameraTarget = null,
+  zoomDelta = null,
   isLoading = false,
   isError = false,
   isFilteredEmpty = false,
 }) => {
   const activeZones = zones && zones.length > 0 ? zones : [];
-  const center: [number, number] = [driverLocation.lat, driverLocation.lng];
+  const initialCenter: [number, number] = [driverLocation.lat, driverLocation.lng];
   const isModelDisconnected = !isLoading && !isError && activeZones.length === 0 && !isFilteredEmpty;
 
   return (
     <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
       <MapContainer
-        center={center}
+        center={initialCenter}
         zoom={13}
         style={{ width: '100%', height: '100%', zIndex: 1, backgroundColor: '#0A0A0C' }}
         zoomControl={false}
       >
-        <MapRecenter center={center} />
+        {/* Handles camera movements on search, reset, or manual zoom controls without touching hour slider state */}
+        <MapCameraController cameraTarget={cameraTarget} zoomDelta={zoomDelta} />
 
         {/* CARTO Dark Matter Basemap */}
         <TileLayer
@@ -77,7 +144,7 @@ export const DemandMap: React.FC<DemandMapProps> = ({
         />
 
         {/* DRIVER LOCATION PIN */}
-        <Marker position={center} icon={driverIcon}>
+        <Marker position={[driverLocation.lat, driverLocation.lng]} icon={driverIcon}>
           <Popup>
             <Typography variant="body2" sx={{ fontWeight: 700 }}>
               Your Driver Location
@@ -85,31 +152,53 @@ export const DemandMap: React.FC<DemandMapProps> = ({
           </Popup>
         </Marker>
 
-        {/* STUDENT B REAL-TIME DEMAND CLUSTERS */}
+        {/* REAL-TIME DEMAND HEATMAP AREAS (LOW: Cyan -> MED: Yellow -> HIGH: Orange -> SURGE: Red) */}
         {filter === 'Demand' &&
           activeZones.map((zone) => {
-            const isHighSurge = zone.surge_multiplier >= 1.5;
-            const radiusMeters = isHighSurge ? 1600 : 1200;
-            const color = isHighSurge ? VELOUR_TOKENS.accentGold : VELOUR_TOKENS.accentTeal;
+            const style = getZoneHeatmapStyle(zone.demand_score, zone.surge_multiplier);
 
             return (
               <React.Fragment key={zone.id}>
+                {/* Outer Heat Dispersion Layer (Soft Falloff, No Border) */}
                 <Circle
                   center={[zone.lat, zone.lng]}
-                  radius={radiusMeters}
+                  radius={2200}
                   pathOptions={{
-                    color,
-                    fillColor: color,
-                    fillOpacity: isHighSurge ? 0.35 : 0.2,
-                    weight: 2,
+                    stroke: false,
+                    fillColor: style.color,
+                    fillOpacity: style.outerOpacity,
                   }}
                 />
+
+                {/* Mid Heat Concentration Ring (No Border) */}
+                <Circle
+                  center={[zone.lat, zone.lng]}
+                  radius={1300}
+                  pathOptions={{
+                    stroke: false,
+                    fillColor: style.color,
+                    fillOpacity: style.midOpacity,
+                  }}
+                />
+
+                {/* Core Peak Intensity Area (No Border) */}
+                <Circle
+                  center={[zone.lat, zone.lng]}
+                  radius={600}
+                  pathOptions={{
+                    stroke: false,
+                    fillColor: style.color,
+                    fillOpacity: style.coreOpacity,
+                  }}
+                />
+
+                {/* Precision Center Indicator Marker */}
                 <CircleMarker
                   center={[zone.lat, zone.lng]}
-                  radius={8}
+                  radius={6}
                   pathOptions={{
                     color: '#FFFFFF',
-                    fillColor: color,
+                    fillColor: style.color,
                     fillOpacity: 1,
                     weight: 2,
                   }}
@@ -245,10 +334,11 @@ export const DemandMap: React.FC<DemandMapProps> = ({
           <HourglassEmptyIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 18 }} />
           <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
             Base Navigation Map Active &bull;{' '}
-            <span style={{ color: VELOUR_TOKENS.accentGold }}>Demand Zone Model (Student B) Not Connected</span>
+            <span style={{ color: VELOUR_TOKENS.accentGold }}>Demand Zone Intelligence Model Not Connected</span>
           </Typography>
         </Card>
       )}
     </Box>
   );
 };
+

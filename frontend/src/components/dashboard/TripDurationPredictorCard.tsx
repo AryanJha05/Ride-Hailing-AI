@@ -70,7 +70,7 @@ export const TripDurationPredictorCard: React.FC = () => {
   const handlePredict = () => {
     setPredictionError(null);
 
-    // Send exact numerical float coordinates to XGBoost V3 FastAPI model
+    // Send numerical float coordinates to prediction service
     tripMutation.mutate(
       {
         origin_lat: pickupLocation.lat,
@@ -88,7 +88,7 @@ export const TripDurationPredictorCard: React.FC = () => {
         },
         onError: (err: any) => {
           setResult(null);
-          setPredictionError(err?.response?.data?.detail || err?.message || 'Failed to connect to XGBoost V3 prediction service.');
+          setPredictionError(err?.response?.data?.detail || err?.message || 'Failed to connect to trip duration prediction service.');
         },
       }
     );
@@ -118,7 +118,7 @@ export const TripDurationPredictorCard: React.FC = () => {
             </Typography>
           </Box>
           <Chip
-            label="XGBoost V3"
+            label="Trip Duration Intelligence"
             size="small"
             sx={{
               backgroundColor: 'rgba(0, 217, 192, 0.12)',
@@ -132,7 +132,7 @@ export const TripDurationPredictorCard: React.FC = () => {
         </Box>
 
         <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12, mb: 2 }}>
-          Interactive map location selection with live reverse-geocoding powered by 44 spatial XGBoost ML features.
+          Interactive map location selection powered by real-time spatial duration prediction algorithms.
         </Typography>
 
         {/* Pickup Location Card */}
@@ -308,7 +308,7 @@ export const TripDurationPredictorCard: React.FC = () => {
             '&:hover': { backgroundColor: VELOUR_TOKENS.accentPrimary },
           }}
         >
-          {tripMutation.isPending ? 'Calculating XGBoost ETA...' : 'Predict Trip Duration'}
+          {tripMutation.isPending ? 'Calculating Duration...' : 'Predict Trip Duration'}
         </Button>
 
         {/* Prediction Results Display or Failure Error State */}
@@ -331,7 +331,7 @@ export const TripDurationPredictorCard: React.FC = () => {
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11.5 }}>
-              {predictionError || 'Unable to communicate with the FastAPI XGBoost V3 model service.'}
+              {predictionError || 'Unable to communicate with the trip duration prediction service.'}
             </Typography>
           </Box>
         ) : result ? (
@@ -351,7 +351,7 @@ export const TripDurationPredictorCard: React.FC = () => {
                 ESTIMATED TRAVEL TIME
               </Typography>
               <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>
-                ● Online (XGBoost V3)
+                ● Operational
               </Typography>
             </Box>
 
@@ -405,7 +405,7 @@ export const TripDurationPredictorCard: React.FC = () => {
               TRIP DURATION PREDICTOR
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12 }}>
-              Click "Select on Map" to pick pickup or drop-off points for real XGBoost V3 ETA predictions.
+              Click "Select on Map" to pick pickup or drop-off points for real-time ETA predictions.
             </Typography>
           </Box>
         )}

@@ -71,7 +71,7 @@ export const DriverDashboard: React.FC = () => {
               Good evening, {perfRes?.name || user?.name || 'Alex Morgan'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-              System operational. Student A XGBoost V3 Trip Duration model connected for dynamic map predictions.
+              Mobility intelligence systems are operational and live trip prediction is active.
             </Typography>
           </Box>
         </Box>
@@ -139,7 +139,7 @@ export const DriverDashboard: React.FC = () => {
 
         {/* Row 3 — ML Intelligence & Goal Metrics */}
         <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ mb: 3, width: '100%', minWidth: 0 }}>
-          {/* XGBoost V3 Trip Duration Predictor */}
+          {/* Trip Duration Intelligence Predictor */}
           <Grid item xs={12} lg={6} sx={{ minWidth: 0 }}>
             <TripDurationPredictorCard />
           </Grid>
@@ -323,7 +323,7 @@ export const DriverDashboard: React.FC = () => {
                 />
               </Box>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-                XGBoost V3 model active for real-time ETA predictions. Pick pickup and drop-off points directly on the interactive map.
+                Trip Duration Intelligence service active for real-time ETA predictions. Pick pickup and drop-off points directly on the interactive map.
               </Typography>
             </Box>
           </Box>

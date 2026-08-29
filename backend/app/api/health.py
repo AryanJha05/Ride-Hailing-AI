@@ -16,14 +16,14 @@ async def get_system_health():
     """
     Returns live dynamic health status of system services and ML models.
     """
-    # Student A Trip Duration status
-    student_a_status = "Operational (Student A - XGBoost V3)" if trip_duration_model_service.model is not None else "Error"
+    # Trip Duration Intelligence status
+    trip_duration_status = "Operational (Trip Duration Intelligence)" if trip_duration_model_service.model is not None else "Error"
 
-    # Student B Demand Zone status
-    student_b_status = "Operational (Student B - HDBSCAN)" if student_b_adapter.is_connected() else "Model Not Connected"
+    # Demand Zone Intelligence status
+    demand_zone_status = "Operational (Demand Zone Intelligence)" if student_b_adapter.is_connected() else "Model Not Connected"
 
-    # Student C Demand Forecast status
-    student_c_status = "Operational (Student C - PyTorch LSTM)" if student_c_adapter.is_connected() else "Model Not Connected"
+    # Demand Forecasting Engine status
+    demand_forecast_status = "Operational (Demand Forecasting Engine)" if student_c_adapter.is_connected() else "Model Not Connected"
 
 
     # Ollama LLM Service status check
@@ -46,9 +46,9 @@ async def get_system_health():
         "avg_model_latency_ms": 12.5,
         "services": {
             "database": "Operational",
-            "trip_duration_model": student_a_status,
-            "demand_zone_model": student_b_status,
-            "demand_forecast_model": student_c_status,
+            "trip_duration_model": trip_duration_status,
+            "demand_zone_model": demand_zone_status,
+            "demand_forecast_model": demand_forecast_status,
             "ollama_llm": ollama_status
         }
     }

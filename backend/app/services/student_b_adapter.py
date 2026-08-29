@@ -66,10 +66,10 @@ class StudentBModelAdapter:
         connected = self.is_connected()
         return {
             "status": "OPERATIONAL" if connected else "MODEL_NOT_CONNECTED",
-            "model_name": "Student B — Spatial Demand Zone Detection (HDBSCAN)",
+            "model_name": "Demand Zone Intelligence",
             "connected": connected,
             "artifact_path": self.get_model_path() if connected else None,
-            "message": "Model loaded & operational" if connected else "Waiting for Student B trained model artifact"
+            "message": "Model loaded & operational" if connected else "Waiting for demand zone intelligence model artifact"
         }
 
     def predict_demand_zones(self, driver_lat: float = 40.7549, driver_lng: float = -73.9840, hour: Optional[int] = None) -> Dict[str, Any]:

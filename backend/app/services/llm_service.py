@@ -102,7 +102,7 @@ def build_llm_context_contract(
 
         trip_prediction_ctx = {
             "status": "OPERATIONAL",
-            "model": "Student A (XGBoost V3)",
+            "model": "Trip Duration Intelligence",
             "origin": orig_name,
             "destination": dest_name,
             "origin_coords": {"lat": orig_lat, "lng": orig_lng},
@@ -129,29 +129,29 @@ def build_llm_context_contract(
             ]
         }
     except Exception as ex:
-        logger.warning(f"Student A prediction unavailable for LLM context: {str(ex)}")
+        logger.warning(f"Trip duration prediction unavailable for LLM context: {str(ex)}")
         trip_prediction_ctx = {
             "status": "UNAVAILABLE",
-            "model": "Student A (XGBoost V3)",
-            "message": f"Student A model unavailable: {str(ex)}"
+            "model": "Trip Duration Intelligence",
+            "message": f"Prediction service unavailable: {str(ex)}"
         }
 
     return {
         "intent_detected": intent,
         "driver_location": {"lat": driver_lat, "lng": driver_lng},
         "trip_duration": {
-            "model": "xgboost-v3",
+            "model": "trip_duration_intelligence",
             "status": trip_prediction_ctx.get("status", "OPERATIONAL"),
             "prediction_details": trip_prediction_ctx
         },
         "demand_zones": {
             "status": demand_status.get("status", "OPERATIONAL"),
-            "model_name": demand_status.get("model_name", "Student B - HDBSCAN"),
+            "model_name": "Demand Zone Intelligence",
             "data": zones_list
         },
         "forecast": {
             "status": forecast_status.get("status", "OPERATIONAL"),
-            "model_name": forecast_status.get("model_name", "Student C - PyTorch LSTM"),
+            "model_name": "Demand Forecasting Engine",
             "data": forecast_list
         },
         "driver_status": {
@@ -195,9 +195,9 @@ async def request_driver_advice(
         "suggested_area": "",
         "confidence": 0.0,
         "reasoning_chips": [
-            {"label": "Student A (Trip Duration)", "value": "Operational"},
-            {"label": "Student B (Demand Zones)", "value": "Operational"},
-            {"label": "Student C (Forecast)", "value": "Operational"}
+            {"label": "Trip Duration Intelligence", "value": "Operational"},
+            {"label": "Demand Zone Intelligence", "value": "Operational"},
+            {"label": "Demand Forecasting", "value": "Operational"}
         ],
         "has_card": False,
         "status": "llm_service_offline"

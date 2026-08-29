@@ -14,7 +14,24 @@ export const LiveDemandMap: React.FC = () => {
   const [filter, setFilter] = useState<'Demand' | 'Drivers' | 'Events'>('Demand');
   const [selectedHour, setSelectedHour] = useState<number>(new Date().getHours());
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [mapCenter, setMapCenter] = useState<{ lat: number; lng: number }>({ lat: 40.7549, lng: -73.9840 });
+
+  // Separated Driver Location from Camera Target
+  const driverLocation = { lat: 40.7549, lng: -73.9840 };
+
+  // Explicit Camera Movements (Search selection & Reset Location trigger timestamp updates)
+  const [cameraTarget, setCameraTarget] = useState<{
+    lat: number;
+    lng: number;
+    zoom: number;
+    timestamp: number;
+  } | null>({
+    lat: 40.7549,
+    lng: -73.9840,
+    zoom: 13,
+    timestamp: Date.now(),
+  });
+
+  const [zoomDelta, setZoomDelta] = useState<{ action: 'in' | 'out'; timestamp: number } | null>(null);
 
   const { data: zones, isLoading, isError } = useDemandZones(selectedHour);
 
@@ -33,23 +50,35 @@ export const LiveDemandMap: React.FC = () => {
 
   const isFilteredEmpty = Boolean(searchQuery && (zones || []).length > 0 && displayZones.length === 0);
 
+  // ONLY explicit location search moves/zooms the map camera
   const handleSelectLocation = (loc: LocationOption) => {
-    setMapCenter({ lat: loc.lat, lng: loc.lng });
+    setCameraTarget({ lat: loc.lat, lng: loc.lng, zoom: 14.5, timestamp: Date.now() });
   };
 
+  // ONLY explicit reset button click moves map camera back to driver location
   const handleResetLocation = () => {
-    setMapCenter({ lat: 40.7549, lng: -73.9840 });
+    setCameraTarget({ lat: driverLocation.lat, lng: driverLocation.lng, zoom: 13, timestamp: Date.now() });
     setSearchQuery('');
+  };
+
+  const handleZoomIn = () => {
+    setZoomDelta({ action: 'in', timestamp: Date.now() });
+  };
+
+  const handleZoomOut = () => {
+    setZoomDelta({ action: 'out', timestamp: Date.now() });
   };
 
   return (
     <PageShell title="Live Demand Map" hideHeader={true}>
-      <Box sx={{ position: 'relative', width: '100%', height: '100vh', overflow: 'hidden', backgroundColor: '#060709' }}>
+      <Box sx={{ position: 'relative', width: '100%', height: '100%', flex: 1, minHeight: 0, overflow: 'hidden', backgroundColor: '#060709' }}>
         {/* Leaflet Dark Map Base Layer with Interactive Heatmaps */}
         <DemandMap
           zones={displayZones}
           filter={filter}
-          driverLocation={mapCenter}
+          driverLocation={driverLocation}
+          cameraTarget={cameraTarget}
+          zoomDelta={zoomDelta}
           isLoading={isLoading}
           isError={isError}
           isFilteredEmpty={isFilteredEmpty}
@@ -79,10 +108,10 @@ export const LiveDemandMap: React.FC = () => {
             </IconButton>
           </Paper>
           <Paper sx={{ borderRadius: 2, overflow: 'hidden', display: 'flex', flexDirection: 'column', backgroundColor: VELOUR_TOKENS.bgSurface1 }}>
-            <IconButton size="small" sx={{ color: VELOUR_TOKENS.textSecondary, '&:hover': { color: '#FFF' } }}>
+            <IconButton size="small" onClick={handleZoomIn} sx={{ color: VELOUR_TOKENS.textSecondary, '&:hover': { color: '#FFF' } }}>
               <AddIcon fontSize="small" />
             </IconButton>
-            <IconButton size="small" sx={{ color: VELOUR_TOKENS.textSecondary, '&:hover': { color: '#FFF' } }}>
+            <IconButton size="small" onClick={handleZoomOut} sx={{ color: VELOUR_TOKENS.textSecondary, '&:hover': { color: '#FFF' } }}>
               <RemoveIcon fontSize="small" />
             </IconButton>
           </Paper>
@@ -91,3 +120,4 @@ export const LiveDemandMap: React.FC = () => {
     </PageShell>
   );
 };
+

@@ -72,7 +72,7 @@ export const DriverEarningsPage: React.FC = () => {
             </Box>
 
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, display: 'block' }}>
-              All trip duration estimates and fares are verified against Student A's XGBoost V3 Trip Duration model.
+              All trip duration estimates and fares are verified using Trip Duration Intelligence.
             </Typography>
           </Card>
         </Grid>

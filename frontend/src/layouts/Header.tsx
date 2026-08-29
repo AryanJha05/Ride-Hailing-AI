@@ -94,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
     {
       id: 1,
       title: isAdminRole ? 'Fleet Telemetry Active' : 'System Telemetry Active',
-      desc: isAdminRole ? 'XGBoost V3 model processing live inference requests.' : 'XGBoost V3 Trip Duration model operational.',
+      desc: isAdminRole ? 'Trip Duration Intelligence service processing live inference requests.' : 'Trip Duration Intelligence service operational.',
       time: '2 mins ago',
       icon: <TrendingUpIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 18 }} />,
     },

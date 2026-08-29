@@ -75,10 +75,10 @@ export const ForecastAnalytics: React.FC = () => {
                           Model Status
                         </Typography>
                         <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold, fontSize: 15 }}>
-                          {hasData ? 'PyTorch LSTM Operational' : 'Model Offline'}
+                          {hasData ? 'Forecasting Engine · Operational' : 'Model Offline'}
                         </Typography>
                         <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                          {hasData ? 'Student C PyTorch LSTM time-series forecast active' : 'Model artifact not connected'}
+                          {hasData ? 'Demand Forecasting Engine active' : 'Service offline'}
                         </Typography>
                       </Box>
 

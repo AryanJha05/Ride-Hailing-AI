@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Sidebar, DRAWER_WIDTH, HEADER_HEIGHT } from './Sidebar';
 import { Header } from './Header';
@@ -17,6 +17,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
   hideHeader = false,
 }) => {
   const [mobileOpen, setMobileOpen] = useState<boolean>(false);
+  const location = useLocation();
+
+  // Full-bleed map / chat pages occupy 100% of the available content height below the header without container padding
+  const isFullBleed =
+    location.pathname.endsWith('/demand') ||
+    location.pathname.endsWith('/live-map') ||
+    location.pathname.endsWith('/assistant');
 
   const handleDrawerToggle = () => {
     setMobileOpen((prev) => !prev);
@@ -26,12 +33,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     <Box
       sx={{
         display: 'flex',
-        minHeight: '100vh',
-        width: '100%',
+        height: '100vh',
+        maxHeight: '100vh',
+        width: '100vw',
         maxWidth: '100vw',
         backgroundColor: VELOUR_TOKENS.bgBase,
         boxSizing: 'border-box',
-        overflowX: 'hidden',
+        overflow: 'hidden',
       }}
     >
       {/* Shared Application Sidebar Navigation */}
@@ -40,15 +48,15 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
         onClose={() => setMobileOpen(false)}
       />
 
-      {/* Main Content Area spanning remaining viewport */}
+      {/* Main Content Area spanning remaining viewport width and height */}
       <Box
         sx={{
           flexGrow: 1,
           display: 'flex',
           flexDirection: 'column',
           minWidth: 0,
-          width: { xs: '100%', md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          maxWidth: { xs: '100%', md: `calc(100% - ${DRAWER_WIDTH}px)` },
+          width: { xs: '100%', md: `calc(100vw - ${DRAWER_WIDTH}px)` },
+          maxWidth: { xs: '100%', md: `calc(100vw - ${DRAWER_WIDTH}px)` },
           height: '100vh',
           maxHeight: '100vh',
           overflow: 'hidden',
@@ -66,15 +74,18 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
           component="main"
           sx={{
             flexGrow: 1,
+            flex: 1,
+            minHeight: 0,
             width: '100%',
             maxWidth: '100%',
             minWidth: 0,
-            height: `calc(100vh - ${HEADER_HEIGHT}px)`,
+            height: hideHeader ? '100vh' : `calc(100vh - ${HEADER_HEIGHT}px)`,
+            maxHeight: hideHeader ? '100vh' : `calc(100vh - ${HEADER_HEIGHT}px)`,
             display: 'flex',
             flexDirection: 'column',
-            p: hideHeader ? 0 : { xs: 1.5, sm: 2, md: 2.5 },
+            p: isFullBleed ? 0 : { xs: 1.5, sm: 2, md: 2.5 },
             boxSizing: 'border-box',
-            overflowY: 'auto',
+            overflowY: isFullBleed ? 'hidden' : 'auto',
             overflowX: 'hidden',
           }}
         >

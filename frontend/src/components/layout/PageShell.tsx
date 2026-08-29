@@ -12,5 +12,5 @@ interface PageShellProps {
  * The shared MainLayout provides the outer App Shell (Header & Sidebar).
  */
 export const PageShell: React.FC<PageShellProps> = ({ children }) => {
-  return <Box sx={{ width: '100%', height: '100%' }}>{children}</Box>;
+  return <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0 }}>{children}</Box>;
 };

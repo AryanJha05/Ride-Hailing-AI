@@ -82,14 +82,14 @@ export const AdminForecastPage: React.FC = () => {
               {hasData ? (
                 <Chip
                   icon={<CheckCircleIcon sx={{ fontSize: '14px !important', color: '#10B981 !important' }} />}
-                  label="Student C (PyTorch LSTM) Active"
+                  label="Demand Forecasting Engine Active"
                   size="small"
                   sx={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#10B981', fontSize: 11, fontWeight: 600 }}
                 />
               ) : (
                 <Chip
                   icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />}
-                  label="Student C Model Offline"
+                  label="Forecasting Engine Offline"
                   size="small"
                   sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }}
                 />
@@ -121,10 +121,10 @@ export const AdminForecastPage: React.FC = () => {
                     MODEL ACCURACY STATUS
                   </Typography>
                   <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? '#10B981' : VELOUR_TOKENS.accentGold, mt: 0.5, fontSize: 15 }}>
-                    {hasData ? 'PyTorch LSTM Operational' : 'Model Offline'}
+                    {hasData ? 'Forecasting Engine Operational' : 'Model Offline'}
                   </Typography>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                    {hasData ? '2-Layer LSTM + MinMaxScaler Inverse Transform' : 'Waiting for Student C model server response'}
+                    {hasData ? 'Algorithm: PyTorch 2-Layer LSTM + MinMaxScaler' : 'Waiting for forecasting engine server response'}
                   </Typography>
                 </Box>
 
@@ -138,7 +138,7 @@ export const AdminForecastPage: React.FC = () => {
                   <Typography variant="body2" sx={{ fontWeight: 600, color: hasData ? '#FFF' : VELOUR_TOKENS.textSecondary }}>
                     {hasData
                       ? `Pre-position fleet vehicles in ${selectedZone} 30 minutes prior to ${peakHourStr.split(' ')[0]} for maximum trip volume.`
-                      : 'Automated staging recommendations unavailable until Student C forecasting model integration is complete.'}
+                      : 'Automated staging recommendations unavailable until forecasting engine integration is complete.'}
                   </Typography>
                 </Box>
               </Box>

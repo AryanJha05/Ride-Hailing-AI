@@ -39,7 +39,7 @@ export const AdminSystemStatusPage: React.FC = () => {
       icon: <StorageIcon sx={{ color: VELOUR_TOKENS.success }} />,
     },
     {
-      name: 'XGBoost V3 Trip Duration Model (Student A)',
+      name: 'Trip Duration Intelligence Service',
       port: 'Internal',
       status: tripDurationStatus,
       latency: health?.avg_model_latency_ms ? `${health.avg_model_latency_ms}ms` : '—',
