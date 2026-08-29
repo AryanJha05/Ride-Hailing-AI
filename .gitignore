@@ -56,5 +56,10 @@ pnpm-debug.log*
 tmp/
 temp/
 
+# Private Work Logs & Interview Reference Documents (DO NOT COMMIT)
+docs/PRIVATE_PROJECT_WORK_LOG.md
+PRIVATE_PROJECT_WORK_LOG.md
+docs/private/
+
 # Docker local overrides
 docker-compose.override.yml
