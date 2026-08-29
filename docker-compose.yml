@@ -10,7 +10,8 @@ services:
     environment:
       - PORT=8000
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./ride_ai.db}
-      - LLM_SERVICE_URL=http://host.docker.internal:8001
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY:-ride_ai_local_dev_secret_key_2026_change_in_prod}
+      - LLM_SERVICE_URL=http://llm-service:8001
     volumes:
       - ./backend/ride_ai.db:/app/ride_ai.db
     extra_hosts:
@@ -19,6 +20,12 @@ services:
       - llm-service
     networks:
       - ride-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   # 2. Frontend Service Container (React + TypeScript + Vite + Nginx)
   frontend:
@@ -35,17 +42,28 @@ services:
     networks:
       - ride-ai-network
 
-  # 3. LLM Service Container (FastAPI + Ollama llama3.2:1b Integration)
+  # 3. LLM Service Container (FastAPI + Ollama Integration Microservice)
   llm-service:
     build:
       context: ./llm-service
       dockerfile: Dockerfile
     container_name: ride-ai-llm-service
-    network_mode: "host"
+    ports:
+      - "${LLM_SERVICE_PORT:-8001}:8001"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - PORT=8001
-      - OLLAMA_BASE_URL=http://localhost:11434
-      - OLLAMA_MODEL=llama3.2:1b
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2}
+    networks:
+      - ride-ai-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
 
 networks:
   ride-ai-network:

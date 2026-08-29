@@ -23,6 +23,7 @@ graph TD
 - **AI Copilot Microservice**: FastAPI + Ollama Gemma2/Llama3 (`:8001`) with cross-service context aggregation and offline fallback logic.
 - **Database Layer**: SQLite / PostgreSQL with automated seeder lifespan triggers and transactional account management.
 - **NOC Telemetry System**: Aggregated real-time metrics (System Health, Active Services, RPM, Avg Latency, Error Rate, Uptime) with reconnect probe triggers.
+- **Continuous Integration**: GitHub Actions workflow (`.github/workflows/ci.yml`) running automated backend unit tests and frontend TypeScript builds.
 
 ---
 
@@ -35,6 +36,36 @@ graph TD
 
 > [!NOTE]  
 > Demo login buttons on the `/login` page automatically authenticate using these seed credentials.
+
+---
+
+## ⚙️ Environment Configuration (`.env.example`)
+
+Copy `.env.example` to `.env` in the project root to configure local environment variables:
+
+```ini
+# Backend Service Configuration
+PORT=8000
+DATABASE_URL=sqlite:///./ride_ai.db
+
+# JWT Security Configuration
+JWT_SECRET_KEY=your_secure_jwt_secret_key_here_change_in_production
+JWT_ALGORITHM=HS256
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# LLM Service Configuration
+LLM_SERVICE_PORT=8001
+LLM_SERVICE_URL=http://localhost:8001
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=gemma2
+
+# Frontend Service Configuration
+VITE_API_BASE_URL=/api
+
+# Container Exposed Ports
+FRONTEND_PORT=3000
+BACKEND_PORT=8000
+```
 
 ---
 
@@ -130,15 +161,15 @@ npm run dev
 
 ---
 
-## 🧪 Testing & Verification
+## 🧪 Testing & CI Verification
 
-Run the automated backend test suite:
+Run the automated backend test suite locally:
 ```bash
 source backend/venv/bin/activate
 python backend/run_tests.py
 ```
 
-Run frontend build verification:
+Run frontend TypeScript build validation locally:
 ```bash
 cd frontend
 npm run build
@@ -150,6 +181,9 @@ npm run build
 
 ```
 Ride-Hailing-AI-Copy/
+├── .github/
+│   └── workflows/
+│       └── ci.yml           # GitHub Actions CI workflow
 ├── backend/
 │   ├── app/
 │   │   ├── api/             # FastAPI routers (admin, auth, demand_zones, driver_advice, forecast, trip_duration)
@@ -173,6 +207,8 @@ Ride-Hailing-AI-Copy/
 │   │   └── services/        # Axios API client & reverse-geocoding service
 ├── llm-service/             # Ollama LLM copilot microservice (:8001)
 ├── docker-compose.yml
+├── .env.example
+├── .gitignore
 └── README.md
 ```
 
