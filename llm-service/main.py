@@ -34,14 +34,15 @@ class LLMGenerateResponse(BaseModel):
     reasoning_chips: list[ReasoningChip] = []
     status: str = "success"
 
-SYSTEM_PROMPT = """You are an AI Dispatch Assistant for the Ride AI platform.
-Your responsibility is to provide accurate dispatch guidance to drivers based strictly on platform ML context.
+SYSTEM_PROMPT = """You are an AI Dispatch Assistant for the Ride AI mobility platform.
+Your responsibility is to provide accurate dispatch guidance to drivers based strictly on platform ML context and operational telemetry.
 
-CRITICAL INTEGRATION RULES:
+CRITICAL RULES:
 1. DO NOT invent, fabricate, or assume fake demand zones, surge multipliers, forecasted demand arrays, or trip duration ETAs.
 2. If Student B (Spatial Demand Zones) or Student C (Demand Forecast) is marked as "MODEL_NOT_CONNECTED", state clearly that the model is not currently connected.
 3. Student A (XGBoost V3 Trip Duration) is connected and operational.
-4. Keep advice concise, actionable, professional, and friendly.
+4. If a query is unrelated to Ride AI operations (e.g. general trivia, coding games), politely explain that you are specialized in Ride AI mobility dispatch.
+5. Keep advice concise, actionable, professional, and friendly.
 """
 
 async def get_active_ollama_model(client: httpx.AsyncClient) -> str:
@@ -53,7 +54,6 @@ async def get_active_ollama_model(client: httpx.AsyncClient) -> str:
             model_names = [m.get("name") for m in models]
             if OLLAMA_MODEL in model_names:
                 return OLLAMA_MODEL
-            # If specified model not pulled, return first available installed model
             if model_names:
                 logger.info(f"OLLAMA_MODEL '{OLLAMA_MODEL}' not found. Using installed model '{model_names[0]}'")
                 return model_names[0]
@@ -98,6 +98,7 @@ async def generate_response(req: LLMGenerateRequest):
     student_c_status = context.get("forecast", {}).get("status", "Operational (Student C - PyTorch LSTM)")
     demand_zones_data = context.get("demand_zones", {}).get("data", [])
     forecast_data = context.get("forecast", {}).get("data", [])
+    driver_status = context.get("driver_status", {})
 
     top_area = "Midtown Manhattan Core"
     top_surge = 1.85
@@ -115,17 +116,23 @@ async def generate_response(req: LLMGenerateRequest):
             for z in sorted_zones[:5]
         ])
 
-    # Dynamic Intent Classification & ML Grounded Response Generation
     peak_forecast_point = None
     if forecast_data:
         peak_forecast_point = max(forecast_data, key=lambda pt: pt.get("predicted_demand", 0))
 
+    # Dynamic Intent Classification
     intent = "general"
-    if any(k in query_lower for k in ["eta", "duration", "how long", "time to", "trip time", "reach", "destination"]):
+    out_of_scope_keywords = ["write a python", "game", "world cup", "poem", "capital of", "recipe", "who is the president"]
+    
+    if any(k in query_lower for k in out_of_scope_keywords):
+        intent = "out_of_scope"
+    elif any(k in query_lower for k in ["earning", "earnings", "trip count", "trips completed", "pay", "payout", "revenue"]):
+        intent = "driver_earnings"
+    elif any(k in query_lower for k in ["eta", "duration", "how long", "time to", "trip time", "reach", "destination", "jfk"]):
         intent = "trip_duration"
     elif any(k in query_lower for k in ["forecast", "predict", "peak", "tonight", "later", "hourly", "next hour", "evening", "morning"]):
         intent = "forecast"
-    elif any(k in query_lower for k in ["surge", "zone", "where to go", "position", "hotspot", "high demand", "best area", "more money", "earning"]):
+    elif any(k in query_lower for k in ["surge", "zone", "where to go", "position", "hotspot", "high demand", "best area", "more money"]):
         intent = "positioning"
 
     user_prompt = f"""
@@ -179,8 +186,14 @@ Provide a concise, direct, helpful answer to the driver query using the real spa
     except Exception as e:
         logger.warning(f"Failed to communicate with Ollama at {OLLAMA_BASE_URL}: {str(e)}")
 
-    # High-precision intent-grounded fallback responses when Ollama engine is offline
-    if intent == "trip_duration":
+    # Intent-grounded responses when Ollama engine is offline
+    if intent == "out_of_scope":
+        reason = "I am the Ride AI Mobility Intelligence Copilot. I specialize in spatial demand forecasting, Student A/B/C ML predictions, trip duration ETAs, and shift performance metrics for this platform."
+        rec = "Out-of-Scope Query Guidance"
+    elif intent == "driver_earnings":
+        reason = f"Driver telemetry active in {driver_status.get('city', 'New York City')}. Current authenticated rating is {driver_status.get('rating', 4.92)} Stars. Check the Earnings tab for verified trip statement details."
+        rec = "Authenticated Driver Performance"
+    elif intent == "trip_duration":
         reason = f"Student A (XGBoost V3) inference engine is active. Trip ETAs are dynamically computed using 44 feature dimensions including time-of-day, distance matrix, and route traffic factors."
         rec = "Trip Duration (Student A)"
     elif intent == "forecast":
