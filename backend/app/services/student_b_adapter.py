@@ -72,7 +72,7 @@ class StudentBModelAdapter:
             "message": "Model loaded & operational" if connected else "Waiting for Student B trained model artifact"
         }
 
-    def predict_demand_zones(self, driver_lat: float = 40.7549, driver_lng: float = -73.9840) -> Dict[str, Any]:
+    def predict_demand_zones(self, driver_lat: float = 40.7549, driver_lng: float = -73.9840, hour: Optional[int] = None) -> Dict[str, Any]:
         if not self.is_connected():
             logger.info("Student B model artifact not connected. Returning MODEL_NOT_CONNECTED state.")
             return {
@@ -86,7 +86,7 @@ class StudentBModelAdapter:
         try:
             zl = self.model_data["zone_lookup"]
             zones_raw = zl.get("zones", [])
-            current_hour = datetime.now().hour
+            current_hour = hour % 24 if hour is not None else datetime.now().hour
             max_mean = max(z.get("demand_mean", 1.0) for z in zones_raw) if zones_raw else 1.0
 
             all_zones = []

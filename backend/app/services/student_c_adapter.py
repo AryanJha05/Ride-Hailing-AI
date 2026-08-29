@@ -13,9 +13,33 @@ ZONE_BASELINE_PATTERNS = {
     "Midtown Manhattan": [123, 97, 124, 89, 30, 43, 30, 29, 31, 62, 80, 93, 93, 110, 84, 102, 111, 90, 119, 75, 78, 95, 113, 90],
     "JFK International Airport": [85, 60, 40, 25, 15, 35, 70, 90, 105, 110, 100, 95, 90, 85, 95, 105, 120, 115, 100, 90, 85, 90, 95, 80],
     "Downtown Brooklyn": [65, 45, 30, 20, 15, 25, 55, 80, 95, 85, 75, 70, 75, 80, 85, 90, 100, 105, 95, 85, 75, 70, 65, 60],
-    "LaGuardia Airport LGA": [75, 50, 30, 20, 15, 30, 65, 85, 100, 105, 95, 90, 85, 80, 90, 100, 110, 105, 95, 85, 80, 85, 85, 70],
-    "Williamsburg & Greenpoint": [90, 70, 45, 30, 20, 15, 25, 45, 65, 70, 75, 80, 85, 90, 95, 105, 115, 125, 130, 120, 110, 105, 100, 95]
+    "LaGuardia Airport": [75, 50, 30, 20, 15, 30, 65, 85, 100, 105, 95, 90, 85, 80, 90, 100, 110, 105, 95, 85, 80, 85, 85, 70],
+    "Williamsburg": [90, 70, 45, 30, 20, 15, 25, 45, 65, 70, 75, 80, 85, 90, 95, 105, 115, 125, 130, 120, 110, 105, 100, 95],
+    "Financial District": [40, 25, 15, 10, 12, 35, 85, 140, 160, 120, 95, 90, 100, 95, 90, 110, 135, 150, 110, 75, 55, 45, 40, 35],
+    "Lower Manhattan": [70, 50, 35, 20, 15, 25, 50, 85, 110, 100, 90, 85, 90, 95, 90, 100, 115, 125, 110, 90, 80, 75, 70, 65],
+    "Long Island City": [50, 35, 25, 15, 10, 20, 45, 70, 85, 75, 65, 60, 65, 70, 75, 85, 95, 100, 90, 75, 65, 60, 55, 50],
 }
+
+def resolve_zone_baseline(zone_name: str) -> list[int]:
+    """Resolves zone aliases to the appropriate 24-hour demand baseline sequence."""
+    zn = zone_name.lower()
+    if "jfk" in zn:
+        return ZONE_BASELINE_PATTERNS["JFK International Airport"]
+    elif "laguardia" in zn or "lga" in zn:
+        return ZONE_BASELINE_PATTERNS["LaGuardia Airport"]
+    elif "williamsburg" in zn or "greenpoint" in zn:
+        return ZONE_BASELINE_PATTERNS["Williamsburg"]
+    elif "financial" in zn:
+        return ZONE_BASELINE_PATTERNS["Financial District"]
+    elif "lower" in zn:
+        return ZONE_BASELINE_PATTERNS["Lower Manhattan"]
+    elif "brooklyn" in zn:
+        return ZONE_BASELINE_PATTERNS["Downtown Brooklyn"]
+    elif "long island" in zn or "astoria" in zn:
+        return ZONE_BASELINE_PATTERNS["Long Island City"]
+    else:
+        return ZONE_BASELINE_PATTERNS["Midtown Manhattan"]
+
 
 class StudentCModelAdapter:
     """
@@ -99,7 +123,7 @@ class StudentCModelAdapter:
 
         try:
             # Baseline past 24-hour demand sequence for requested zone
-            past_24h = list(ZONE_BASELINE_PATTERNS.get(zone_name, ZONE_BASELINE_PATTERNS["Midtown Manhattan"]))
+            past_24h = resolve_zone_baseline(zone_name)
             
             # Generate predictions auto-regressively in 3-hour steps up to horizon_hours
             forecast_values = []

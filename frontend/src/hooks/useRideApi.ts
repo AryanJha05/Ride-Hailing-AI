@@ -10,10 +10,10 @@ export const useSystemHealth = () => {
   });
 };
 
-export const useDemandZones = () => {
+export const useDemandZones = (hour?: number) => {
   return useQuery({
-    queryKey: ['demandZones'],
-    queryFn: rideApi.getDemandZones,
+    queryKey: ['demandZones', hour],
+    queryFn: () => rideApi.getDemandZones(hour),
     refetchInterval: 10000,
   });
 };
@@ -25,9 +25,9 @@ export const useForecast = (zone = 'Midtown Manhattan', hours = 24) => {
   });
 };
 
-export const useDriverPerformance = (driverId = 'driver-001') => {
+export const useDriverPerformance = (driverId?: string) => {
   return useQuery({
-    queryKey: ['driverPerformance', driverId],
+    queryKey: ['driverPerformance', driverId || 'me'],
     queryFn: () => rideApi.getDriverPerformance(driverId),
   });
 };

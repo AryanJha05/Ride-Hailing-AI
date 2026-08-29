@@ -54,36 +54,47 @@ export const ForecastAnalytics: React.FC = () => {
                 <Typography variant="h6" sx={{ fontWeight: 700, fontSize: 16, color: '#FFF', mb: 2 }}>
                   Forecast Summary
                 </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                      Peak Demand Hour
-                    </Typography>
-                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 15 }}>
-                      {hasData ? '18:00 - 19:00 EST' : 'N/A (Model Not Connected)'}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                      Model Status
-                    </Typography>
-                    <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentGold, fontSize: 15 }}>
-                      Pending Student C Integration
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                      (LSTM Time-Series forecasting model pending deployment)
-                    </Typography>
-                  </Box>
+                {(() => {
+                  const peakPoint = hasData
+                    ? forecastData.reduce((max, pt) => (pt.predicted_demand > max.predicted_demand ? pt : max), forecastData[0])
+                    : null;
 
-                  <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                      Recommended Shift Action
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, mt: 0.5 }}>
-                      {hasData ? 'Stage units in Midtown Manhattan prior to 17:30 peak onset.' : 'Automated staging recommendations unavailable until Student C model integration.'}
-                    </Typography>
-                  </Box>
-                </Box>
+                  return (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                      <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                          Peak Demand Hour
+                        </Typography>
+                        <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 15 }}>
+                          {peakPoint ? `${peakPoint.hour} EST (${peakPoint.predicted_demand} rides/hr)` : 'N/A (Model Offline)'}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                          Model Status
+                        </Typography>
+                        <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold, fontSize: 15 }}>
+                          {hasData ? 'PyTorch LSTM Operational' : 'Model Offline'}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+                          {hasData ? 'Student C PyTorch LSTM time-series forecast active' : 'Model artifact not connected'}
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                          Recommended Shift Action
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, mt: 0.5 }}>
+                          {peakPoint
+                            ? `Stage units in ${selectedZone} prior to ${peakPoint.hour} peak onset (estimated ${peakPoint.predicted_demand} rides/hr).`
+                            : 'Automated staging recommendations unavailable until model connects.'}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  );
+                })()}
               </CardContent>
             </Card>
           </Grid>

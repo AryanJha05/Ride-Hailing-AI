@@ -6,7 +6,7 @@ import { DriverHeaderCard } from '../../components/profile/DriverHeaderCard';
 import { PerformanceMetricsCard } from '../../components/profile/PerformanceMetricsCard';
 
 export const DriverProfile: React.FC = () => {
-  const { data: driver } = useDriverPerformance('driver-001');
+  const { data: driver } = useDriverPerformance();
 
   return (
     <PageShell title="Driver Profile">

@@ -15,7 +15,7 @@ import { useAuth } from '../../auth/AuthContext';
 
 export const DriverEarningsPage: React.FC = () => {
   const { user } = useAuth();
-  const { data: driver } = useDriverPerformance('driver-001');
+  const { data: driver } = useDriverPerformance();
 
   const shiftEarnings = driver?.projected_shift_earnings || 0;
   const recentTrips = driver?.recent_trips || [];

@@ -76,15 +76,16 @@ export const rideApi = {
     return res.data;
   },
 
-  getDemandZones: async (): Promise<DemandZone[]> => {
-    const res = await apiClient.get('/demand-zones');
+  getDemandZones: async (hour?: number): Promise<DemandZone[]> => {
+    const res = await apiClient.get('/demand-zones', {
+      params: hour !== undefined ? { hour } : {}
+    });
     return res.data;
   },
 
-  getDriverPerformance: async (driverId = 'driver-001'): Promise<DriverPerformanceResponse> => {
-    const res = await apiClient.get('/driver-performance', {
-      params: { driver_id: driverId },
-    });
+  getDriverPerformance: async (driverId?: string): Promise<DriverPerformanceResponse> => {
+    const params = driverId ? { driver_id: driverId } : {};
+    const res = await apiClient.get('/driver-performance', { params });
     return res.data;
   },
 

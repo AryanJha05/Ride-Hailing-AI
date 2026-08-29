@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   Paper,
@@ -11,11 +11,43 @@ import {
   TextField,
   MenuItem,
   Grid,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { useAuth } from '../../auth/AuthContext';
 
 export const Settings: React.FC = () => {
+  const { user } = useAuth();
+  
+  const [positioningAlerts, setPositioningAlerts] = useState<boolean>(() => {
+    return localStorage.getItem('pref_positioning_alerts') !== 'false';
+  });
+  const [autoAcceptSurge, setAutoAcceptSurge] = useState<boolean>(() => {
+    return localStorage.getItem('pref_auto_accept_surge') !== 'false';
+  });
+  const [navProvider, setNavProvider] = useState<string>(() => {
+    return localStorage.getItem('pref_nav_provider') || 'google';
+  });
+  const [dailyTarget, setDailyTarget] = useState<string>(() => {
+    return localStorage.getItem('pref_daily_target') || '400';
+  });
+  const [targetTrips, setTargetTrips] = useState<string>(() => {
+    return localStorage.getItem('pref_target_trips') || '12';
+  });
+
+  const [savedSuccess, setSavedSuccess] = useState(false);
+
+  const handleSave = () => {
+    localStorage.setItem('pref_positioning_alerts', String(positioningAlerts));
+    localStorage.setItem('pref_auto_accept_surge', String(autoAcceptSurge));
+    localStorage.setItem('pref_nav_provider', navProvider);
+    localStorage.setItem('pref_daily_target', dailyTarget);
+    localStorage.setItem('pref_target_trips', targetTrips);
+    setSavedSuccess(true);
+  };
+
   return (
     <PageShell title="Platform Settings & Driver Preferences">
       <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -35,7 +67,13 @@ export const Settings: React.FC = () => {
 
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <FormControlLabel
-                  control={<Switch defaultChecked sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: VELOUR_TOKENS.accentTeal } }} />}
+                  control={
+                    <Switch
+                      checked={positioningAlerts}
+                      onChange={(e) => setPositioningAlerts(e.target.checked)}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: VELOUR_TOKENS.accentTeal } }}
+                    />
+                  }
                   label={
                     <Box>
                       <Typography variant="subtitle2" sx={{ color: '#FFF', fontWeight: 600 }}>
@@ -51,7 +89,13 @@ export const Settings: React.FC = () => {
                 <Divider sx={{ borderColor: VELOUR_TOKENS.borderSubtle }} />
 
                 <FormControlLabel
-                  control={<Switch defaultChecked sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: VELOUR_TOKENS.accentPrimary } }} />}
+                  control={
+                    <Switch
+                      checked={autoAcceptSurge}
+                      onChange={(e) => setAutoAcceptSurge(e.target.checked)}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: VELOUR_TOKENS.accentPrimary } }}
+                    />
+                  }
                   label={
                     <Box>
                       <Typography variant="subtitle2" sx={{ color: '#FFF', fontWeight: 600 }}>
@@ -74,7 +118,8 @@ export const Settings: React.FC = () => {
                     select
                     fullWidth
                     size="small"
-                    defaultValue="google"
+                    value={navProvider}
+                    onChange={(e) => setNavProvider(e.target.value)}
                     sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, color: '#FFF' }}
                   >
                     <MenuItem value="google">Google Maps Navigation API (US East)</MenuItem>
@@ -94,7 +139,8 @@ export const Settings: React.FC = () => {
                   <TextField
                     fullWidth
                     label="Daily Target Earnings ($)"
-                    defaultValue="400"
+                    value={dailyTarget}
+                    onChange={(e) => setDailyTarget(e.target.value)}
                     size="small"
                     InputLabelProps={{ style: { color: VELOUR_TOKENS.textSecondary } }}
                     sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2 }}
@@ -104,7 +150,8 @@ export const Settings: React.FC = () => {
                   <TextField
                     fullWidth
                     label="Target Shift Trips"
-                    defaultValue="12"
+                    value={targetTrips}
+                    onChange={(e) => setTargetTrips(e.target.value)}
                     size="small"
                     InputLabelProps={{ style: { color: VELOUR_TOKENS.textSecondary } }}
                     sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2 }}
@@ -113,7 +160,11 @@ export const Settings: React.FC = () => {
               </Grid>
 
               <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                <Button variant="contained" sx={{ backgroundColor: VELOUR_TOKENS.accentPrimary, fontWeight: 700 }}>
+                <Button
+                  variant="contained"
+                  onClick={handleSave}
+                  sx={{ backgroundColor: VELOUR_TOKENS.accentPrimary, fontWeight: 700 }}
+                >
                   Save Preferences
                 </Button>
               </Box>
@@ -129,22 +180,39 @@ export const Settings: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>Vehicle Assigned</Typography>
-                  <Typography variant="subtitle1" sx={{ color: '#FFF', fontWeight: 700 }}>Tesla Model Y (EV Premier)</Typography>
+                  <Typography variant="subtitle1" sx={{ color: '#FFF', fontWeight: 700 }}>
+                    {user?.vehicle || 'Tesla Model Y (EV Premier)'}
+                  </Typography>
                 </Box>
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>License Plate</Typography>
-                  <Typography className="mono-num" variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>NYC-TLC-9421</Typography>
+                  <Typography className="mono-num" variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>
+                    {(user as any)?.plate || 'NYC-TLC-9421'}
+                  </Typography>
                 </Box>
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>Fleet Member Status</Typography>
-                  <Typography variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700 }}>Gold Tier Driver</Typography>
+                  <Typography variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700 }}>
+                    {user?.badge || 'Gold Tier Driver'}
+                  </Typography>
                 </Box>
               </Box>
             </Paper>
           </Grid>
         </Grid>
+
+        <Snackbar
+          open={savedSuccess}
+          autoHideDuration={3000}
+          onClose={() => setSavedSuccess(false)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setSavedSuccess(false)} severity="success" sx={{ width: '100%' }}>
+            Driver preferences saved successfully!
+          </Alert>
+        </Snackbar>
       </Container>
     </PageShell>
   );

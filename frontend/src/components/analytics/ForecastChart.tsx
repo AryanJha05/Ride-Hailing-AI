@@ -20,7 +20,7 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
             24-Hour Spatial Demand Forecast vs Baseline Curve
           </Typography>
           <Chip
-            label={hasData ? 'Active Model' : 'Student C Model Pending'}
+            label={hasData ? 'PyTorch LSTM Operational' : 'Student C Model Offline'}
             size="small"
             sx={{
               backgroundColor: hasData ? 'rgba(0, 217, 192, 0.12)' : 'rgba(234, 179, 8, 0.12)',
@@ -89,10 +89,10 @@ export const ForecastChart: React.FC<ForecastChartProps> = ({ data }) => {
           >
             <ShowChartIcon sx={{ fontSize: 44, color: VELOUR_TOKENS.accentGold, mb: 1.5, opacity: 0.8 }} />
             <Typography variant="subtitle1" sx={{ color: '#FFF', fontWeight: 700, mb: 0.5 }}>
-              Demand Forecasting Model Not Connected
+              Demand Forecasting Model Disconnected
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13, maxWidth: 420 }}>
-              Student C's 24-hour time-series forecasting model is scheduled for integration in a future development phase. No mock curves are rendered.
+              Student C's PyTorch LSTM forecasting model artifact is currently offline or unreachable.
             </Typography>
           </Box>
         )}

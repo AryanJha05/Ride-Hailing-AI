@@ -227,34 +227,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </>
           ) : (
             <>
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.8 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 0.5 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
-                  <EmojiEventsIcon sx={{ color: VELOUR_TOKENS.accentGold, fontSize: 16 }} />
+                  <RocketLaunchIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 16 }} />
                   <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 11, color: VELOUR_TOKENS.textPrimary }}>
-                    Shift Target
+                    Driver Copilot
                   </Typography>
                 </Box>
-                <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 10, color: VELOUR_TOKENS.accentTeal }}>
-                  82%
-                </Typography>
+                <Chip label="ACTIVE" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.15)', color: VELOUR_TOKENS.accentTeal, fontSize: 9, fontWeight: 700, height: 18 }} />
               </Box>
-
-              <LinearProgress
-                variant="determinate"
-                value={82}
-                sx={{
-                  height: 4,
-                  borderRadius: 2,
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  '& .MuiLinearProgress-bar': {
-                    backgroundColor: VELOUR_TOKENS.accentTeal,
-                    borderRadius: 2,
-                  },
-                  mb: 0.8,
-                }}
-              />
               <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10, display: 'block' }}>
-                $285.00 / $350.00 Daily Goal
+                Real-time ML Telemetry Connected
               </Typography>
             </>
           )}

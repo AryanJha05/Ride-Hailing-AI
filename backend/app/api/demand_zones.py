@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.models.database import get_db
@@ -13,6 +13,7 @@ router = APIRouter(prefix="/api")
 def get_demand_zones(
     driver_lat: float = 40.7549,
     driver_lng: float = -73.9840,
+    hour: Optional[int] = None,
     db: Session = Depends(get_db),
     current_user: User = Depends(require_role([UserRole.DRIVER, UserRole.ADMIN]))
 ):
@@ -20,7 +21,7 @@ def get_demand_zones(
     Returns spatial demand zones predicted by Student B's model.
     When Student B model artifact is not connected, returns empty list [].
     """
-    res = detect_demand_zones(driver_lat=driver_lat, driver_lng=driver_lng)
+    res = detect_demand_zones(driver_lat=driver_lat, driver_lng=driver_lng, hour=hour)
     return res.get("all_zones", [])
 
 @router.get("/demand-zones/status", response_model=ModelStatusResponse)

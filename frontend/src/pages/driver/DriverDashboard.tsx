@@ -92,8 +92,8 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TODAY'S EARNINGS"
-              value={`$${perfRes?.projected_shift_earnings || 285.00}`}
-              change="+18.4% vs yesterday"
+              value={perfRes?.projected_shift_earnings !== undefined ? `$${perfRes.projected_shift_earnings.toFixed(2)}` : '$0.00'}
+              change={perfRes?.total_trips ? "+18.4% vs yesterday" : "No shift activity yet"}
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentPrimary}
               icon={<AttachMoneyIcon fontSize="small" />}
@@ -103,8 +103,8 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="ACCEPTANCE RATE"
-              value={`${perfRes?.acceptance_rate || 97}%`}
-              change="Top 2% of drivers"
+              value={perfRes?.acceptance_rate !== undefined ? `${perfRes.acceptance_rate}%` : '100%'}
+              change={perfRes?.total_trips ? "Calculated rate" : "Optimal rating"}
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentTeal}
               icon={<CheckCircleOutlineIcon fontSize="small" />}
@@ -114,8 +114,8 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="DRIVER RATING"
-              value={`${perfRes?.rating || 4.92}`}
-              subtext="Excellent rating"
+              value={perfRes?.rating !== undefined ? `${perfRes.rating}` : '5.0'}
+              subtext={perfRes?.rating ? "Based on passenger feedback" : "New driver profile"}
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentGold}
               icon={<StarOutlinedIcon fontSize="small" />}
@@ -125,8 +125,8 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} sm={6} md={3}>
             <KpiCard
               title="TOTAL TRIPS"
-              value={`${perfRes?.total_trips?.toLocaleString() || '1,284'}`}
-              change="+14 today"
+              value={perfRes?.total_trips !== undefined ? perfRes.total_trips.toLocaleString() : '0'}
+              change={perfRes?.total_trips ? `${perfRes.total_trips} trips logged` : "0 trips completed"}
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentLavender}
               icon={<DirectionsCarOutlinedIcon fontSize="small" />}
@@ -141,8 +141,6 @@ export const DriverDashboard: React.FC = () => {
           <Grid item xs={12} lg={7}>
             <EarningsChart data={perfRes?.performance_history} />
           </Grid>
-
-
 
           {/* Demand Radar with Leaflet Inset */}
           <Grid item xs={12} lg={5}>
@@ -167,59 +165,76 @@ export const DriverDashboard: React.FC = () => {
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#FFF' }}>
                       Today's Goal
                     </Typography>
-                    <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, cursor: 'pointer' }}>
-                      Edit Goal
+                    <Typography
+                      variant="caption"
+                      sx={{ color: VELOUR_TOKENS.textSecondary, cursor: 'pointer', '&:hover': { color: VELOUR_TOKENS.accentTeal } }}
+                      onClick={() => navigate(ROUTES.DRIVER.SETTINGS)}
+                    >
+                      Settings
                     </Typography>
                   </Box>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5 }}>
-                    {/* SVG Circular Progress Ring */}
-                    <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                      <svg width="60" height="60" viewBox="0 0 60 60">
-                        <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
-                        <circle
-                          cx="30"
-                          cy="30"
-                          r="24"
-                          fill="none"
-                          stroke={VELOUR_TOKENS.accentPrimary}
-                          strokeWidth="6"
-                          strokeDasharray="150"
-                          strokeDashoffset="37.5"
-                          strokeLinecap="round"
+                  {(() => {
+                    const currentEarn = perfRes?.projected_shift_earnings || 0;
+                    const goalEarn = parseFloat(localStorage.getItem('pref_daily_target') || '400') || 400;
+                    const pct = Math.min(100, Math.round((currentEarn / goalEarn) * 100));
+                    const totalTrips = perfRes?.total_trips || 0;
+                    const dashOffset = 150 - (150 * pct) / 100;
+                    const remaining = Math.max(0, goalEarn - currentEarn);
+
+                    return (
+                      <>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5 }}>
+                          {/* SVG Circular Progress Ring */}
+                          <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                            <svg width="60" height="60" viewBox="0 0 60 60">
+                              <circle cx="30" cy="30" r="24" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+                              <circle
+                                cx="30"
+                                cy="30"
+                                r="24"
+                                fill="none"
+                                stroke={VELOUR_TOKENS.accentPrimary}
+                                strokeWidth="6"
+                                strokeDasharray="150"
+                                strokeDashoffset={dashOffset}
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                            <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Typography className="mono-num" variant="caption" sx={{ color: '#FFF', fontWeight: 700, fontSize: 12 }}>
+                                {pct}%
+                              </Typography>
+                            </Box>
+                          </Box>
+
+                          <Box>
+                            <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
+                              ${currentEarn.toFixed(0)} <span style={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>/ ${goalEarn}</span>
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
+                              {remaining > 0 ? `$${remaining.toFixed(0)} more to reach daily goal` : 'Daily goal achieved!'}
+                            </Typography>
+                          </Box>
+                        </Box>
+
+                        <LinearProgress
+                          variant="determinate"
+                          value={pct}
+                          sx={{
+                            height: 5,
+                            borderRadius: 3,
+                            backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                            '& .MuiLinearProgress-bar': { backgroundColor: VELOUR_TOKENS.accentTeal, borderRadius: 3 },
+                            mb: 0.8,
+                          }}
                         />
-                      </svg>
-                      <Box sx={{ top: 0, left: 0, bottom: 0, right: 0, position: 'absolute', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <Typography className="mono-num" variant="caption" sx={{ color: '#FFF', fontWeight: 700, fontSize: 12 }}>
-                          75%
+                        <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
+                          {totalTrips} completed shift trips logged
                         </Typography>
-                      </Box>
-                    </Box>
-
-                    <Box>
-                      <Typography className="mono-num" variant="subtitle1" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-                        $300 <span style={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>/ $400</span>
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11, display: 'block' }}>
-                        $100 more to reach your daily goal
-                      </Typography>
-                    </Box>
-                  </Box>
-
-                  <LinearProgress
-                    variant="determinate"
-                    value={75}
-                    sx={{
-                      height: 5,
-                      borderRadius: 3,
-                      backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                      '& .MuiLinearProgress-bar': { backgroundColor: VELOUR_TOKENS.accentTeal, borderRadius: 3 },
-                      mb: 0.8,
-                    }}
-                  />
-                  <Typography className="mono-num" variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
-                    8 / 12 trips completed
-                  </Typography>
+                      </>
+                    );
+                  })()}
                 </CardContent>
               </Card>
 
@@ -252,7 +267,7 @@ export const DriverDashboard: React.FC = () => {
                     fullWidth
                     size="small"
                     variant="outlined"
-                    onClick={() => navigate(ROUTES.USER.ANALYTICS)}
+                    onClick={() => navigate(ROUTES.DRIVER.ANALYTICS)}
                     sx={{ mt: 'auto', color: VELOUR_TOKENS.textSecondary, borderColor: VELOUR_TOKENS.borderSubtle, fontSize: 12, py: 0.6 }}
                   >
                     View Full Schedule
@@ -322,7 +337,7 @@ export const DriverDashboard: React.FC = () => {
 
           <Button
             variant="contained"
-            onClick={() => navigate(ROUTES.USER.AI_ASSISTANT)}
+            onClick={() => navigate(ROUTES.DRIVER.ASSISTANT)}
             endIcon={<ArrowForwardIcon />}
             sx={{
               backgroundColor: VELOUR_TOKENS.accentPrimary,

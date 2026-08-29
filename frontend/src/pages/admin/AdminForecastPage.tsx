@@ -89,7 +89,7 @@ export const AdminForecastPage: React.FC = () => {
               ) : (
                 <Chip
                   icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />}
-                  label="Student C Model Pending Integration"
+                  label="Student C Model Offline"
                   size="small"
                   sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }}
                 />
@@ -121,10 +121,10 @@ export const AdminForecastPage: React.FC = () => {
                     MODEL ACCURACY STATUS
                   </Typography>
                   <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? '#10B981' : VELOUR_TOKENS.accentGold, mt: 0.5, fontSize: 15 }}>
-                    {hasData ? 'PyTorch LSTM Operational' : 'Pending Student C Integration'}
+                    {hasData ? 'PyTorch LSTM Operational' : 'Model Offline'}
                   </Typography>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                    {hasData ? '2-Layer LSTM + MinMaxScaler Inverse Transform' : '(LSTM Time-Series Model pending pipeline deployment)'}
+                    {hasData ? '2-Layer LSTM + MinMaxScaler Inverse Transform' : 'Waiting for Student C model server response'}
                   </Typography>
                 </Box>
 

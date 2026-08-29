@@ -1,22 +1,22 @@
 # Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**Student A's real XGBoost V3 Trip Duration model**, **Student B's spatial HDBSCAN Demand Zone model**, and **Student C's PyTorch LSTM Demand Forecasting model** active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering fleet admins with full transactional account control and real-time operational metrics.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**Student A's XGBoost V3 Trip Duration model**, **Student B's spatial HDBSCAN Demand Zone model**, and **Student C's PyTorch LSTM Demand Forecasting model** active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering drivers and fleet admins with full real-time operational metrics and dynamic state binding.
 
-The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
+The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, multi-layer demand/driver/event maps, bento grid dashboards, production copilot AI chat, and an integrated RBAC navigation shell.
 
 ---
 
 ## 🎨 Tech Stack & Architecture
 
 - **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React-Leaflet, React Query, Vite
-- **Backend**: FastAPI, Python 3.10+, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
+- **Backend**: FastAPI, Python 3.10+, PyTorch 2.0+, XGBoost, Scikit-learn, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
 - **LLM Reasoning Microservice**: FastAPI + Ollama Gemma2 (`:8001`) with cross-service context aggregation and offline fallback mechanisms.
 - **AI / ML Layer & Adapter Architecture**: 
-  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Active**) — accepts exact numerical float coordinates via dynamic Leaflet route picker using 44 spatial features.
-  - **Student B**: Demand Zone Detection Service (**HDBSCAN Model Active**) — parses serialized `demand_zones_model_optimized.pkl` and `zones.json` to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (Midtown, JFK, LGA Terminals, LGA North, Downtown Brooklyn, Williamsburg, Long Island City).
-  - **Student C**: 24h Hourly Demand Forecasting Service (**PyTorch LSTM Active**) — auto-extracts `model.pth.zip` PyTorch state dict and `scaler.pkl` to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves across NYC zones (`GET /api/forecast`).
-  - **Student D**: AI Driver Assistant Framework (Integrated with Ollama Gemma2 microservice on `:8001`).
-- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC operational data)
+  - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Operational**) — processes 44 spatial features via dynamic Leaflet route picker and returns accurate ETA predictions (`POST /api/driver/trip-duration`).
+  - **Student B**: Demand Zone Detection Service (**HDBSCAN Model Operational**) — parses serialized `demand_zones_model_optimized.pkl` and `zones.json` to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (`GET /api/demand-zones`).
+  - **Student C**: 24h Hourly Demand Forecasting Service (**PyTorch LSTM Operational**) — utilizes 2-layer PyTorch LSTM neural network and `scaler.pkl` to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves across NYC zones (`GET /api/forecast`).
+  - **Student D**: AI Driver Assistant Framework — production conversation copilot integrated with Ollama Gemma2 microservice (`:8001`).
+- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with authenticated user state and zero-state handling for new drivers)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
 
 ---
