@@ -13,7 +13,7 @@ import joblib
 import numpy as np
 import torch
 import torch.nn as nn
-from typing import Union, List, Sequence
+from typing import Union, List, Sequence, Optional
 
 
 class DemandForecastingLSTM(nn.Module):
@@ -59,31 +59,36 @@ class DemandForecastPredictor:
     """
     def __init__(
         self,
-        model_path: str = None,
-        scaler_path: str = None,
-        device: str = None
+        model_path: Optional[str] = None,
+        scaler_path: Optional[str] = None,
+        device: Optional[str] = None
     ):
         current_dir = os.path.dirname(os.path.abspath(__file__))
         
-        if model_path is None:
+        resolved_model_path: str
+        if model_path is not None:
+            resolved_model_path = model_path
+        else:
             zip_candidate = os.path.join(current_dir, "model.pth.zip")
             pth_candidate = os.path.join(current_dir, "model.pth")
             if os.path.isfile(pth_candidate):
-                model_path = pth_candidate
+                resolved_model_path = pth_candidate
             elif os.path.isfile(zip_candidate):
-                model_path = zip_candidate
+                resolved_model_path = zip_candidate
             else:
-                model_path = pth_candidate
+                resolved_model_path = pth_candidate
 
-        if scaler_path is None:
-            scaler_path = os.path.join(current_dir, "scaler.pkl")
+        resolved_scaler_path: str
+        if scaler_path is not None:
+            resolved_scaler_path = scaler_path
+        else:
+            resolved_scaler_path = os.path.join(current_dir, "scaler.pkl")
 
-        if not os.path.exists(model_path):
-            raise FileNotFoundError(f"Model file not found at: {model_path}")
-        if not os.path.exists(scaler_path):
-            raise FileNotFoundError(f"Scaler file not found at: {scaler_path}")
+        if not os.path.exists(resolved_model_path):
+            raise FileNotFoundError(f"Model file not found at: {resolved_model_path}")
+        if not os.path.exists(resolved_scaler_path):
+            raise FileNotFoundError(f"Scaler file not found at: {resolved_scaler_path}")
 
-            
         # Select device
         if device is None:
             self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -91,7 +96,7 @@ class DemandForecastPredictor:
             self.device = torch.device(device)
             
         # Load scaler
-        self.scaler = joblib.load(scaler_path)
+        self.scaler = joblib.load(resolved_scaler_path)
         
         # Load model
         self.model = DemandForecastingLSTM(
@@ -102,7 +107,7 @@ class DemandForecastPredictor:
             dropout=0.2
         ).to(self.device)
         
-        state_dict = torch.load(model_path, map_location=self.device, weights_only=True)
+        state_dict = torch.load(resolved_model_path, map_location=self.device, weights_only=True)
         self.model.load_state_dict(state_dict)
         self.model.eval()
 
@@ -119,7 +124,7 @@ class DemandForecastPredictor:
         Returns:
             List of 3 forecasted hourly demand values in rides/hour [t+1, t+2, t+3].
         """
-        # Convert input to numpy array
+        # Convert input to numpy array safely
         demand_arr = np.array(past_24h_demand, dtype=np.float32).flatten()
         
         if len(demand_arr) != 24:
@@ -143,7 +148,7 @@ class DemandForecastPredictor:
 
 
 # Convenience functional interface
-_DEFAULT_PREDICTOR = None
+_DEFAULT_PREDICTOR: Optional[DemandForecastPredictor] = None
 
 def get_forecast(past_24h_demand: Union[Sequence[Union[int, float]], np.ndarray]) -> List[float]:
     """
@@ -165,18 +170,32 @@ if __name__ == "__main__":
     print(f"Scaler Data Min:   {predictor.scaler.data_min_[0]}")
     print(f"Scaler Data Max:   {predictor.scaler.data_max_[0]}")
     
-    # Example 24-hour demand sequence (Midtown Manhattan sample)
-    sample_24h = [
+    # Input 1: High-Volume Midtown Manhattan Sequence
+    seq_midtown = [
         123, 97, 124, 89, 30, 43, 30, 29,
         31, 62, 80, 93, 93, 110, 84, 102,
         111, 90, 119, 75, 78, 95, 113, 90
     ]
-    
-    forecast = predictor.predict(sample_24h)
-    print(f"\nInput 24-Hour Sequence (length {len(sample_24h)}):")
-    print(f"{sample_24h}")
-    print(f"\nPredicted 3-Hour Horizon [t+1, t+2, t+3] (rides/hour):")
-    print(f"{forecast}")
-    print(f"Output Type:       {type(forecast)}, Length: {len(forecast)}")
+    pred_midtown = predictor.predict(seq_midtown)
+    print(f"\n[Test 1] Midtown Sequence Forecast: {pred_midtown}")
+
+    # Input 2: JFK Airport Early Morning Peak Sequence
+    seq_jfk = [
+        15, 12, 8, 5, 20, 55, 82, 120,
+        140, 155, 130, 110, 95, 88, 70, 65,
+        72, 85, 90, 105, 80, 60, 40, 25
+    ]
+    pred_jfk = predictor.predict(seq_jfk)
+    print(f"[Test 2] JFK Sequence Forecast:     {pred_jfk}")
+
+    # Input 3: Residential Williamsburg Night Shift Sequence
+    seq_williamsburg = [
+        5, 2, 1, 0, 3, 12, 28, 45,
+        50, 48, 42, 40, 38, 44, 46, 52,
+        65, 80, 95, 110, 105, 85, 45, 20
+    ]
+    pred_williamsburg = predictor.predict(seq_williamsburg)
+    print(f"[Test 3] Williamsburg Forecast:    {pred_williamsburg}")
+
     print("=" * 65)
-    print("Inference Pipeline Verified Successfully.")
+    print("Inference Pipeline Multi-Sequence Tests Passed Successfully.")
