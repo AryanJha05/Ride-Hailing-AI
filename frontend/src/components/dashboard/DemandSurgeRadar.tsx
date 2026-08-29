@@ -36,10 +36,10 @@ export const DemandSurgeRadar: React.FC<DemandSurgeRadarProps> = ({ zones }) => 
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.8, minWidth: 0 }}>
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.8, fontSize: 11, fontWeight: 700 }}>
-              Live Demand Radar
+              Demand Intelligence
             </Typography>
             <Typography variant="h6" noWrap sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
-              NYC Surge Zones
+              Demand Hotspots
             </Typography>
           </Box>
           <Button

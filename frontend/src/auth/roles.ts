@@ -32,13 +32,13 @@ export interface UserProfile {
 export const DEMO_USERS: Record<UserRole, UserProfile> = {
   [UserRole.DRIVER]: {
     id: 'driver-001',
-    name: 'Alex Morgan',
-    email: 'alex.morgan@rideai.com',
+    name: 'Demo Driver',
+    email: 'demo.driver@rideai.local',
     role: UserRole.DRIVER,
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    rating: 4.92,
-    badge: 'Gold Driver',
-    vehicle: 'Tesla Model Y (NYC-2048)',
+    rating: 5.0,
+    badge: 'Demo Account',
+    vehicle: 'Sample Vehicle',
   },
   [UserRole.ADMIN]: {
     id: 'admin-001',

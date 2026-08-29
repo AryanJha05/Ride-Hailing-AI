@@ -12,13 +12,13 @@ interface DriverHeaderCardProps {
 
 export const DriverHeaderCard: React.FC<DriverHeaderCardProps> = ({ driver }) => {
   const { user } = useAuth();
-  const name = driver?.name || user?.name || 'Driver Account';
-  const email = driver?.email || user?.email || 'driver@rideai.nyc';
-  const phone = user?.phone || '+1 (555) 234-5678';
+  const name = driver?.name || user?.name || 'Demo Driver Profile';
+  const email = driver?.email || user?.email || 'demo.driver@rideai.local';
+  const phone = user?.phone || 'Demo Contact';
   const rating = driver?.rating ?? user?.rating ?? 5.0;
   const totalTrips = driver?.total_trips ?? user?.total_trips ?? 0;
-  const vehicle = user?.vehicle || 'Toyota Camry (NYC-TLC)';
-  const badge = user?.badge || 'Active Driver';
+  const vehicle = user?.vehicle || 'Sample Vehicle';
+  const badge = user?.badge || 'Demo Profile';
 
   return (
     <Card sx={{ backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, mb: 3 }}>

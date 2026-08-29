@@ -37,9 +37,14 @@ export const EarningsChart: React.FC<EarningsChartProps> = ({ data }) => {
               Weekly Earnings Overview
             </Typography>
             {hasData ? (
-              <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 22, sm: 24, md: 26 }, mt: 0.5 }}>
-                ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </Typography>
+              <>
+                <Typography className="mono-num" variant="h4" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 22, sm: 24, md: 26 }, mt: 0.5 }}>
+                  ${totalEarnings.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </Typography>
+                <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5 }}>
+                  Illustrative earnings trend
+                </Typography>
+              </>
             ) : (
               <Typography variant="h6" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, fontSize: 18, mt: 0.5 }}>
                 No Earnings History

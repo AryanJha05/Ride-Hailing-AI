@@ -216,13 +216,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                   <SecurityIcon sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 16 }} />
                   <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 11, color: VELOUR_TOKENS.textPrimary }}>
-                    Fleet Network
+                    Fleet Operations
                   </Typography>
                 </Box>
-                <Chip label="ONLINE" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.15)', color: VELOUR_TOKENS.accentTeal, fontSize: 9, fontWeight: 700, height: 18 }} />
+                <Chip label="READY" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.15)', color: VELOUR_TOKENS.accentTeal, fontSize: 9, fontWeight: 700, height: 18 }} />
               </Box>
               <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10, display: 'block' }}>
-                Active Vehicles: 142 • ML Health 99.8%
+                Mobility Intelligence NOC
               </Typography>
             </>
           ) : (
@@ -231,13 +231,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8 }}>
                   <RocketLaunchIcon sx={{ color: VELOUR_TOKENS.accentLavender, fontSize: 16 }} />
                   <Typography variant="caption" sx={{ fontWeight: 700, fontSize: 11, color: VELOUR_TOKENS.textPrimary }}>
-                    Driver Copilot
+                    AI Copilot
                   </Typography>
                 </Box>
-                <Chip label="ACTIVE" size="small" sx={{ backgroundColor: 'rgba(0, 217, 192, 0.15)', color: VELOUR_TOKENS.accentTeal, fontSize: 9, fontWeight: 700, height: 18 }} />
+                <Chip label="DEMO" size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.15)', color: VELOUR_TOKENS.accentGold, fontSize: 9, fontWeight: 700, height: 18 }} />
               </Box>
               <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10, display: 'block' }}>
-                Real-time ML Telemetry Connected
+                Demand & trip intelligence
               </Typography>
             </>
           )}

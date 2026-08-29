@@ -97,7 +97,7 @@ export const DriverEarningsPage: React.FC = () => {
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 1 }}>
                 Demo Driver:{' '}
                 <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>
-                  {driver?.name || user?.name || 'Alex Morgan'}
+                  {driver?.name || user?.name || 'Demo Driver'}
                 </Box>
               </Typography>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>

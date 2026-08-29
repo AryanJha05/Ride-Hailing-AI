@@ -72,26 +72,42 @@ export const ForecastAnalytics: React.FC = () => {
 
                       <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                         <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                          Model Status
+                          Model Engine
                         </Typography>
-                        <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.accentGold, fontSize: 15 }}>
-                          {hasData ? 'Forecasting Engine · Operational' : 'Model Offline'}
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentLavender, fontSize: 15 }}>
+                          PyTorch LSTM Forecast
                         </Typography>
-                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                          {hasData ? 'Demand Forecasting Engine active' : 'Service offline'}
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontSize: 11, fontWeight: 700 }}>
+                          ● {hasData ? 'Model Ready' : 'Model Offline'}
                         </Typography>
                       </Box>
 
                       <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                         <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                          Recommended Shift Action
+                          Peak Demand Hour & Horizon
                         </Typography>
-                        <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary, mt: 0.5 }}>
+                        <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, fontSize: 15 }}>
+                          {peakPoint ? `${peakPoint.hour} EST (${peakPoint.predicted_demand} rides/hr)` : 'N/A'}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
+                          Forecast Horizon: 24 Hours
+                        </Typography>
+                      </Box>
+
+                      <Box sx={{ p: 2, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
+                        <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
+                          Recommended Action
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: 600, color: '#FFF', mt: 0.5, fontSize: 12.5 }}>
                           {peakPoint
-                            ? `Stage units in ${selectedZone} prior to ${peakPoint.hour} peak onset (estimated ${peakPoint.predicted_demand} rides/hr).`
+                            ? `Stage units in ${selectedZone} prior to ${peakPoint.hour} peak onset.`
                             : 'Automated staging recommendations unavailable until model connects.'}
                         </Typography>
                       </Box>
+
+                      <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 10.5, fontStyle: 'italic', mt: 1 }}>
+                        Forecast generated from historical mobility patterns and model predictions. (Demonstration Data)
+                      </Typography>
                     </Box>
                   );
                 })()}

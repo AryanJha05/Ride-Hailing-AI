@@ -118,7 +118,7 @@ export const TripDurationPredictorCard: React.FC = () => {
             </Typography>
           </Box>
           <Chip
-            label="Trip Duration Intelligence"
+            label="XGBoost"
             size="small"
             sx={{
               backgroundColor: 'rgba(0, 217, 192, 0.12)',
@@ -132,7 +132,7 @@ export const TripDurationPredictorCard: React.FC = () => {
         </Box>
 
         <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 12, mb: 2 }}>
-          Interactive map location selection powered by real-time spatial duration prediction algorithms.
+          Estimate trip duration using route, location, time, and mobility features.
         </Typography>
 
         {/* Pickup Location Card */}

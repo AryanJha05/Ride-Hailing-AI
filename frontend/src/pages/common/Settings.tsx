@@ -77,10 +77,10 @@ export const Settings: React.FC = () => {
                   label={
                     <Box>
                       <Typography variant="subtitle2" sx={{ color: '#FFF', fontWeight: 600 }}>
-                        Real-time AI Positioning Alerts
+                        AI Positioning Recommendations
                       </Typography>
                       <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                        Receive proactive voice/push recommendations when nearby demand surges exceeds +30%.
+                        Receive recommendations when forecast demand exceeds your selected threshold.
                       </Typography>
                     </Box>
                   }
@@ -99,10 +99,10 @@ export const Settings: React.FC = () => {
                   label={
                     <Box>
                       <Typography variant="subtitle2" sx={{ color: '#FFF', fontWeight: 600 }}>
-                        Auto-Accept High Surge Trips (&gt;1.5x)
+                        Prioritize High-Demand Opportunities
                       </Typography>
                       <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                        Automatically reserve incoming rides matching high surge criteria.
+                        Highlight incoming high-demand ride recommendations.
                       </Typography>
                     </Box>
                   }
@@ -122,8 +122,8 @@ export const Settings: React.FC = () => {
                     onChange={(e) => setNavProvider(e.target.value)}
                     sx={{ backgroundColor: VELOUR_TOKENS.bgSurface2, color: '#FFF' }}
                   >
-                    <MenuItem value="google">Google Maps Navigation API (US East)</MenuItem>
-                    <MenuItem value="nycdot">NYC DOT Real-Time Traffic Feed</MenuItem>
+                    <MenuItem value="google">Google Maps Navigation</MenuItem>
+                    <MenuItem value="nycdot">NYC Traffic Feed Integration</MenuItem>
                     <MenuItem value="waze">Waze Live Traffic</MenuItem>
                   </TextField>
                 </Box>
@@ -181,21 +181,21 @@ export const Settings: React.FC = () => {
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>Vehicle Assigned</Typography>
                   <Typography variant="subtitle1" sx={{ color: '#FFF', fontWeight: 700 }}>
-                    {user?.vehicle || 'Tesla Model Y (EV Premier)'}
+                    {user?.vehicle || 'Sample Vehicle'}
                   </Typography>
                 </Box>
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>License Plate</Typography>
+                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>License Identifier</Typography>
                   <Typography className="mono-num" variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }}>
-                    {(user as any)?.plate || 'NYC-TLC-9421'}
+                    {(user as any)?.plate || 'DEMO-PLATE-01'}
                   </Typography>
                 </Box>
 
                 <Box sx={{ p: 1.8, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2 }}>
-                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>Fleet Member Status</Typography>
+                  <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>Account Profile</Typography>
                   <Typography variant="subtitle1" sx={{ color: VELOUR_TOKENS.accentGold, fontWeight: 700 }}>
-                    {user?.badge || 'Gold Tier Driver'}
+                    {user?.badge || 'Demo Profile'}
                   </Typography>
                 </Box>
               </Box>

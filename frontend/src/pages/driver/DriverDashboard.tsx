@@ -28,6 +28,7 @@ import { TripDurationPredictorCard } from '../../components/dashboard/TripDurati
 import { useDemandZones, useDriverPerformance } from '../../hooks/useRideApi';
 import { useAuth } from '../../auth/AuthContext';
 import { VELOUR_TOKENS } from '../../theme/palette';
+import { APP_ENV } from '../../config/envConfig';
 
 export const DriverDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -68,10 +69,37 @@ export const DriverDashboard: React.FC = () => {
         >
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 18, sm: 20, md: 22 }, mb: 0.5 }}>
-              Good evening, {perfRes?.name || user?.name || 'Alex Morgan'} 👋
+              Good evening 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
-              Mobility intelligence systems are operational and live trip prediction is active.
+              {APP_ENV.labels.heroSubtitle}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.2,
+              px: 2,
+              py: 1,
+              borderRadius: 2.5,
+              backgroundColor: 'rgba(0, 217, 192, 0.08)',
+              border: '1px solid rgba(0, 217, 192, 0.25)',
+              flexShrink: 0,
+            }}
+          >
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: '50%',
+                backgroundColor: VELOUR_TOKENS.accentTeal,
+                boxShadow: `0 0 10px ${VELOUR_TOKENS.accentTeal}`,
+              }}
+            />
+            <Typography variant="caption" sx={{ color: VELOUR_TOKENS.accentTeal, fontWeight: 700, letterSpacing: '0.04em' }}>
+              {APP_ENV.status.connected}
             </Typography>
           </Box>
         </Box>
@@ -80,9 +108,9 @@ export const DriverDashboard: React.FC = () => {
         <Grid container spacing={{ xs: 1.5, sm: 2, md: 2.5 }} sx={{ mb: 3, width: '100%', minWidth: 0 }}>
           <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
-              title="TODAY'S EARNINGS"
+              title="ESTIMATED EARNINGS"
               value={perfRes?.projected_shift_earnings !== undefined ? `$${perfRes.projected_shift_earnings.toFixed(2)}` : '$0.00'}
-              change={perfRes?.total_trips ? "+18.4% vs yesterday" : "No shift activity yet"}
+              change="Demo Estimate"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentPrimary}
               icon={<AttachMoneyIcon fontSize="small" />}
@@ -93,7 +121,7 @@ export const DriverDashboard: React.FC = () => {
             <KpiCard
               title="ACCEPTANCE RATE"
               value={perfRes?.acceptance_rate !== undefined ? `${perfRes.acceptance_rate}%` : '100%'}
-              change={perfRes?.total_trips ? "Calculated rate" : "Optimal rating"}
+              change="Sample Dispatch Data"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentTeal}
               icon={<CheckCircleOutlineIcon fontSize="small" />}
@@ -104,7 +132,7 @@ export const DriverDashboard: React.FC = () => {
             <KpiCard
               title="DRIVER RATING"
               value={perfRes?.rating !== undefined ? `${perfRes.rating}` : '5.0'}
-              subtext={perfRes?.rating ? "Based on passenger feedback" : "New driver profile"}
+              subtext="Demo Passenger Feedback"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentGold}
               icon={<StarOutlinedIcon fontSize="small" />}
@@ -113,9 +141,9 @@ export const DriverDashboard: React.FC = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={3} sx={{ minWidth: 0 }}>
             <KpiCard
-              title="TOTAL TRIPS"
+              title="COMPLETED TRIPS"
               value={perfRes?.total_trips !== undefined ? perfRes.total_trips.toLocaleString() : '0'}
-              change={perfRes?.total_trips ? `${perfRes.total_trips} trips logged` : "0 trips completed"}
+              change="Sample Trip Records"
               isPositive={true}
               accentColor={VELOUR_TOKENS.accentLavender}
               icon={<DirectionsCarOutlinedIcon fontSize="small" />}
@@ -152,7 +180,7 @@ export const DriverDashboard: React.FC = () => {
                 <CardContent sx={{ p: { xs: 1.8, sm: 2.2 } }}>
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
                     <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 14, color: '#FFF' }}>
-                      Today's Goal
+                      Daily Earnings Goal
                     </Typography>
                     <Typography
                       variant="caption"
