@@ -12,13 +12,13 @@ client = TestClient(app)
 def test_auth_01_valid_driver_login():
     response = client.post(
         "/api/auth/login",
-        json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+        json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
     )
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
     assert data["token_type"] == "bearer"
-    assert data["user"]["email"] == "aryan.jha@rideai.nyc"
+    assert data["user"]["email"] == "aryan.driver@rideai.demo"
     assert data["user"]["role"] == "DRIVER"
     assert "password" not in data["user"]
     assert "password_hash" not in data["user"]
@@ -26,18 +26,18 @@ def test_auth_01_valid_driver_login():
 def test_auth_02_valid_admin_login():
     response = client.post(
         "/api/auth/login",
-        json={"email": "admin@rideai.nyc", "password": "admin123"}
+        json={"email": "suraj.admin@rideai.demo", "password": "admin123"}
     )
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
-    assert data["user"]["email"] == "admin@rideai.nyc"
+    assert data["user"]["email"] == "suraj.admin@rideai.demo"
     assert data["user"]["role"] == "ADMIN"
 
 def test_auth_03_invalid_password():
     response = client.post(
         "/api/auth/login",
-        json={"email": "aryan.jha@rideai.nyc", "password": "wrongpassword"}
+        json={"email": "aryan.driver@rideai.demo", "password": "wrongpassword"}
     )
     assert response.status_code == 401
     assert response.json()["detail"] == "Invalid email or password"
@@ -63,7 +63,7 @@ def test_auth_06_invalid_token():
 def test_auth_07_expired_token():
     from datetime import timedelta
     expired_token = create_access_token(
-        data={"sub": "user-driver-001", "email": "aryan.jha@rideai.nyc", "role": "DRIVER"},
+        data={"sub": "user-driver-001", "email": "aryan.driver@rideai.demo", "role": "DRIVER"},
         expires_delta=timedelta(seconds=-10)
     )
     headers = {"Authorization": f"Bearer {expired_token}"}
@@ -74,7 +74,7 @@ def test_auth_07_expired_token():
 def test_auth_me_successful():
     login_res = client.post(
         "/api/auth/login",
-        json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+        json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
     )
     token = login_res.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}
@@ -83,13 +83,13 @@ def test_auth_me_successful():
     assert me_res.status_code == 200
     me_data = me_res.json()
     assert me_data["id"] == "user-driver-001"
-    assert me_data["email"] == "aryan.jha@rideai.nyc"
+    assert me_data["email"] == "aryan.driver@rideai.demo"
     assert me_data["role"] == "DRIVER"
 
 def test_jwt_does_not_contain_sensitive_info():
     login_res = client.post(
         "/api/auth/login",
-        json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+        json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
     )
     token = login_res.json()["access_token"]
     payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])

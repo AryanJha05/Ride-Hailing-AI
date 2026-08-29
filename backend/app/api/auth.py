@@ -2,9 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.models.database import get_db
 from app.models.entities import User, Driver, UserRole
-from app.schemas.pydantic_schemas import LoginRequest, TokenResponse, UserResponse, DriverProfileSchema
+from app.schemas.pydantic_schemas import (
+    LoginRequest,
+    TokenResponse,
+    UserResponse,
+    DriverProfileSchema,
+    ProfileUpdateSchema,
+    PasswordChangeSchema,
+)
 from app.core.security import (
     verify_password,
+    get_password_hash,
     create_access_token,
     get_current_user,
 )
@@ -97,3 +105,64 @@ def get_me(
         role=current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role),
         driver_profile=driver_profile
     )
+
+@router.put("/profile", response_model=UserResponse)
+def update_profile(
+    req: ProfileUpdateSchema,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if req.name:
+        current_user.name = req.name
+    if req.email:
+        clean_email = req.email.strip().lower()
+        existing = db.query(User).filter(User.email == clean_email, User.id != current_user.id).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already in use")
+        current_user.email = clean_email
+    
+    driver = db.query(Driver).filter(
+        (Driver.user_id == current_user.id) | (Driver.email == current_user.email)
+    ).first()
+    
+    if driver:
+        if req.name:
+            driver.name = req.name
+        if req.email:
+            driver.email = current_user.email
+        if req.phone:
+            driver.phone = req.phone
+        if req.vehicle_make:
+            driver.vehicle_make = req.vehicle_make
+        if req.vehicle_model:
+            driver.vehicle_model = req.vehicle_model
+        if req.vehicle_plate:
+            driver.vehicle_plate = req.vehicle_plate
+            
+    db.commit()
+    db.refresh(current_user)
+    
+    driver_profile = _build_driver_profile_schema(current_user, db)
+    return UserResponse(
+        id=current_user.id,
+        name=current_user.name,
+        email=current_user.email,
+        role=current_user.role.value if hasattr(current_user.role, "value") else str(current_user.role),
+        driver_profile=driver_profile
+    )
+
+@router.put("/password")
+def change_password(
+    req: PasswordChangeSchema,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    if not verify_password(req.current_password, current_user.password_hash):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    if len(req.new_password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    current_user.password_hash = get_password_hash(req.new_password)
+    db.commit()
+    return {"message": "Password updated successfully"}
+

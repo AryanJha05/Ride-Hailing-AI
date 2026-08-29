@@ -11,51 +11,59 @@ def seed_database():
     db = SessionLocal()
     
     try:
-        # Seed Users
-        # Seed Users
-        driver_user = db.query(User).filter(User.email == "aryan.jha@rideai.nyc").first()
+        # Clean legacy users if present
+        legacy_emails = ["alex.morgan@rideai.nyc", "aryan.jha@rideai.nyc", "admin@rideai.nyc"]
+        db.query(User).filter(User.email.in_(legacy_emails)).delete(synchronize_session=False)
+
+        # Seed Demo Driver User
+        driver_user = db.query(User).filter(User.email == "aryan.driver@rideai.demo").first()
         if not driver_user:
             driver_user = User(
                 id="user-driver-001",
                 name="Aryan Jha",
-                email="aryan.jha@rideai.nyc",
+                email="aryan.driver@rideai.demo",
                 password_hash=get_password_hash("driver123"),
                 role=UserRole.DRIVER,
                 is_active=True
             )
             db.add(driver_user)
-            print("Seeded User: Driver (aryan.jha@rideai.nyc)")
+            db.flush()
+            print("Seeded User: Driver (aryan.driver@rideai.demo)")
         else:
             driver_user.name = "Aryan Jha"
-            driver_user.email = "aryan.jha@rideai.nyc"
             driver_user.password_hash = get_password_hash("driver123")
             driver_user.role = UserRole.DRIVER
+            driver_user.is_active = True
 
-        admin_user = db.query(User).filter(User.email == "admin@rideai.nyc").first()
+        # Seed Demo Admin User
+        admin_user = db.query(User).filter(User.email == "suraj.admin@rideai.demo").first()
         if not admin_user:
             admin_user = User(
                 id="user-admin-001",
-                name="Ride AI Administrator",
-                email="admin@rideai.nyc",
+                name="Suraj Panigrahi",
+                email="suraj.admin@rideai.demo",
                 password_hash=get_password_hash("admin123"),
                 role=UserRole.ADMIN,
                 is_active=True
             )
             db.add(admin_user)
-            print("Seeded User: Admin (admin@rideai.nyc)")
+            db.flush()
+            print("Seeded User: Admin (suraj.admin@rideai.demo)")
         else:
+            admin_user.name = "Suraj Panigrahi"
             admin_user.password_hash = get_password_hash("admin123")
             admin_user.role = UserRole.ADMIN
+            admin_user.is_active = True
 
-        # Check if driver already exists
-        existing_driver = db.query(Driver).filter(Driver.id == "driver-001").first()
+        # Seed/Update Driver Profile for Aryan Jha
+        existing_driver = db.query(Driver).filter((Driver.id == "driver-001") | (Driver.email == "aryan.driver@rideai.demo")).first()
         if not existing_driver:
             driver = Driver(
                 id="driver-001",
                 user_id=driver_user.id,
                 driver_id="NYC-DRV-001",
                 name="Aryan Jha",
-                email="aryan.jha@rideai.nyc",
+                email="aryan.driver@rideai.demo",
                 phone="+1 (555) 234-5678",
                 license_number="NYC-TLC-99821",
                 vehicle_make="Toyota",
@@ -74,7 +82,7 @@ def seed_database():
             existing_driver.user_id = driver_user.id
             existing_driver.driver_id = "NYC-DRV-001"
             existing_driver.name = "Aryan Jha"
-            existing_driver.email = "aryan.jha@rideai.nyc"
+            existing_driver.email = "aryan.driver@rideai.demo"
             existing_driver.phone = "+1 (555) 234-5678"
             existing_driver.license_number = "NYC-TLC-99821"
             existing_driver.vehicle_make = "Toyota"
@@ -89,9 +97,9 @@ def seed_database():
 
         # Additional NYC Drivers for rich demo UI
         extra_drivers_data = [
-            ("driver-002", "Suraj Panigrahi", "suraj.p@rideai.nyc", "+1 (555) 345-6789", "NYC-TLC-88192", "Active", 4.88, 942, 5820.00),
-            ("driver-003", "Ananya Singh", "ananya.s@rideai.nyc", "+1 (555) 456-7890", "NYC-TLC-77210", "Offline", 4.96, 1420, 9150.00),
-            ("driver-004", "Raghav Singh", "raghav.s@rideai.nyc", "+1 (555) 567-8901", "NYC-TLC-66103", "Active", 4.82, 610, 3940.00),
+            ("driver-002", "Suraj Panigrahi", "suraj.p@rideai.demo", "+1 (555) 345-6789", "NYC-TLC-88192", "Active", 4.88, 942, 5820.00),
+            ("driver-003", "Ananya Singh", "ananya.s@rideai.demo", "+1 (555) 456-7890", "NYC-TLC-77210", "Offline", 4.96, 1420, 9150.00),
+            ("driver-004", "Raghav Singh", "raghav.s@rideai.demo", "+1 (555) 567-8901", "NYC-TLC-66103", "Active", 4.82, 610, 3940.00),
         ]
 
         for d_id, name, email, phone, lic, st, rat, trips, earn in extra_drivers_data:

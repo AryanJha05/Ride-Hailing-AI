@@ -13,6 +13,11 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     from app.core.logger import logger
+    try:
+        from seed import seed_database
+        seed_database()
+    except Exception as e:
+        logger.warning(f"Auto-seeding database on startup failed: {e}")
     logger.info("Ride AI Backend API Server Started Successfully.")
     yield
 

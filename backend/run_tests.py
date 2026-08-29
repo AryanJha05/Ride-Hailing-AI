@@ -7,19 +7,24 @@ from app.core.config import settings
 import jwt
 from datetime import timedelta
 
+from seed import seed_database
+
 client = TestClient(app)
 
 class TestAuth(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        seed_database()
     def test_auth_01_valid_driver_login(self):
         response = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+            json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertIn("access_token", data)
         self.assertEqual(data["token_type"], "bearer")
-        self.assertEqual(data["user"]["email"], "aryan.jha@rideai.nyc")
+        self.assertEqual(data["user"]["email"], "aryan.driver@rideai.demo")
         self.assertEqual(data["user"]["role"], "DRIVER")
         self.assertNotIn("password", data["user"])
         self.assertNotIn("password_hash", data["user"])
@@ -27,18 +32,18 @@ class TestAuth(unittest.TestCase):
     def test_auth_02_valid_admin_login(self):
         response = client.post(
             "/api/auth/login",
-            json={"email": "admin@rideai.nyc", "password": "admin123"}
+            json={"email": "suraj.admin@rideai.demo", "password": "admin123"}
         )
         self.assertEqual(response.status_code, 200)
         data = response.json()
         self.assertIn("access_token", data)
-        self.assertEqual(data["user"]["email"], "admin@rideai.nyc")
+        self.assertEqual(data["user"]["email"], "suraj.admin@rideai.demo")
         self.assertEqual(data["user"]["role"], "ADMIN")
 
     def test_auth_03_invalid_password(self):
         response = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "wrongpassword"}
+            json={"email": "aryan.driver@rideai.demo", "password": "wrongpassword"}
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json()["detail"], "Invalid email or password")
@@ -46,7 +51,7 @@ class TestAuth(unittest.TestCase):
     def test_auth_04_unknown_email(self):
         response = client.post(
             "/api/auth/login",
-            json={"email": "unknown@rideai.nyc", "password": "driver123"}
+            json={"email": "unknown@rideai.demo", "password": "driver123"}
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(response.json()["detail"], "Invalid email or password")
@@ -62,7 +67,7 @@ class TestAuth(unittest.TestCase):
 
     def test_auth_07_expired_token(self):
         expired_token = create_access_token(
-            data={"sub": "user-driver-001", "email": "aryan.jha@rideai.nyc", "role": "DRIVER"},
+            data={"sub": "user-driver-001", "email": "aryan.driver@rideai.demo", "role": "DRIVER"},
             expires_delta=timedelta(seconds=-10)
         )
         headers = {"Authorization": f"Bearer {expired_token}"}
@@ -73,7 +78,7 @@ class TestAuth(unittest.TestCase):
     def test_auth_me_successful(self):
         login_res = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+            json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
         )
         token = login_res.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
@@ -82,13 +87,13 @@ class TestAuth(unittest.TestCase):
         self.assertEqual(me_res.status_code, 200)
         me_data = me_res.json()
         self.assertEqual(me_data["id"], "user-driver-001")
-        self.assertEqual(me_data["email"], "aryan.jha@rideai.nyc")
+        self.assertEqual(me_data["email"], "aryan.driver@rideai.demo")
         self.assertEqual(me_data["role"], "DRIVER")
 
     def test_jwt_does_not_contain_sensitive_info(self):
         login_res = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+            json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
         )
         token = login_res.json()["access_token"]
         payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
@@ -100,7 +105,7 @@ class TestAuth(unittest.TestCase):
     def test_auth_08_driver_accessing_driver_endpoint(self):
         login_res = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+            json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
         )
         token = login_res.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
@@ -111,7 +116,7 @@ class TestAuth(unittest.TestCase):
     def test_auth_09_admin_accessing_admin_endpoint(self):
         login_res = client.post(
             "/api/auth/login",
-            json={"email": "admin@rideai.nyc", "password": "admin123"}
+            json={"email": "suraj.admin@rideai.demo", "password": "admin123"}
         )
         token = login_res.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}
@@ -123,7 +128,7 @@ class TestAuth(unittest.TestCase):
     def test_auth_10_driver_accessing_admin_endpoint_forbidden(self):
         login_res = client.post(
             "/api/auth/login",
-            json={"email": "aryan.jha@rideai.nyc", "password": "driver123"}
+            json={"email": "aryan.driver@rideai.demo", "password": "driver123"}
         )
         token = login_res.json()["access_token"]
         headers = {"Authorization": f"Bearer {token}"}

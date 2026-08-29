@@ -31,9 +31,9 @@ export interface UserProfile {
 
 export const DEMO_USERS: Record<UserRole, UserProfile> = {
   [UserRole.DRIVER]: {
-    id: 'driver-001',
+    id: 'user-driver-001',
     name: 'Aryan Jha',
-    email: 'aryan.jha@rideai.com',
+    email: 'aryan.driver@rideai.demo',
     role: UserRole.DRIVER,
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
     rating: 4.94,
@@ -50,9 +50,9 @@ export const DEMO_USERS: Record<UserRole, UserProfile> = {
     vehicle_plate: 'NYC-TLC-7782',
   },
   [UserRole.ADMIN]: {
-    id: 'admin-001',
-    name: 'Ride AI Administrator',
-    email: 'admin@rideai.com',
+    id: 'user-admin-001',
+    name: 'Suraj Panigrahi',
+    email: 'suraj.admin@rideai.demo',
     role: UserRole.ADMIN,
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150',
     badge: 'Fleet Ops Director',

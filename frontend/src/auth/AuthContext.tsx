@@ -94,11 +94,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginAsDriver = async (): Promise<UserProfile> => {
-    return await login('aryan.jha@rideai.nyc', 'driver123');
+    return await login('aryan.driver@rideai.demo', 'driver123');
   };
 
   const loginAsAdmin = async (): Promise<UserProfile> => {
-    return await login('admin@rideai.nyc', 'admin123');
+    return await login('suraj.admin@rideai.demo', 'admin123');
   };
 
   const logout = () => {

@@ -6,6 +6,18 @@ class LoginRequest(BaseModel):
     email: str
     password: str
 
+class ProfileUpdateSchema(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    vehicle_make: Optional[str] = None
+    vehicle_model: Optional[str] = None
+    vehicle_plate: Optional[str] = None
+
+class PasswordChangeSchema(BaseModel):
+    current_password: str
+    new_password: str
+
 class DriverProfileSchema(BaseModel):
     id: str
     driver_id: Optional[str] = None
