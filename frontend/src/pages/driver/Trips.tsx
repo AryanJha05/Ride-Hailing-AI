@@ -54,7 +54,7 @@ export const Trips: React.FC = () => {
               Shift Trips Log
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-              Completed rides, fare breakdowns, and driver ratings from real trip records.
+              Completed rides, fare breakdowns, and driver ratings from sample trip records.
             </Typography>
           </Box>
 

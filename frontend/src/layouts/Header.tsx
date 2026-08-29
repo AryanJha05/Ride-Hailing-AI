@@ -34,6 +34,8 @@ import { UserRole } from '../auth/roles';
 import { ROUTES } from '../routes/routes';
 import { HEADER_HEIGHT } from './Sidebar';
 
+import { APP_ENV } from '../config/envConfig';
+
 interface HeaderProps {
   title?: string;
   onMenuClick?: () => void;
@@ -179,7 +181,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
           {displayTitle}
         </Typography>
 
-        {/* Network Badge */}
+        {/* Network Badge & Demo Environment Indicator */}
         <Chip
           label={isAdminRole ? 'NOC CONTROL CENTER' : 'NYC METRO NETWORK'}
           size="small"
@@ -192,6 +194,23 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
             fontSize: 10,
             fontWeight: 700,
             letterSpacing: '0.04em',
+            height: 24,
+            flexShrink: 0,
+          }}
+        />
+
+        <Chip
+          label={APP_ENV.labels.environmentBadge}
+          size="small"
+          sx={{
+            display: { xs: 'none', md: 'inline-flex' },
+            alignItems: 'center',
+            backgroundColor: 'rgba(234, 179, 8, 0.1)',
+            color: VELOUR_TOKENS.accentGold,
+            border: '1px solid rgba(234, 179, 8, 0.3)',
+            fontSize: 9.5,
+            fontWeight: 700,
+            letterSpacing: '0.05em',
             height: 24,
             flexShrink: 0,
           }}
@@ -210,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({ title, onMenuClick }) => {
               }}
             />
           }
-          label={isAdminRole ? 'NOC ACTIVE' : 'ONLINE'}
+          label={isAdminRole ? 'NOC ACTIVE' : APP_ENV.labels.environmentShort}
           size="small"
           sx={{
             backgroundColor: 'rgba(0, 217, 192, 0.08)',

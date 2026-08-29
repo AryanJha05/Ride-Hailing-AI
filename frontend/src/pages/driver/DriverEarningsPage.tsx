@@ -12,6 +12,7 @@ import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
 import { useDriverPerformance } from '../../hooks/useRideApi';
 import { useAuth } from '../../auth/AuthContext';
+import { APP_ENV } from '../../config/envConfig';
 
 export const DriverEarningsPage: React.FC = () => {
   const { user } = useAuth();
@@ -27,10 +28,30 @@ export const DriverEarningsPage: React.FC = () => {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             {[
-              { label: 'PROJECTED SHIFT EARNINGS', val: `$${shiftEarnings.toFixed(2)}`, color: VELOUR_TOKENS.accentTeal, sub: 'Calculated from completed shifts' },
-              { label: 'COMPLETED SHIFT TRIPS', val: driver?.total_trips !== undefined ? driver.total_trips.toLocaleString() : '—', color: '#FFF', sub: 'Database Logged Trips' },
-              { label: 'DRIVER RATING', val: driver?.rating ? `${driver.rating} ★` : '—', color: VELOUR_TOKENS.accentGold, sub: 'Passenger feedback score' },
-              { label: 'ACCEPTANCE RATE', val: driver?.acceptance_rate ? `${driver.acceptance_rate}%` : '—', color: VELOUR_TOKENS.accentLavender, sub: 'Real-time dispatch rate' },
+              {
+                label: 'PROJECTED SHIFT EARNINGS',
+                val: `$${shiftEarnings.toFixed(2)}`,
+                color: VELOUR_TOKENS.accentTeal,
+                sub: APP_ENV.labels.demoEstimate,
+              },
+              {
+                label: 'COMPLETED SHIFT TRIPS',
+                val: driver?.total_trips !== undefined ? driver.total_trips.toLocaleString() : '—',
+                color: '#FFF',
+                sub: APP_ENV.labels.sampleRecords,
+              },
+              {
+                label: 'DRIVER RATING',
+                val: driver?.rating ? `${driver.rating} ★` : '—',
+                color: VELOUR_TOKENS.accentGold,
+                sub: APP_ENV.labels.demoFeedback,
+              },
+              {
+                label: 'ACCEPTANCE RATE',
+                val: driver?.acceptance_rate ? `${driver.acceptance_rate}%` : '—',
+                color: VELOUR_TOKENS.accentLavender,
+                sub: APP_ENV.labels.demoDispatch,
+              },
             ].map((stat, idx) => (
               <Grid item xs={6} md={3} key={idx}>
                 <Card sx={{ p: 2.5, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle }}>
@@ -59,20 +80,36 @@ export const DriverEarningsPage: React.FC = () => {
                   Driver Telemetry Overview
                 </Typography>
               </Box>
-              <Chip label="Database Verified" size="small" sx={{ backgroundColor: 'rgba(0,217,192,0.1)', color: VELOUR_TOKENS.accentTeal, fontWeight: 700 }} />
+              <Chip
+                label={APP_ENV.labels.sampleDataBadge}
+                size="small"
+                sx={{
+                  backgroundColor: 'rgba(234, 179, 8, 0.12)',
+                  color: VELOUR_TOKENS.accentGold,
+                  border: '1px solid rgba(234, 179, 8, 0.3)',
+                  fontWeight: 700,
+                  fontSize: 10,
+                }}
+              />
             </Box>
 
             <Box sx={{ p: 2.5, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, my: 2 }}>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 1 }}>
-                Logged-in Driver: <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>{driver?.name || user?.name || 'Driver Account'}</Box>
+                Demo Driver:{' '}
+                <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>
+                  {driver?.name || user?.name || 'Alex Morgan'}
+                </Box>
               </Typography>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                Account Email: <Box component="span" sx={{ color: VELOUR_TOKENS.accentLavender }}>{driver?.email || user?.email || 'driver@rideai.nyc'}</Box>
+                Account Email:{' '}
+                <Box component="span" sx={{ color: VELOUR_TOKENS.accentLavender }}>
+                  {driver?.email || user?.email || APP_ENV.labels.demoAccountDefault}
+                </Box>
               </Typography>
             </Box>
 
             <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textTertiary, display: 'block' }}>
-              All trip duration estimates and fares are verified using Trip Duration Intelligence.
+              All trip duration estimates and fares demonstrate model predictions on sample shift data.
             </Typography>
           </Card>
         </Grid>
@@ -80,14 +117,27 @@ export const DriverEarningsPage: React.FC = () => {
         {/* Recent Trip Activity Log */}
         <Grid item xs={12} md={6}>
           <Card sx={{ p: 3, backgroundColor: VELOUR_TOKENS.bgSurface1, borderColor: VELOUR_TOKENS.borderSubtle, height: '100%' }}>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16, mb: 2 }}>
-              Recent Completed Trips Log
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: '#FFF', fontSize: 16 }}>
+                {APP_ENV.labels.sampleTripsHeader}
+              </Typography>
+              <Chip
+                label="DEMO RECORDS"
+                size="small"
+                sx={{
+                  backgroundColor: 'rgba(0, 217, 192, 0.08)',
+                  color: VELOUR_TOKENS.accentTeal,
+                  border: '1px solid rgba(0, 217, 192, 0.25)',
+                  fontSize: 10,
+                  fontWeight: 700,
+                }}
+              />
+            </Box>
 
             {recentTrips.length === 0 ? (
               <Box sx={{ p: 3, textAlign: 'center', backgroundColor: VELOUR_TOKENS.bgSurface2, borderRadius: 2 }}>
                 <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>
-                  No completed trip records found for current shift.
+                  No sample trip records found for current shift.
                 </Typography>
               </Box>
             ) : (
@@ -101,7 +151,7 @@ export const DriverEarningsPage: React.FC = () => {
                       backgroundColor: VELOUR_TOKENS.bgSurface2,
                       border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
                       display: 'flex',
-                      justify: 'space-between',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
                     }}
                   >
@@ -129,3 +179,4 @@ export const DriverEarningsPage: React.FC = () => {
     </PageShell>
   );
 };
+
