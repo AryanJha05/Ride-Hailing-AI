@@ -132,80 +132,58 @@ export const DemandMap: React.FC<DemandMapProps> = ({
 
         {/* FLEET DRIVERS LAYER (When filter is Drivers) */}
         {filter === 'Drivers' && (
-          <>
-            {[
-              { id: 'drv-1', lat: 40.7580, lng: -73.9855, status: 'Active Ride', vehicle: 'Toyota Camry' },
-              { id: 'drv-2', lat: 40.7510, lng: -73.9780, status: 'Available', vehicle: 'Tesla Model Y' },
-              { id: 'drv-3', lat: 40.7420, lng: -73.9900, status: 'Dispatched', vehicle: 'Hyundai Ioniq' },
-            ].map((d) => (
-              <CircleMarker
-                key={d.id}
-                center={[d.lat, d.lng]}
-                radius={8}
-                pathOptions={{
-                  color: '#00F2FE',
-                  fillColor: '#00F2FE',
-                  fillOpacity: 0.85,
-                  weight: 2,
-                }}
-              >
-                <Popup>
-                  <div style={{ color: '#111', fontFamily: 'sans-serif', padding: 4 }}>
-                    <strong style={{ fontSize: 13 }}>Fleet Unit ({d.id})</strong>
-                    <br />
-                    Vehicle: {d.vehicle}
-                    <br />
-                    Status: <span style={{ color: '#00A86B', fontWeight: 'bold' }}>{d.status}</span>
-                  </div>
-                </Popup>
-              </CircleMarker>
-            ))}
-          </>
+          <Card
+            sx={{
+              position: 'absolute',
+              top: 24,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              px: 3,
+              py: 1.2,
+              backgroundColor: 'rgba(18, 16, 25, 0.94)',
+              backdropFilter: 'blur(16px)',
+              border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+              borderRadius: 999,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
+              Fleet Telemetry &bull; <span style={{ color: VELOUR_TOKENS.textSecondary }}>No live driver data available</span>
+            </Typography>
+          </Card>
         )}
 
         {/* HIGH-DEMAND EVENTS LAYER (When filter is Events) */}
         {filter === 'Events' && (
-          <>
-            {[
-              { id: 'evt-1', name: 'Barclays Center - Concert Discharge', lat: 40.6826, lng: -73.9754, expectedRides: '450+ rides', peakTime: '22:30 IST' },
-              { id: 'evt-2', name: 'JFK Terminal 4 - International Peak', lat: 40.6413, lng: -73.7781, expectedRides: '800+ rides', peakTime: '21:00 IST' },
-              { id: 'evt-3', name: 'Broadway Theater District Outflow', lat: 40.7590, lng: -73.9845, expectedRides: '600+ rides', peakTime: '22:00 IST' },
-            ].map((e) => (
-              <React.Fragment key={e.id}>
-                <Circle
-                  center={[e.lat, e.lng]}
-                  radius={600}
-                  pathOptions={{
-                    color: '#9B51E0',
-                    fillColor: '#9B51E0',
-                    fillOpacity: 0.25,
-                    weight: 2,
-                    dashArray: '6, 6',
-                  }}
-                />
-                <CircleMarker
-                  center={[e.lat, e.lng]}
-                  radius={9}
-                  pathOptions={{
-                    color: '#FFFFFF',
-                    fillColor: '#9B51E0',
-                    fillOpacity: 1,
-                    weight: 2,
-                  }}
-                >
-                  <Popup>
-                    <div style={{ color: '#111', fontFamily: 'sans-serif', padding: 4 }}>
-                      <strong style={{ fontSize: 13, color: '#9B51E0' }}>{e.name}</strong>
-                      <br />
-                      Expected Volume: <strong>{e.expectedRides}</strong>
-                      <br />
-                      Peak Time Window: {e.peakTime}
-                    </div>
-                  </Popup>
-                </CircleMarker>
-              </React.Fragment>
-            ))}
-          </>
+          <Card
+            sx={{
+              position: 'absolute',
+              top: 24,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              zIndex: 1000,
+              px: 3,
+              py: 1.2,
+              backgroundColor: 'rgba(18, 16, 25, 0.94)',
+              backdropFilter: 'blur(16px)',
+              border: `1px solid ${VELOUR_TOKENS.borderSubtle}`,
+              borderRadius: 999,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1.5,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            <Typography variant="body2" sx={{ color: '#FFF', fontWeight: 600, fontSize: 12.5 }}>
+              Event Stream &bull; <span style={{ color: VELOUR_TOKENS.textSecondary }}>No event data source connected</span>
+            </Typography>
+          </Card>
         )}
       </MapContainer>
 

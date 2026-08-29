@@ -47,13 +47,13 @@ def get_driver_performance(
             {"day": "Fri", "trips": 28, "earnings": 360.0},
             {"day": "Sat", "trips": 32, "earnings": 420.0},
             {"day": "Sun", "trips": 25, "earnings": 270.0}
-        ],
+        ] if (db_driver and total_trips > 0) else [],
         "recent_trips": [
             {"id": "t-101", "date": "Today, 17:42", "zone": "Midtown Manhattan", "duration": "14m 30s", "fare": "$34.50", "rating": 5.0},
             {"id": "t-102", "date": "Today, 16:15", "zone": "Financial District", "duration": "22m 10s", "fare": "$44.00", "rating": 5.0},
             {"id": "t-103", "date": "Today, 15:04", "zone": "Grand Central Terminal", "duration": "18m 45s", "fare": "$28.00", "rating": 4.9},
             {"id": "t-104", "date": "Today, 13:30", "zone": "JFK Airport (JFK)", "duration": "42m 15s", "fare": "$62.00", "rating": 5.0},
             {"id": "t-105", "date": "Today, 11:50", "zone": "Williamsburg", "duration": "12m 05s", "fare": "$21.50", "rating": 5.0}
-        ]
+        ] if (db_driver and total_trips > 0) else []
     }
 

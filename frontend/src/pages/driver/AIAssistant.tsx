@@ -56,12 +56,8 @@ export const AIAssistant: React.FC = () => {
       { query },
       {
         onSuccess: (data) => {
-          const suggestedArea = data.suggested_area || 'Midtown Manhattan';
-          const isFallbackText = data.reason?.includes('Student A') || data.reason?.includes('XGBoost');
-
-          const narrativeText = isFallbackText
-            ? `Demand is currently high around ${suggestedArea}. Based on live spatial telemetry, positioning your vehicle near this area will optimize your ride availability and earnings.`
-            : data.reason || `Positioning guidance generated for ${suggestedArea}.`;
+          const suggestedArea = data.suggested_area || 'Midtown Manhattan Core';
+          const narrativeText = data.reason || `Positioning guidance generated for ${suggestedArea}.`;
 
           const aiMsg: ChatMessage = {
             id: `ai-${Date.now()}`,
@@ -69,10 +65,10 @@ export const AIAssistant: React.FC = () => {
             text: narrativeText,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             card: {
-              category: 'RECOMMENDED POSITIONING ZONE',
+              category: data.recommendation || 'AI DISPATCH RECOMMENDATION',
               suggestedArea: suggestedArea,
-              insight: `Demand activity in ${suggestedArea} is currently above normal shift averages.`,
-              recommendation: `Head toward ${suggestedArea} for higher trip frequency and reduced waiting time.`,
+              insight: `Live spatial demand in ${suggestedArea} is currently above shift averages.`,
+              recommendation: `Target ${suggestedArea} for maximum trip volume and minimal idle time.`,
               confidence: data.confidence ? Math.round(data.confidence * 100) : 94,
               actionText: 'View on Live Map',
             },

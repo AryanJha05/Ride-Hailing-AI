@@ -12,7 +12,8 @@ import { MapSearchBar } from '../../components/map/MapSearchBar';
 
 export const LiveDemandMap: React.FC = () => {
   const [filter, setFilter] = useState<'Demand' | 'Drivers' | 'Events'>('Demand');
-  const { data: zones } = useDemandZones();
+  const [selectedHour, setSelectedHour] = useState<number>(new Date().getHours());
+  const { data: zones } = useDemandZones(selectedHour);
 
   return (
     <PageShell title="Live Demand Map" hideHeader={true}>
@@ -28,6 +29,8 @@ export const LiveDemandMap: React.FC = () => {
           filter={filter}
           onFilterChange={setFilter}
           zones={zones || []}
+          hour={selectedHour}
+          onHourChange={setSelectedHour}
         />
 
         {/* Bottom Right Map Controls */}
