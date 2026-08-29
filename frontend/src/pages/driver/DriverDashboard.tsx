@@ -69,7 +69,7 @@ export const DriverDashboard: React.FC = () => {
         >
           <Box sx={{ minWidth: 0 }}>
             <Typography variant="h5" sx={{ fontWeight: 700, color: '#FFF', fontSize: { xs: 18, sm: 20, md: 22 }, mb: 0.5 }}>
-              Good evening 👋
+              Good evening, {user?.name ? user.name.split(' ')[0] : 'Aryan'} 👋
             </Typography>
             <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 13 }}>
               {APP_ENV.labels.heroSubtitle}

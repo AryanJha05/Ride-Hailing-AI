@@ -38,7 +38,7 @@ export const LoginPage: React.FC = () => {
     setErrorMsg(null);
     setIsSubmitting(true);
     try {
-      const loginEmail = email.trim() || 'alex.morgan@rideai.nyc';
+      const loginEmail = email.trim() || 'aryan.jha@rideai.nyc';
       const loginPass = password || 'driver123';
       const profile = await login(loginEmail, loginPass);
       if (profile.role === 'ADMIN') {

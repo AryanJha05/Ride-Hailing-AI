@@ -13,6 +13,7 @@ interface AuthContextType {
   loginAsDriver: () => Promise<UserProfile>;
   loginAsAdmin: () => Promise<UserProfile>;
   logout: () => void;
+  updateProfile: (updates: Partial<UserProfile>) => void;
   hasRole: (allowedRole: UserRole | UserRole[]) => boolean;
   hasPermission: (permission: Permission) => boolean;
 }
@@ -36,23 +37,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     return {
-      id: authUser.id,
-      name: authUser.name,
-      email: authUser.email,
+      id: authUser.id || baseDemo.id,
+      name: authUser.name || baseDemo.name,
+      email: authUser.email || baseDemo.email,
       role: userRole,
       avatar: baseDemo.avatar,
-      badge: userRole === UserRole.ADMIN ? 'Fleet Ops Director' : (dp?.status === 'Active' ? 'Gold Driver' : 'Standard Driver'),
+      badge: userRole === UserRole.ADMIN ? 'Fleet Ops Director' : (dp?.status === 'Inactive' ? 'Standard Driver' : 'Gold Tier Driver'),
       vehicle: vehicleStr,
-      rating: dp?.rating !== undefined ? dp.rating : (userRole === UserRole.ADMIN ? 5.0 : 5.0),
-      phone: dp?.phone || undefined,
-      license_number: dp?.license_number || undefined,
-      driver_id: dp?.driver_id || undefined,
-      status: dp?.status || 'Active',
-      total_trips: dp?.total_trips !== undefined ? dp.total_trips : 0,
-      total_earnings: dp?.total_earnings !== undefined ? dp.total_earnings : 0.0,
-      vehicle_make: dp?.vehicle_make || undefined,
-      vehicle_model: dp?.vehicle_model || undefined,
-      vehicle_plate: dp?.vehicle_plate || undefined,
+      rating: dp?.rating !== undefined ? dp.rating : baseDemo.rating,
+      phone: dp?.phone || baseDemo.phone,
+      license_number: dp?.license_number || baseDemo.license_number,
+      driver_id: dp?.driver_id || baseDemo.driver_id,
+      status: dp?.status || baseDemo.status,
+      total_trips: dp?.total_trips !== undefined ? dp.total_trips : baseDemo.total_trips,
+      total_earnings: dp?.total_earnings !== undefined ? dp.total_earnings : baseDemo.total_earnings,
+      vehicle_make: dp?.vehicle_make || baseDemo.vehicle_make,
+      vehicle_model: dp?.vehicle_model || baseDemo.vehicle_model,
+      vehicle_plate: dp?.vehicle_plate || baseDemo.vehicle_plate,
     };
   };
 
@@ -93,7 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const loginAsDriver = async (): Promise<UserProfile> => {
-    return await login('alex.morgan@rideai.nyc', 'driver123');
+    return await login('aryan.jha@rideai.nyc', 'driver123');
   };
 
   const loginAsAdmin = async (): Promise<UserProfile> => {
@@ -105,6 +106,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('ride_ai_role');
     setToken(null);
     setUser(null);
+  };
+
+  const updateProfile = (updates: Partial<UserProfile>) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updates };
+      if (updates.vehicle_make || updates.vehicle_model || updates.vehicle_plate) {
+        const make = updates.vehicle_make || prev.vehicle_make || 'Toyota';
+        const model = updates.vehicle_model || prev.vehicle_model || 'Camry Hybrid';
+        const plate = updates.vehicle_plate || prev.vehicle_plate || 'NYC-TLC-7782';
+        updated.vehicle = `${make} ${model} (${plate})`;
+      }
+      return updated;
+    });
   };
 
   const role = user?.role || null;
@@ -133,6 +148,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loginAsDriver,
         loginAsAdmin,
         logout,
+        updateProfile,
         hasRole,
         hasPermission,
       }}

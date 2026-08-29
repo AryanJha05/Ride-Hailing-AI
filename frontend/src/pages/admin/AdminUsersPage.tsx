@@ -23,10 +23,11 @@ import { VELOUR_TOKENS } from '../../theme/palette';
 export const AdminUsersPage: React.FC = () => {
   const usersList = [
     { id: 'USR-001', name: 'NOC Administrator', email: 'admin@rideai.com', role: 'ADMIN', permissions: 'Full Fleet NOC Management', status: 'ACTIVE' },
-    { id: 'USR-002', name: 'Alex Morgan', email: 'alex.morgan@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
-    { id: 'USR-003', name: 'Marcus Vance', email: 'marcus.vance@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
-    { id: 'USR-004', name: 'Sarah Jenkins', email: 'sarah.j@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
-    { id: 'USR-005', name: 'Fleet Ops Manager', email: 'ops.director@rideai.com', role: 'ADMIN', permissions: 'Fleet Configuration & Telemetry', status: 'ACTIVE' },
+    { id: 'USR-002', name: 'Aryan Jha', email: 'aryan.jha@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
+    { id: 'USR-003', name: 'Suraj Panigrahi', email: 'suraj.p@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
+    { id: 'USR-004', name: 'Ananya Singh', email: 'ananya.s@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
+    { id: 'USR-005', name: 'Raghav Singh', email: 'raghav.s@rideai.com', role: 'DRIVER', permissions: 'Driver Dispatch & Analytics', status: 'ACTIVE' },
+    { id: 'USR-006', name: 'Fleet Ops Manager', email: 'ops.director@rideai.com', role: 'ADMIN', permissions: 'Fleet Configuration & Telemetry', status: 'ACTIVE' },
   ];
 
   return (

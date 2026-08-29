@@ -192,7 +192,7 @@ export const RegisterPage: React.FC = () => {
               </Typography>
               <TextField
                 fullWidth
-                placeholder="Alex Morgan"
+                placeholder="Aryan Jha"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 variant="outlined"
@@ -232,7 +232,7 @@ export const RegisterPage: React.FC = () => {
               </Typography>
               <TextField
                 fullWidth
-                placeholder="alex.morgan@rideai.nyc"
+                placeholder="aryan.jha@rideai.nyc"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 variant="outlined"

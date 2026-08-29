@@ -95,9 +95,9 @@ export const DriverEarningsPage: React.FC = () => {
 
             <Box sx={{ p: 2.5, borderRadius: 2, backgroundColor: VELOUR_TOKENS.bgSurface2, border: `1px solid ${VELOUR_TOKENS.borderSubtle}`, my: 2 }}>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary, mb: 1 }}>
-                Demo Driver:{' '}
+                Active Driver:{' '}
                 <Box component="span" sx={{ color: '#FFF', fontWeight: 700 }}>
-                  {driver?.name || user?.name || 'Demo Driver'}
+                  {user?.name || driver?.name || 'Aryan Jha'}
                 </Box>
               </Typography>
               <Typography variant="body2" sx={{ color: VELOUR_TOKENS.textSecondary }}>

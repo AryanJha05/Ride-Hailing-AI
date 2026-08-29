@@ -12,19 +12,22 @@ def seed_database():
     
     try:
         # Seed Users
-        driver_user = db.query(User).filter(User.email == "alex.morgan@rideai.nyc").first()
+        # Seed Users
+        driver_user = db.query(User).filter(User.email == "aryan.jha@rideai.nyc").first()
         if not driver_user:
             driver_user = User(
                 id="user-driver-001",
-                name="Alex Morgan",
-                email="alex.morgan@rideai.nyc",
+                name="Aryan Jha",
+                email="aryan.jha@rideai.nyc",
                 password_hash=get_password_hash("driver123"),
                 role=UserRole.DRIVER,
                 is_active=True
             )
             db.add(driver_user)
-            print("Seeded User: Driver (alex.morgan@rideai.nyc)")
+            print("Seeded User: Driver (aryan.jha@rideai.nyc)")
         else:
+            driver_user.name = "Aryan Jha"
+            driver_user.email = "aryan.jha@rideai.nyc"
             driver_user.password_hash = get_password_hash("driver123")
             driver_user.role = UserRole.DRIVER
 
@@ -51,28 +54,34 @@ def seed_database():
                 id="driver-001",
                 user_id=driver_user.id,
                 driver_id="NYC-DRV-001",
-                name="Alex Morgan",
-                email="alex.morgan@rideai.nyc",
+                name="Aryan Jha",
+                email="aryan.jha@rideai.nyc",
                 phone="+1 (555) 234-5678",
                 license_number="NYC-TLC-99821",
+                vehicle_make="Toyota",
+                vehicle_model="Camry Hybrid",
+                vehicle_plate="NYC-TLC-7782",
                 status="Active",
-                rating=4.92,
+                rating=4.94,
                 total_trips=1284,
                 total_earnings=7480.00,
                 acceptance_rate=97.0,
                 cancellation_rate=2.0
             )
             db.add(driver)
-            print("Seeded driver: Alex Morgan")
+            print("Seeded driver: Aryan Jha")
         else:
             existing_driver.user_id = driver_user.id
             existing_driver.driver_id = "NYC-DRV-001"
-            existing_driver.name = "Alex Morgan"
-            existing_driver.email = "alex.morgan@rideai.nyc"
+            existing_driver.name = "Aryan Jha"
+            existing_driver.email = "aryan.jha@rideai.nyc"
             existing_driver.phone = "+1 (555) 234-5678"
             existing_driver.license_number = "NYC-TLC-99821"
+            existing_driver.vehicle_make = "Toyota"
+            existing_driver.vehicle_model = "Camry Hybrid"
+            existing_driver.vehicle_plate = "NYC-TLC-7782"
             existing_driver.status = "Active"
-            existing_driver.rating = 4.92
+            existing_driver.rating = 4.94
             existing_driver.total_trips = 1284
             existing_driver.total_earnings = 7480.00
             existing_driver.acceptance_rate = 97.0
@@ -80,9 +89,9 @@ def seed_database():
 
         # Additional NYC Drivers for rich demo UI
         extra_drivers_data = [
-            ("driver-002", "Mike Johnson", "mike.johnson@rideai.nyc", "+1 (555) 345-6789", "NYC-TLC-88192", "Active", 4.85, 942, 5820.00),
-            ("driver-003", "Sarah Jenkins", "sarah.jenkins@rideai.nyc", "+1 (555) 456-7890", "NYC-TLC-77210", "Offline", 4.98, 1420, 9150.00),
-            ("driver-004", "Carlos Rodriguez", "carlos.r@rideai.nyc", "+1 (555) 567-8901", "NYC-TLC-66103", "Active", 4.79, 610, 3940.00),
+            ("driver-002", "Suraj Panigrahi", "suraj.p@rideai.nyc", "+1 (555) 345-6789", "NYC-TLC-88192", "Active", 4.88, 942, 5820.00),
+            ("driver-003", "Ananya Singh", "ananya.s@rideai.nyc", "+1 (555) 456-7890", "NYC-TLC-77210", "Offline", 4.96, 1420, 9150.00),
+            ("driver-004", "Raghav Singh", "raghav.s@rideai.nyc", "+1 (555) 567-8901", "NYC-TLC-66103", "Active", 4.82, 610, 3940.00),
         ]
 
         for d_id, name, email, phone, lic, st, rat, trips, earn in extra_drivers_data:

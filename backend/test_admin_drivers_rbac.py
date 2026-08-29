@@ -30,7 +30,7 @@ def run_tests():
 
     # 2. Login as Driver
     driver_login_res = client.post("/api/auth/login", json={
-        "email": "alex.morgan@rideai.nyc",
+        "email": "aryan.jha@rideai.nyc",
         "password": "driver123"
     })
     assert driver_login_res.status_code == 200, f"Driver login failed: {driver_login_res.text}"
