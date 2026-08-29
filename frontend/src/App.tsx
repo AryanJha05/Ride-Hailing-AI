@@ -12,6 +12,7 @@ import {
   LoginPage,
   DriverDashboard,
   DriverProfile,
+  DriverSettingsPage,
   Trips,
   AIAssistant,
   DriverEarningsPage,
@@ -24,6 +25,7 @@ import {
   AdminAlertsPage,
   AdminSystemStatusPage,
   AdminUsersPage,
+  AdminSettingsPage,
   LiveDemandMap,
   ForecastAnalytics,
   Settings,
@@ -85,7 +87,7 @@ export const App: React.FC = () => {
                 <Route path="trips" element={<Trips />} />
                 <Route path="analytics" element={<ForecastAnalytics />} />
                 <Route path="profile" element={<DriverProfile />} />
-                <Route path="settings" element={<Settings />} />
+                <Route path="settings" element={<DriverSettingsPage />} />
                 <Route path="support" element={<Support />} />
               </Route>
 
@@ -105,7 +107,7 @@ export const App: React.FC = () => {
                 <Route path="analytics" element={<ForecastAnalytics />} />
                 <Route path="profile" element={<DriverProfile />} />
                 <Route path="trips" element={<Trips />} />
-                <Route path="settings" element={<Settings />} />
+                <Route path="settings" element={<DriverSettingsPage />} />
                 <Route path="support" element={<Support />} />
               </Route>
 
@@ -130,7 +132,7 @@ export const App: React.FC = () => {
                 <Route path="alerts" element={<AdminAlertsPage />} />
                 <Route path="system" element={<AdminSystemStatusPage />} />
                 <Route path="users" element={<AdminUsersPage />} />
-                <Route path="settings" element={<Settings />} />
+                <Route path="settings" element={<AdminSettingsPage />} />
                 <Route path="support" element={<AdminSystemStatusPage />} />
               </Route>
 

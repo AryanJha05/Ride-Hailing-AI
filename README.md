@@ -1,83 +1,127 @@
 # Ride AI — Demand Forecasting & Enterprise Mobility Intelligence Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**XGBoost V3 Trip Duration Engine**, **Spatial HDBSCAN Demand Clustering Engine**, and **PyTorch LSTM Demand Forecasting Engine**) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering drivers and fleet admins with full real-time operational metrics and dynamic state binding.
-
-The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, multi-layer demand/driver/event maps, bento grid dashboards, production copilot AI chat, and an integrated RBAC navigation shell.
+Ride AI is an enterprise-grade AI-powered mobility intelligence platform for modern urban ride-hailing and fleet operations. It integrates production Machine Learning services (**XGBoost V3 Trip Duration Engine**, **Spatial HDBSCAN Demand Clustering Engine**, and **PyTorch 2-Layer LSTM Demand Forecasting Engine**) with an **Ollama LLM Reasoning Copilot** to empower drivers with real-time dispatch guidance and fleet admins with NOC model health telemetry.
 
 ---
 
-## 🎨 Tech Stack & Architecture
+## 🎨 Architecture & Technology Stack
 
-- **Frontend**: React 18, TypeScript, Material UI v5, Recharts, Leaflet, React-Leaflet, React Query, Vite
-- **Backend**: FastAPI, Python 3.10+, PyTorch 2.0+, XGBoost, Scikit-learn, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn
-- **LLM Reasoning Microservice**: FastAPI + Ollama Gemma2 (`:8001`) with cross-service context aggregation and offline fallback mechanisms.
-- **AI / ML Layer & Adapter Architecture**: 
-  - **Trip Duration Intelligence (XGBoost V3)**: Processes 44 spatial features via dynamic Leaflet route picker and returns accurate ETA predictions (`POST /api/driver/trip-duration`).
-  - **Demand Clustering Engine (HDBSCAN Model)**: Parses spatial clusters and zone data to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (`GET /api/demand-zones`).
-  - **Demand Forecasting Engine (PyTorch LSTM)**: Utilizes a 2-layer PyTorch LSTM neural network and spatial scalers to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves (`GET /api/forecast`).
-  - **AI Driver Copilot Framework**: Production conversation copilot integrated with Ollama Gemma2 microservice (`:8001`) for real-time positioning and positioning strategy advice.
-- **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with authenticated user state, auto-seeding lifespan triggers, and profile update synchronization)
-- **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
+```mermaid
+graph TD
+    Client[React 18 + Vite Frontend] -->|REST API + JWT| FastAPI[FastAPI Backend Core :8000]
+    FastAPI -->|DB ORM| DB[(SQLite / PostgreSQL)]
+    FastAPI -->|Inference| XGB[XGBoost V3 Trip Duration Model]
+    FastAPI -->|Clustering| HDBSCAN[HDBSCAN Demand Zone Engine]
+    FastAPI -->|Time-Series| LSTM[PyTorch LSTM Forecast Engine]
+    FastAPI -->|HTTP Telemetry| LLM[Ollama LLM Copilot Service :8001]
+    FastAPI -->|Telemetry Probes| NOC[NOC Health & Telemetry Monitor]
+```
+
+### Core Technologies
+- **Frontend**: React 18, TypeScript, Material UI v5 (**Velour** Dark Palette), Leaflet Maps, React-Leaflet, Recharts, React Query, Vite.
+- **Backend Core**: FastAPI, Python 3.10+, PyTorch 2.0+, XGBoost, Scikit-learn, SQLAlchemy ORM, Pydantic v2, Passlib (bcrypt), PyJWT, Uvicorn.
+- **AI Copilot Microservice**: FastAPI + Ollama Gemma2/Llama3 (`:8001`) with cross-service context aggregation and offline fallback logic.
+- **Database Layer**: SQLite / PostgreSQL with automated seeder lifespan triggers and transactional account management.
+- **NOC Telemetry System**: Aggregated real-time metrics (System Health, Active Services, RPM, Avg Latency, Error Rate, Uptime) with reconnect probe triggers.
 
 ---
 
-## 🚀 How to Run Locally on Your PC
+## 🔑 Working Demo Credentials
 
-### 🐳 Recommended: One-Command Docker Execution
+| Role | Name | Email | Password | Target Portal |
+| :--- | :--- | :--- | :--- | :--- |
+| **Driver** | **Aryan Jha** | `aryan.driver@rideai.demo` | `driver123` | `/driver/*` (Driver Operational Dashboard & AI Copilot) |
+| **Admin** | **Suraj Panigrahi** | `suraj.admin@rideai.demo` | `admin123` | `/admin/*` (Fleet Operations & Enterprise NOC Panel) |
 
-Run the entire application stack (Frontend + Backend + LLM Service) with a single command from the project root:
+> [!NOTE]  
+> Demo login buttons on the `/login` page automatically authenticate using these seed credentials.
+
+---
+
+## 📱 Role-Based Portal Capabilities
+
+### 1. Driver Portal (`/driver/*`)
+- **Driver Dashboard**: Bento grid layout with real-time earnings summary, current shift metrics, and active positioning guidance.
+- **Live Demand Map**: Interactive Leaflet map with pickup/drop-off route picker, reverse-geocoding, driver GPS marker, and zonal demand heat overlays.
+- **AI Driver Copilot**: Interactive chat assistant powered by Ollama LLM for real-time dispatch advice and spatial positioning strategy.
+- **Driver Earnings & History**: Shift trip logs, fare breakdowns, and transparent demo data disclaimers.
+- **5-Section Driver User Profile**:
+  1. *Personal Information*: Full name, email, phone, avatar, verified identity status.
+  2. *Driver Credentials & Standing*: Driver ID (`DRV-2026-8812`), rating (`4.94`), total trips (`1,284`), acceptance rate (`96.4%`), cancellation rate (`1.2%`), member since date.
+  3. *Vehicle & Registration*: Make/model (`Toyota Camry Hybrid`), vehicle category, TLC license plate (`NYC-TLC-7782`), inspection status.
+  4. *Account Security & Audit*: Created date, last active shift timestamp, JWT security status.
+  5. *Performance Summary*: KPI grid displaying rating, trips, earnings, acceptance, and cancellation rates.
+- **Dedicated Driver Settings**: AI positioning recommendations toggle, high-demand surge prioritization, navigation provider (Google/Waze/Apple/OSM), shift earnings target goals, account edits, and location privacy controls.
+- **Driver Support Center**: AI Copilot guidance, 7-item knowledge base FAQ accordion, category-based ticket submission modal, and emergency roadside dispatch simulation with clear demo disclaimers.
+
+### 2. Admin & Fleet Operations Portal (`/admin/*`)
+- **Admin Fleet Dashboard**: Real-time fleet KPI overview, active driver count, request volume, and revenue metrics.
+- **Driver Directory & Management**: Enterprise directory, real-time search, active/inactive filters, detail viewer, and transactional driver creation.
+- **Enterprise Model Health & NOC Dashboard**:
+  - *6 Top KPIs*: Overall System Health, Active ML Services (3/3), Requests / Minute, Average Latency, Error Rate, Platform Uptime.
+  - *Production Services Roster*: Status cards for XGBoost Trip Duration, HDBSCAN Demand Clustering, PyTorch LSTM Forecast, and Ollama LLM Copilot.
+  - *24-Point Telemetry Charts*: Recharts time-series streams of Latency (ms), Throughput (RPM), and System Error Rate.
+  - *Service Diagnostic Drill-Down Modal*: Service metadata, memory usage, CPU/GPU utilization, live reconnection probes, and structured logs.
+- **Dedicated Admin Settings**: Deployment environment selection (Demo/Staging/Production), regional hub network, ML forecast horizon, NOC alert latency thresholds, telemetry refresh rates, fleet capacity limits, and admin account controls.
+
+---
+
+## ⚡ Integrated Machine Learning Engines
+
+| Engine | Architecture | Endpoint / Service | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Trip Duration Intelligence** | XGBoost Regressor V3 (44 Spatial Features) | `POST /api/driver/trip-duration` | Evaluates coordinate pairs and spatial features to estimate trip duration in minutes and miles. |
+| **Demand Zone Intelligence** | HDBSCAN Spatial Demand Clustering | `GET /api/demand-zones` | Clusters spatial demand data across NYC hubs to compute dynamic surge multipliers and recommended pickup zones. |
+| **Demand Forecasting Engine** | PyTorch 2-Layer LSTM Neural Network | `GET /api/forecast` | Computes 24-hour auto-regressive demand predictions, peak volume detection, and hourly demand curves. |
+| **AI Mobility Copilot** | Ollama Microservice + Gemma2 / Llama3 | `http://localhost:8001` | Generates context-aware positioning recommendations and conversational driver assistance. |
+
+---
+
+## 🔒 Security & Demo vs. Production Transparency
+
+- **Role-Based Access Control (RBAC)**: All `/api/admin/*` and `/api/driver/*` routes enforce strict JWT token role verification.
+- **Password Security**: Passwords hashed using bcrypt via `passlib`.
+- **Demo vs. Production Transparency**: Simulated telemetry, demand zones, and emergency dispatch features are explicitly tagged with `DEMO ENVIRONMENT`, `DEMO TELEMETRY`, or `DEMO SIMULATED CAPABILITY` badges to provide professional transparency during project evaluation.
+
+---
+
+## 🚀 Installation & Running Locally
+
+### Option A: One-Command Docker Setup (Recommended)
 
 ```bash
 docker compose up --build
 ```
 
-- **Frontend UI**: `http://localhost:3000`
-- **Backend API**: `http://localhost:8000`
-- **LLM Microservice**: `http://localhost:8001`
+- **Frontend Application**: `http://localhost:3000`
+- **Backend Core API**: `http://localhost:8000`
 - **API Documentation (Swagger)**: `http://localhost:8000/docs`
+- **Ollama LLM Microservice**: `http://localhost:8001`
 
-To stop the Docker stack:
+To stop containers:
 ```bash
 docker compose down
 ```
 
 ---
 
-### Manual Step-by-Step Setup
+### Option B: Manual Local Setup
 
-If you prefer to run services manually without Docker:
+#### 1. Backend Setup
+```bash
+python3 -m venv backend/venv
+source backend/venv/bin/activate
+pip install -r backend/requirements.txt
+python backend/seed.py
+python backend/main.py
+```
 
-#### Prerequisites
-- **Node.js** (v18+ recommended) & `npm`
-- **Python** (v3.10+ recommended) & `pip`
-
-#### Step 1: Set Up and Start the Backend
-
-1. Create a Python virtual environment and activate it:
-   ```bash
-   python3 -m venv backend/venv
-   source backend/venv/bin/activate
-   ```
-
-2. Install dependencies and seed demonstration data:
-   ```bash
-   pip install -r backend/requirements.txt
-   python backend/seed.py
-   ```
-
-3. Start the FastAPI server:
-   ```bash
-   python backend/main.py
-   ```
-
-#### Step 2: Set Up and Start the LLM Service
-Open a new terminal window:
+#### 2. LLM Microservice Setup (Optional)
 ```bash
 python llm-service/main.py
 ```
 
-#### Step 3: Set Up and Start the Frontend
-Open a new terminal window:
+#### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -86,108 +130,54 @@ npm run dev
 
 ---
 
-## 🔑 Demo Access Credentials
+## 🧪 Testing & Verification
 
-| Role | Name | Email | Password | Allowed Section |
-| :--- | :--- | :--- | :--- | :--- |
-| **Admin** | Suraj Panigrahi | `suraj.admin@rideai.demo` | `admin123` | `/admin/*` (Full Administrative & Fleet Control) |
-| **Driver** | Aryan Jha | `aryan.driver@rideai.demo` | `driver123` | `/driver/*` (Driver Operational Dashboard & AI Assistant) |
+Run the automated backend test suite:
+```bash
+source backend/venv/bin/activate
+python backend/run_tests.py
+```
 
----
-
-## 📱 Navigation & Routing Architecture
-
-Ride AI uses a unified application shell with role-protected route namespaces:
-
-### Authentication & Public Routes
-| Page | URL | Description |
-| :--- | :--- | :--- |
-| **Login Page** | `/login` | Enterprise split authentication page with quick demo login buttons |
-
-### Driver Portal (`/driver/*`)
-| Page | URL | Description |
-| :--- | :--- | :--- |
-| **Driver Dashboard** | `/driver/dashboard` | Main driver hub with bento grid metrics, quick actions & positioning advice |
-| **Live Demand Map** | `/driver/demand` | Spatial Leaflet base map with active GPS vehicle pin & real model demand overlays |
-| **AI Assistant** | `/driver/assistant` | Interactive AI command chat powered by Ollama Gemma2 LLM reasoning microservice |
-| **Earnings** | `/driver/earnings` | Detailed earnings analytics, shift performance & AI bonus breakdowns |
-| **Trips** | `/driver/trips` | NYC trip log table with fares, ratings, and route details |
-| **Forecast Analytics** | `/driver/analytics` | Hourly predictive demand charts and zone comparisons |
-| **Driver Profile** | `/driver/profile` | Driver rating, vehicle assignment, and operational stats |
-| **Settings & Support** | `/driver/settings`, `/driver/support` | Preferences, vehicle config, profile edits, and operational support center |
-
-### Admin Operations Portal (`/admin/*`)
-| Page | URL | Description |
-| :--- | :--- | :--- |
-| **Admin Dashboard** | `/admin/dashboard` | Fleet NOC overview, active drivers, total trips, and revenue metrics |
-| **Fleet Management** | `/admin/fleet` | Live vehicle status, vehicle models, and maintenance alerts |
-| **Driver Management** | `/admin/drivers` | Enterprise driver directory, real-time search, status filter, transactional account creation, and detail views |
-| **Live Demand** | `/admin/demand` | Spatial surge map across NYC demand zones |
-| **Demand Forecast** | `/admin/forecast` | Time-series demand forecasting by borough and zone |
-| **Model Health** | `/admin/models` | Dynamic ML latency monitoring, model connection telemetry, and drift metrics |
-| **AI Recommendations** | `/admin/recommendations` | System-wide automated dispatch & surge optimization rules |
-| **Alerts & System Status**| `/admin/alerts`, `/admin/system` | Real-time anomaly notifications & microservice health checks |
-| **Users & Roles** | `/admin/users` | RBAC account directory and permission management |
+Run frontend build verification:
+```bash
+cd frontend
+npm run build
+```
 
 ---
 
-## ⚡ Key Platform Features
-
-- ✅ **Unified Route Map Picker & Reverse Geocoding**: Interactive 2-click Leaflet map selection (1st click = 🟢 Pickup, 2nd click = 🟣 Drop-off, connecting route polyline, auto-fitting bounds). Live reverse-geocoding displays human-readable place names (`Midtown Manhattan, New York, NY`) while sending exact numerical float coordinates (`origin_lat`, `origin_lng`, `dest_lat`, `dest_lng`) to XGBoost V3.
-- ✅ **Real XGBoost V3 Integration**: ML model produces live trip duration predictions through the FastAPI backend (`POST /api/driver/trip-duration`).
-- ✅ **Real HDBSCAN Demand Zone Integration**: ML model produces live spatial cluster demand zone predictions (`GET /api/demand-zones`), returning real center coordinates, dynamic surge multipliers, trend indicators, and driver-to-zone spatial recommendations.
-- ✅ **Real PyTorch LSTM Demand Forecasts**: Time-series demand forecasting engine provides 24-hour demand curves and peak volume predictions (`GET /api/forecast`).
-- ✅ **Profile & Credential Synchronization**: Seamless profile updates (`PUT /api/auth/profile`) and password changes (`PUT /api/auth/password`) synchronized between React state and SQLite/PostgreSQL ORM models.
-- ✅ **Ollama Gemma2 LLM Integration**: AI Assistant service connects to local/Dockerized Ollama Gemma2 for real-time dispatch advice, with fallback handling when offline.
-- ✅ **Admin Driver Management & RBAC**: Full transactional driver account creation (`POST /api/admin/drivers`), linking `User` (`role=DRIVER`) with `Driver` profiles, temporary password modal prompt, detail viewer, active/inactive status toggling, and automated RBAC security test suite (`test_admin_drivers_rbac.py`).
-
----
-
-## 📂 Project Structure
+## 📂 Project Directory Structure
 
 ```
-Ride-Hailing-AI/
+Ride-Hailing-AI-Copy/
 ├── backend/
 │   ├── app/
-│   │   ├── api/             # FastAPI routers (auth, admin, driver_advice, forecast, trip_duration, demand_zones)
-│   │   ├── core/            # Security, JWT, hashing, RBAC middleware
-│   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
-│   │   ├── schemas/         # Pydantic validation schemas
-│   │   └── services/        # Business logic & model adapters
-│   ├── models/              # Consolidated Machine Learning Model Storage
-│   │   ├── student_a/       # Trip Duration Model (XGBoost V3) & Feature Columns
-│   │   ├── student_b/       # HDBSCAN Spatial Demand Zone Model (.pkl, metadata, zones.json)
-│   │   └── student_c/       # PyTorch LSTM Demand Forecasting Model (.pth, scaler.pkl)
-│   ├── main.py              # FastAPI application entry point
-│   ├── seed.py              # Database seeder with demonstration data
-│   ├── test_admin_drivers_rbac.py # RBAC and security test suite
-│   └── run_tests.py         # Automated unit test suite runner
-├── llm-service/             # Ollama Gemma2 LLM reasoning microservice (:8001)
-│   ├── main.py
-│   └── Dockerfile
+│   │   ├── api/             # FastAPI routers (admin, auth, demand_zones, driver_advice, forecast, trip_duration)
+│   │   ├── core/            # Security, JWT, RBAC dependencies
+│   │   ├── models/          # SQLAlchemy database entities
+│   │   ├── schemas/         # Pydantic schemas
+│   │   └── services/        # NOC telemetry, ML model adapters, LLM client
+│   ├── models/              # Machine Learning weights & feature column specs
+│   ├── seed.py              # Database seeder (Aryan Jha & Suraj Panigrahi credentials)
+│   ├── main.py              # FastAPI server entry point
+│   └── run_tests.py         # Test suite runner
 ├── frontend/
 │   ├── src/
 │   │   ├── auth/            # AuthContext, ProtectedRoute, role definitions
-│   │   ├── components/      # Shared layout, AppShell, Header, Sidebar, LocationRoutePickerModal
-│   │   ├── hooks/           # React Query hooks (useRideApi)
-│   │   ├── layouts/         # MainLayout shell
-│   │   ├── navigation/      # Admin and Driver sidebar navigation configs
-│   │   ├── pages/           # Admin and Driver page components
+│   │   ├── components/      # Bento cards, header, sidebar, profile, NOC diagnostic modal
+│   │   ├── pages/
+│   │   │   ├── admin/       # Admin Dashboard, Admin Drivers, Admin Model Health NOC, Admin Settings
+│   │   │   ├── driver/      # Driver Dashboard, Driver Profile, Driver Settings, Trips, AI Assistant
+│   │   │   └── common/      # Live Demand Map, Forecast Analytics, Support
 │   │   ├── routes/          # Centralized route definitions
-│   │   ├── services/        # Axios API client & reverse geocoding service
-│   │   └── theme/           # Velour color palette & MUI theme
-│   └── package.json
+│   │   └── services/        # Axios API client & reverse-geocoding service
+├── llm-service/             # Ollama LLM copilot microservice (:8001)
 ├── docker-compose.yml
 └── README.md
 ```
 
 ---
 
-## 👥 Team
+## 📝 Commit Convention & License
 
-| Member | Responsibility |
-|---------|----------------|
-| **Student A** | Trip Duration Prediction (**XGBoost V3 Active**) |
-| **Student B** | Spatial Demand Zone Detection (**HDBSCAN Model Active**) |
-| **Student C** | 24h Demand Forecasting (**PyTorch LSTM Model Active**) |
-| **Student D** | AI Driver Assistant, Full Stack Integration & Enterprise Operations Platform |
+Project updates follow Conventional Commits standard. Developed as an advanced AI mobility intelligence prototype.
