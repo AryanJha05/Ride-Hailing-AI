@@ -15,6 +15,7 @@ import {
   UpdateDriverPayload,
   TripDurationRequest,
   TripDurationResponse,
+  NocModelHealthResponse,
 } from '../types/api.types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
@@ -113,5 +114,16 @@ export const rideApi = {
     const res = await apiClient.post('/driver/trip-duration', payload);
     return res.data;
   },
+
+  getAdminModelHealth: async (): Promise<NocModelHealthResponse> => {
+    const res = await apiClient.get('/admin/models/health');
+    return res.data;
+  },
+
+  reconnectAdminModelService: async (serviceId: string): Promise<{ status: string; message: string; service: any }> => {
+    const res = await apiClient.post(`/admin/models/${serviceId}/reconnect`);
+    return res.data;
+  },
 };
+
 

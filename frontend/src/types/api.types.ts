@@ -205,3 +205,77 @@ export interface TripDurationResponse {
   model: string;
   status: string;
 }
+
+export interface NocServiceLog {
+  timestamp: string;
+  level: 'INFO' | 'WARN' | 'ERROR';
+  message: string;
+}
+
+export interface NocServiceItem {
+  id: string;
+  name: string;
+  architecture: string;
+  version: string;
+  status: string;
+  is_pending: boolean;
+  inference_latency_ms: number;
+  requests_per_min: number;
+  error_rate_pct: number;
+  cpu_utilization_pct: number;
+  gpu_utilization_pct: number | null;
+  memory_usage_mb: number;
+  last_health_check: string;
+  last_inference_timestamp: string;
+  loss_eval: string;
+  deployment_target: string;
+  training_date: string;
+  recent_logs: NocServiceLog[];
+}
+
+export interface NocTelemetryPoint {
+  time: string;
+  latency_ms: number;
+  request_volume: number;
+  error_rate_pct: number;
+}
+
+export interface NocIncident {
+  id: string;
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
+  service: string;
+  problem: string;
+  status: string;
+  detected_time: string;
+  duration?: string;
+  resolved_time?: string;
+  action?: string;
+}
+
+export interface NocPlatformService {
+  name: string;
+  status: 'HEALTHY' | 'DEGRADED' | 'DOWN';
+  type: string;
+  latency: string;
+  last_check: string;
+}
+
+export interface NocModelHealthResponse {
+  status: string;
+  timestamp: string;
+  is_demo_telemetry: boolean;
+  kpis: {
+    system_health: string;
+    active_ml_services: string;
+    requests_per_minute: number;
+    avg_inference_latency_ms: number;
+    error_rate_pct: number;
+    uptime_pct: string;
+  };
+  services: NocServiceItem[];
+  telemetry_history: NocTelemetryPoint[];
+  active_incidents: NocIncident[];
+  resolved_incidents: NocIncident[];
+  platform_services: NocPlatformService[];
+}
+

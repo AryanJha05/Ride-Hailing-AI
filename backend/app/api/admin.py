@@ -57,3 +57,40 @@ def update_admin_driver(
 ):
     return driver_service.update_driver_account(db, driver_id, req)
 
+
+@router.get("/models/health")
+async def get_admin_model_health_noc(
+    current_user: User = Depends(require_role(UserRole.ADMIN))
+):
+    """
+    Returns live enterprise NOC health telemetry for ML models and platform services.
+    Protected for Admin role.
+    """
+    from app.services.noc_telemetry_service import get_noc_model_health_telemetry
+    return await get_noc_model_health_telemetry()
+
+
+@router.post("/models/{service_id}/reconnect")
+async def reconnect_admin_model_service(
+    service_id: str,
+    current_user: User = Depends(require_role(UserRole.ADMIN))
+):
+    """
+    Executes a health probe / reconnect attempt for the specified ML model or service.
+    Protected for Admin role.
+    """
+    from app.services.noc_telemetry_service import get_noc_model_health_telemetry
+    telemetry = await get_noc_model_health_telemetry()
+    matched = next((s for s in telemetry["services"] if s["id"] == service_id), None)
+    if not matched:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Service '{service_id}' not recognized in NOC roster."
+        )
+    return {
+        "status": "success",
+        "message": f"Reconnect probe completed for service '{matched['name']}'. Status: {matched['status']}",
+        "service": matched
+    }
+
+

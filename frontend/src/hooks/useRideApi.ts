@@ -65,3 +65,18 @@ export const useTripDurationMutation = () => {
   });
 };
 
+export const useAdminModelHealth = () => {
+  return useQuery({
+    queryKey: ['adminModelHealth'],
+    queryFn: rideApi.getAdminModelHealth,
+    refetchInterval: 10000,
+  });
+};
+
+export const useReconnectAdminModelMutation = () => {
+  return useMutation({
+    mutationFn: (serviceId: string) => rideApi.reconnectAdminModelService(serviceId),
+  });
+};
+
+
