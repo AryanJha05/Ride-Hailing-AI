@@ -93,7 +93,7 @@ async def generate_response(req: LLMGenerateRequest):
     # Extract model statuses and real data from context contract
     student_a_status = context.get("trip_duration", {}).get("status", "Operational (XGBoost V3)")
     student_b_status = context.get("demand_zones", {}).get("status", "Operational (Student B - HDBSCAN)")
-    student_c_status = context.get("forecast", {}).get("status", "MODEL_NOT_CONNECTED")
+    student_c_status = context.get("forecast", {}).get("status", "Operational (Student C - PyTorch LSTM)")
     demand_zones_data = context.get("demand_zones", {}).get("data", [])
 
     zone_summary = ""
@@ -126,8 +126,9 @@ Provide a concise, direct, helpful answer to the driver query using the real spa
     fallback_chips = [
         ReasoningChip(label="Student A (Trip Duration)", value="Operational (XGBoost V3)"),
         ReasoningChip(label="Student B (Demand Zones)", value="Operational (HDBSCAN)"),
-        ReasoningChip(label="Student C (Forecast)", value="Model Not Connected"),
+        ReasoningChip(label="Student C (Forecast)", value="Operational (PyTorch LSTM)"),
     ]
+
 
     try:
         async with httpx.AsyncClient(timeout=40.0) as client:

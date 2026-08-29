@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 import { PageShell } from '../../components/layout/PageShell';
 import { VELOUR_TOKENS } from '../../theme/palette';
@@ -22,6 +23,13 @@ export const AdminForecastPage: React.FC = () => {
   const { data: forecastRes } = useForecast(selectedZone);
   const forecastData = forecastRes?.data || [];
   const hasData = forecastData.length > 0;
+
+  // Compute peak demand hour from real model forecast data
+  let peakHourStr = 'N/A (Model Not Connected)';
+  if (hasData) {
+    const sorted = [...forecastData].sort((a, b) => b.predicted_demand - a.predicted_demand);
+    peakHourStr = `${sorted[0].hour} (Est. ${Math.round(sorted[0].predicted_demand)} rides/hr)`;
+  }
 
   return (
     <PageShell title="Demand Forecast Analytics">
@@ -55,10 +63,10 @@ export const AdminForecastPage: React.FC = () => {
                 }}
               >
                 <MenuItem value="Midtown Manhattan">Midtown Manhattan</MenuItem>
-                <MenuItem value="JFK Airport (JFK)">JFK Airport (JFK)</MenuItem>
-                <MenuItem value="Financial District">Financial District</MenuItem>
-                <MenuItem value="Williamsburg">Williamsburg</MenuItem>
-                <MenuItem value="Lower Manhattan">Lower Manhattan</MenuItem>
+                <MenuItem value="JFK International Airport">JFK International Airport</MenuItem>
+                <MenuItem value="Downtown Brooklyn">Downtown Brooklyn</MenuItem>
+                <MenuItem value="LaGuardia Airport LGA">LaGuardia Airport LGA</MenuItem>
+                <MenuItem value="Williamsburg & Greenpoint">Williamsburg & Greenpoint</MenuItem>
               </Select>
             </Box>
           </Card>
@@ -71,7 +79,21 @@ export const AdminForecastPage: React.FC = () => {
               <Typography variant="subtitle2" sx={{ color: VELOUR_TOKENS.textSecondary, fontWeight: 600, fontSize: 13 }}>
                 24-Hour Demand Forecast Curve ({selectedZone})
               </Typography>
-              <Chip icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />} label="Student C Model Pending Integration" size="small" sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }} />
+              {hasData ? (
+                <Chip
+                  icon={<CheckCircleIcon sx={{ fontSize: '14px !important', color: '#10B981 !important' }} />}
+                  label="Student C (PyTorch LSTM) Active"
+                  size="small"
+                  sx={{ backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#10B981', fontSize: 11, fontWeight: 600 }}
+                />
+              ) : (
+                <Chip
+                  icon={<HourglassEmptyIcon sx={{ fontSize: '14px !important', color: `${VELOUR_TOKENS.accentGold} !important` }} />}
+                  label="Student C Model Pending Integration"
+                  size="small"
+                  sx={{ backgroundColor: 'rgba(234, 179, 8, 0.12)', color: VELOUR_TOKENS.accentGold, fontSize: 11, fontWeight: 600 }}
+                />
+              )}
             </Box>
             <ForecastChart data={forecastData} />
           </Card>
@@ -90,7 +112,7 @@ export const AdminForecastPage: React.FC = () => {
                     PEAK DEMAND HORIZON
                   </Typography>
                   <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? VELOUR_TOKENS.accentTeal : VELOUR_TOKENS.textSecondary, mt: 0.5, fontSize: 15 }}>
-                    {hasData ? '18:00 - 19:30 EST' : 'N/A (Model Not Connected)'}
+                    {peakHourStr}
                   </Typography>
                 </Box>
 
@@ -98,11 +120,11 @@ export const AdminForecastPage: React.FC = () => {
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary }}>
                     MODEL ACCURACY STATUS
                   </Typography>
-                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: VELOUR_TOKENS.accentGold, mt: 0.5, fontSize: 15 }}>
-                    Pending Student C Integration
+                  <Typography className="mono-num" variant="h6" sx={{ fontWeight: 700, color: hasData ? '#10B981' : VELOUR_TOKENS.accentGold, mt: 0.5, fontSize: 15 }}>
+                    {hasData ? 'PyTorch LSTM Operational' : 'Pending Student C Integration'}
                   </Typography>
                   <Typography variant="caption" sx={{ color: VELOUR_TOKENS.textSecondary, fontSize: 11 }}>
-                    (LSTM Time-Series Model pending pipeline deployment)
+                    {hasData ? '2-Layer LSTM + MinMaxScaler Inverse Transform' : '(LSTM Time-Series Model pending pipeline deployment)'}
                   </Typography>
                 </Box>
 
@@ -113,8 +135,10 @@ export const AdminForecastPage: React.FC = () => {
                       RECOMMENDED ACTION
                     </Typography>
                   </Box>
-                  <Typography variant="body2" sx={{ fontWeight: 600, color: VELOUR_TOKENS.textSecondary }}>
-                    Automated staging recommendations unavailable until Student C forecasting model integration is complete.
+                  <Typography variant="body2" sx={{ fontWeight: 600, color: hasData ? '#FFF' : VELOUR_TOKENS.textSecondary }}>
+                    {hasData
+                      ? `Pre-position fleet vehicles in ${selectedZone} 30 minutes prior to ${peakHourStr.split(' ')[0]} for maximum trip volume.`
+                      : 'Automated staging recommendations unavailable until Student C forecasting model integration is complete.'}
                   </Typography>
                 </Box>
               </Box>

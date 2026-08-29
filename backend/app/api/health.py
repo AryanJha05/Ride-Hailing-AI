@@ -23,7 +23,8 @@ async def get_system_health():
     student_b_status = "Operational (Student B - HDBSCAN)" if student_b_adapter.is_connected() else "Model Not Connected"
 
     # Student C Demand Forecast status
-    student_c_status = "Operational (Student C)" if student_c_adapter.is_connected() else "Model Not Connected"
+    student_c_status = "Operational (Student C - PyTorch LSTM)" if student_c_adapter.is_connected() else "Model Not Connected"
+
 
     # Ollama LLM Service status check
     ollama_status = "Unavailable"

@@ -1,6 +1,6 @@
 # Ride AI — Demand Forecasting & Enterprise Driver Management Platform
 
-Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**Student A's real XGBoost V3 Trip Duration model** and **Student B's spatial HDBSCAN Demand Zone model** active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering fleet admins with full transactional account control and real-time operational metrics.
+Ride AI is an enterprise-grade ride-hailing demand forecasting, driver positioning assistant, and administrative fleet management platform. It combines multi-model machine learning services (**Student A's real XGBoost V3 Trip Duration model**, **Student B's spatial HDBSCAN Demand Zone model**, and **Student C's PyTorch LSTM Demand Forecasting model** active) with an integrated Ollama Gemma2 LLM positioning assistant microservice, while empowering fleet admins with full transactional account control and real-time operational metrics.
 
 The user interface follows the **Velour** design system built with React and Material UI v5, featuring dark-mode operational ergonomics, spatial Leaflet route map pickers with live reverse-geocoding, bento grid dashboards, real-time AI command chat, and an integrated RBAC navigation shell.
 
@@ -14,7 +14,7 @@ The user interface follows the **Velour** design system built with React and Mat
 - **AI / ML Layer & Adapter Architecture**: 
   - **Student A**: Trip Duration Prediction Service (**XGBoost V3 Active**) — accepts exact numerical float coordinates via dynamic Leaflet route picker using 44 spatial features.
   - **Student B**: Demand Zone Detection Service (**HDBSCAN Model Active**) — parses serialized `demand_zones_model_optimized.pkl` and `zones.json` to calculate live demand scores, dynamic surge multipliers, trend indicators, and spatial nearest-zone predictions across NYC clusters (Midtown, JFK, LGA Terminals, LGA North, Downtown Brooklyn, Williamsburg, Long Island City).
-  - **Student C**: 24h Hourly Demand Forecasting Service (Modular Adapter Architecture — drop `.pkl`/`.pt` into `backend/models/student_c/` for instant activation; honest empty chart state rendered when disconnected).
+  - **Student C**: 24h Hourly Demand Forecasting Service (**PyTorch LSTM Active**) — auto-extracts `model.pth.zip` PyTorch state dict and `scaler.pkl` to compute 24-hour auto-regressive demand predictions, peak volume detection, and time-series demand curves across NYC zones (`GET /api/forecast`).
   - **Student D**: AI Driver Assistant Framework (Integrated with Ollama Gemma2 microservice on `:8001`).
 - **Database**: SQLite / PostgreSQL (SQLAlchemy ORM with pre-seeded NYC operational data)
 - **Security & Access Control**: Real JWT authentication with Role-Based Access Control (`DRIVER` and `ADMIN` roles)
@@ -153,10 +153,11 @@ Ride-Hailing-AI/
 │   │   ├── core/            # Security, JWT, hashing, RBAC middleware
 │   │   ├── models/          # SQLAlchemy database entities (User, Driver, DemandZone)
 │   │   ├── schemas/         # Pydantic validation schemas
-│   │   └── services/        # Business logic & model adapters (student_b_adapter, trip_duration_service, etc.)
+│   │   └── services/        # Business logic & model adapters (student_b_adapter, student_c_adapter, trip_duration_service, etc.)
 │   ├── models/              # Consolidated Machine Learning Model Storage
 │   │   ├── student_a/       # Student A XGBoost V3 Trip Duration Model & Notebook
-│   │   └── student_b/       # Student B HDBSCAN Spatial Demand Zone Model (.pkl, metadata, zones.json)
+│   │   ├── student_b/       # Student B HDBSCAN Spatial Demand Zone Model (.pkl, metadata, zones.json)
+│   │   └── student_c/       # Student C PyTorch LSTM Demand Forecasting Model (model.pth.zip, scaler.pkl, inference.py)
 │   ├── main.py              # FastAPI application entry point
 │   ├── seed.py              # Database seeder with demonstration data
 │   ├── test_admin_drivers_rbac.py # RBAC and security test suite
@@ -188,5 +189,5 @@ Ride-Hailing-AI/
 |---------|----------------|
 | **Student A** | Trip Duration Prediction (**XGBoost V3 Active**) |
 | **Student B** | Spatial Demand Zone Detection (**HDBSCAN Model Active**) |
-| **Student C** | Demand Forecasting (Adapter Architecture Ready for Artifact Drop-In) |
+| **Student C** | 24h Demand Forecasting (**PyTorch LSTM Model Active**) |
 | **Student D** | AI Driver Assistant, Full Stack Integration & Enterprise Operations Platform |
