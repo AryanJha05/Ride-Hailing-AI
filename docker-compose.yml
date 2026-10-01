@@ -11,7 +11,7 @@ services:
       - PORT=8000
       - DATABASE_URL=${DATABASE_URL:-sqlite:///./ride_ai.db}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY:-ride_ai_local_dev_secret_key_2026_change_in_prod}
-      - LLM_SERVICE_URL=http://llm-service:8001
+      - LLM_SERVICE_URL=http://host.docker.internal:8001
     volumes:
       - ./backend/ride_ai.db:/app/ride_ai.db
     extra_hosts:
@@ -48,16 +48,11 @@ services:
       context: ./llm-service
       dockerfile: Dockerfile
     container_name: ride-ai-llm-service
-    ports:
-      - "${LLM_SERVICE_PORT:-8001}:8001"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: "host"
     environment:
       - PORT=8001
-      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-gemma2}
-    networks:
-      - ride-ai-network
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://localhost:11434}
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2:1b}
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
       interval: 15s
